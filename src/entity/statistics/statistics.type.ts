@@ -20,9 +20,6 @@ export class StatisticsResponse extends PaginatedResponse {
 // Create Statistics Input and Response
 @InputType()
 export class CreateStatisticsInput {
-  @Field(() => ID)
-  id: string;
-
   @Field()
   newBlocks: number;
 
@@ -37,4 +34,7 @@ export class CreateStatisticsInput {
 
   @Field()
   members?: number;
+
+  @Field()
+  issuedAt: Date;
 }

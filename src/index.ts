@@ -17,6 +17,7 @@ import { OrganizationResolver } from './entity/organization/organization.resolve
 import { UserGroupResolver } from './entity/userGroup/userGroup.resolver';
 import { BigIntScalar } from './graphql/scalar/bigInt';
 import { StatisticsResolver } from './entity/statistics/statistics.resolver';
+import { UserStatisticsResolver } from './entity/userStatistics/userStatistics.resolver';
 
 // import "./env";
 
@@ -28,6 +29,7 @@ const app = async () => {
       StatisticsResolver,
       OrganizationResolver,
       UserGroupResolver,
+      UserStatisticsResolver,
     ],
     authChecker,
     scalarsMap: [
