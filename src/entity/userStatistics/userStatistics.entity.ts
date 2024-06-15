@@ -1,27 +1,22 @@
 import { ObjectType, Field, ID } from 'type-graphql';
 
 import { BaseEntity } from '@/graphql/baseEntity';
+import { User } from '@/entity/user/user.entity';
 
 @ObjectType()
-export class Statistics extends BaseEntity {
+export class UserStatistics extends BaseEntity {
   @Field(() => ID)
   id: string;
 
   @Field()
-  newBlocks: number;
+  blocks: number;
 
   @Field()
-  totalBlocks: number;
-
-  @Field()
-  newHashPower: number;
-
-  @Field()
-  totalHashPower: number;
-
-  @Field()
-  members?: number;
+  hashPower: number;
 
   @Field()
   issuedAt: Date;
+
+  @Field(() => User, { nullable: true })
+  user?: User;
 }
