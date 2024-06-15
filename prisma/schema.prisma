@@ -79,12 +79,12 @@ model UserStatistics {
   userId      String
   blocks      Int
   hashPower   Int
-  issuedAt          DateTime  @default(now()) @db.Timestamptz(6)
+  issuedAt    DateTime  @default(now()) @db.Timestamptz(6)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
-  user           User   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user           User?   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([userId], map: "index_user_statistics_on_userId")
   @@map("user_statistics")
