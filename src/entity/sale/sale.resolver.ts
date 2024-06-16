@@ -38,7 +38,6 @@ export class SaleResolver {
     let response: { total?: number; sales?: Sale[] } = {};
 
     for (let [key, value] of result) {
-      console.log('value => ', await value);
       response[key] = value;
     }
 

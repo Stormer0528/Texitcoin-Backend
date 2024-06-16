@@ -5,6 +5,7 @@ import { PaginatedResponse } from '@/graphql/paginatedResponse';
 import { QueryArgsBase } from '@/graphql/queryArgs';
 
 import { User } from '@/entity/user/user.entity';
+// import { Statistics } from '@/entity/statistics/statistics.entity';
 import { Sale } from '@/entity/sale/sale.entity';
 
 // Sale Query Args
@@ -21,9 +22,6 @@ export class SalesResponse extends PaginatedResponse {
 // Create Sale Input and Response
 @InputType()
 export class CreateSaleInput {
-  @Field(() => ID)
-  id: string;
-
   @Field()
   invoiceNo: number;
 
@@ -38,6 +36,12 @@ export class CreateSaleInput {
 
   @Field()
   hashPower: number;
+
+  @Field()
+  issuedAt: Date;
+
+  // @Field(() => Statistics)
+  // statistics: Statistics;
 
   // @Field(() => User, { nullable: 'itemsAndList' })
   // user?: User;

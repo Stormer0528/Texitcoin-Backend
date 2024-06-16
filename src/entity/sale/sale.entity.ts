@@ -2,6 +2,7 @@ import { ObjectType, Field, ID } from 'type-graphql';
 
 import { BaseEntity } from '@/graphql/baseEntity';
 import { User } from '@/entity/user/user.entity';
+import { Statistics } from '@/entity/statistics/statistics.entity';
 
 @ObjectType()
 export class Sale extends BaseEntity {
@@ -22,6 +23,12 @@ export class Sale extends BaseEntity {
 
   @Field()
   hashPower: number;
+
+  @Field()
+  issuedAt: Date;
+
+  @Field(() => Statistics, { nullable: true })
+  statistics: Statistics;
 
   @Field(() => User, { nullable: true })
   user?: User;
