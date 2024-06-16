@@ -42,12 +42,14 @@ model User {
 model Sale {
   id              String @id @default(uuid())
   userId          String
+  statisticsId    String
   invoiceNo       Int    @default(0)
   productName     String @db.VarChar
   paymentMethod   String @db.VarChar
   amount          Int
   hashPower       Int
   user            User?   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  statistics      Statistics?   @relation(fields: [statisticsId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   issuedAt        DateTime  @default(now()) @db.Timestamptz(6)
 
   createdAt DateTime  @default(now())
@@ -55,6 +57,7 @@ model Sale {
   deletedAt DateTime?
 
   @@index([userId], map: "index_sales_on_userId")
+  @@index([statisticsId], map: "index_sales_on_statisticsId")
   @@map("sales")
 }
 
@@ -70,6 +73,9 @@ model Statistics {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  // Relations
+  sales                Sale[]
 
   @@map("statistics")
 }
