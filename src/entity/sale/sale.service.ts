@@ -12,22 +12,28 @@ export class SaleService {
   ) {}
 
   async getSales(params: SaleQueryArgs) {
-    // return this.prisma.sale.findMany({
-    //   include: { user: true },
-    //   where: params.where,
-    //   orderBy: params.orderBy,
-    //   ...params.parsePage,
-    // });
+    const allItems = await this.prisma.sale.findMany({
+      include: { user: true, statistics: true },
+      where: params.where,
+      orderBy: params.orderBy,
+      ...params.parsePage,
+    });
 
-    return this.prisma.sale.groupBy({
-      by: ['createdAt'],
+    const result = await this.prisma.sale.groupBy({
+      by: ['issuedAt'],
       _sum: {
         hashPower: true,
       },
       where: params.where,
-      orderBy: { createdAt: 'desc' },
+      orderBy: { issuedAt: 'desc' },
       ...params.parsePage,
     });
+
+    return result.map((group) => ({
+      issuedAt: group.issuedAt,
+      hashPower: group._sum.hashPower,
+      items: allItems.filter((item) => `${group.issuedAt}` == `${item.issuedAt}`),
+    }));
   }
 
   async getSalesCount(params: SaleQueryArgs): Promise<number> {
