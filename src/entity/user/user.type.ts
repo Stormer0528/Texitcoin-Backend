@@ -22,9 +22,6 @@ export class UsersResponse extends PaginatedResponse {
 // Create User Input and Response
 @InputType()
 export class CreateUserInput {
-  @Field(() => ID)
-  id: string;
-
   @Field()
   username: string;
 
