@@ -1,11 +1,8 @@
 import { MineStatInput, SaleReport, SaleReportInput } from '@/type';
 import { Statistics } from '@/entity/statistics/statistics.entity';
-import { CreateStatisticsInput } from '@/entity/statistics/statistics.type';
 import { toLocaleDate } from './common';
 import { User } from '../entity/user/user.entity';
 import { Prisma, PrismaClient } from '@prisma/client';
-import { JsonObject } from '@prisma/client/runtime/library';
-import { CreateUserStatisticsInput } from '@/entity/userStatistics/userStatistics.type';
 
 const prisma = new PrismaClient();
 
@@ -34,11 +31,13 @@ export const getStatistics = async function (
 ): Promise<Prisma.StatisticsCreateManyInput[]> {
   const statistics: Prisma.StatisticsCreateManyInput[] = [];
   const salesGroupByDate: Record<string, SaleReport> = getSalesGroupByDate(saleReports);
+
   const prevStatistic: Statistics = await prisma.statistics.findFirst({
     orderBy: {
       issuedAt: 'desc',
     },
   });
+
   let totalHashPower: number = prevStatistic ? prevStatistic.totalHashPower : 0;
 
   mineStats.forEach(({ date, newBlocks, totalBlocks }) => {
