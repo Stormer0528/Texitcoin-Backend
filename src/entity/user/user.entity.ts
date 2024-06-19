@@ -16,10 +16,10 @@ export class User extends BaseEntity {
   fullname: string;
 
   @Field()
-  sponsorName: string;
+  sponsorName?: string;
 
   @Field()
-  introducerFullName: string;
+  introducerFullName?: string;
 
   @Field()
   @IsEmail()
