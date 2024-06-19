@@ -29,10 +29,10 @@ export class CreateUserInput {
   fullname: string;
 
   @Field()
-  sponsorName: string;
+  sponsorName?: string;
 
   @Field()
-  introducerFullName: string;
+  introducerFullName?: string;
 
   @Field()
   address: string;
@@ -42,7 +42,7 @@ export class CreateUserInput {
   email: string;
 
   @Field()
-  password?: string;
+  password: string;
 
   @Field()
   mobile: string;
