@@ -38,24 +38,26 @@ export const getSales = async () => {
     {}
   );
 
-  console.log('ids => ', statisticsIds);
+  const sales = data.map(
+    ({ username, issuedAt, invoiceNo, productName, paymentMethod, amount, hashPower }) => {
+      let statisticsId = statisticsIds[formatDate(issuedAt)];
+      if (!statisticsIds[formatDate(issuedAt)]) {
+        statisticsId = statistics.length !== 0 && statistics[0].id;
+      }
 
-  const sales = data.map(({ username, issuedAt, ...rest }) => {
-    let statisticsId = statisticsIds[formatDate(issuedAt)];
-    if (!statisticsIds[formatDate(issuedAt)]) {
-      statisticsId = statistics.length !== 0 && statistics[0].id;
+      return {
+        userId: userIds[username],
+        statisticsId,
+        username,
+        issuedAt,
+        invoiceNo,
+        productName,
+        paymentMethod,
+        amount,
+        hashPower,
+      };
     }
-
-    return {
-      userId: userIds[username],
-      statisticsId,
-      username,
-      issuedAt,
-      ...rest,
-    };
-  });
-
-  console.log('sales => ', sales);
+  );
 
   return sales;
 };

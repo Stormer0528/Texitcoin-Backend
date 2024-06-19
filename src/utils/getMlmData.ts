@@ -49,7 +49,7 @@ export const getUserFromMlm = async () => {
 export const getUserStatisticsFromMlm = async () => {
   const sales = await getSales();
 
-  // const userStatistics = await getUserStatistics(sales, mineStats);
+  const userStatistics = await getUserStatistics(sales, mineStats);
 
-  return sales;
+  return userStatistics;
 };
