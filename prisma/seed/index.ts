@@ -19,15 +19,10 @@ async function main() {
   await prisma.statistics.createMany({ data: statistics });
   await prisma.user.createMany({ data: users, skipDuplicates: true });
 
-  const [sales] = await Promise.all([getSales()]);
+  const [sales, userStatistics] = await Promise.all([getSales(), getUserStatisticsFromMlm()]);
 
-  // await prisma.userStatistics.createMany({ data: userStatistics });
   await prisma.sale.createMany({ data: sales });
-
-  // const users = await getUserFromMlm();
-  // const statistics = await getStatisticsFromMlm();
-  // const sales = await getSales();
-  // const userStatistics = await getUserStatisticsFromMlm();
+  await prisma.userStatistics.createMany({ data: userStatistics });
 
   console.log(`Seeding finished.`);
 }
