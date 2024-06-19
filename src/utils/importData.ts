@@ -1,6 +1,6 @@
 import { MineStatInput, SaleReport, SaleReportInput } from '@/type';
 import { Statistics } from '@/entity/statistics/statistics.entity';
-import { toLocaleDate } from './common';
+import { formatDate } from './common';
 import { User } from '../entity/user/user.entity';
 import { Prisma, PrismaClient } from '@prisma/client';
 
@@ -9,8 +9,8 @@ const prisma = new PrismaClient();
 const getSalesGroupByDate = function (saleReports: SaleReportInput[]): Record<string, SaleReport> {
   const salesGroupByDate: Record<string, SaleReport> = {};
 
-  saleReports.forEach(({ hashPower, amount, username, date }) => {
-    const formattedDate = toLocaleDate(date, 'en-CA');
+  saleReports.forEach(({ hashPower, amount, username, issuedAt }) => {
+    const formattedDate = formatDate(issuedAt);
 
     if (!salesGroupByDate[formattedDate]) {
       salesGroupByDate[formattedDate] = { hashPower: 0, amount: 0, member: {} };
@@ -40,8 +40,8 @@ export const getStatistics = async function (
 
   let totalHashPower: number = prevStatistic ? prevStatistic.totalHashPower : 0;
 
-  mineStats.forEach(({ date, newBlocks, totalBlocks }) => {
-    const formattedDate: string = toLocaleDate(date, 'en-CA');
+  mineStats.forEach(({ issuedAt, newBlocks, totalBlocks }) => {
+    const formattedDate: string = formatDate(issuedAt);
 
     if (!salesGroupByDate[formattedDate]) {
       salesGroupByDate[formattedDate] = { hashPower: 0, amount: 0, member: {} };
@@ -50,8 +50,8 @@ export const getStatistics = async function (
     totalHashPower += salesGroupByDate[formattedDate].hashPower;
 
     statistics.push({
-      issuedAt: date,
-      createdAt: date,
+      issuedAt,
+      createdAt: issuedAt,
       newBlocks,
       totalBlocks,
       newHashPower: salesGroupByDate[formattedDate].hashPower,
@@ -71,8 +71,8 @@ export const getUserStatistics = async function (
   const salesGroupByDate: Record<string, SaleReport> = getSalesGroupByDate(saleReports);
   const users: Record<string, string> = {};
 
-  await mineStats.forEach(async ({ date, newBlocks }) => {
-    const formattedDate: string = toLocaleDate(date, 'en-CA');
+  await mineStats.forEach(async ({ issuedAt, newBlocks }) => {
+    const formattedDate: string = formatDate(issuedAt);
 
     if (!salesGroupByDate[formattedDate]) {
       salesGroupByDate[formattedDate] = { hashPower: 0, amount: 0, member: {} };
@@ -88,8 +88,8 @@ export const getUserStatistics = async function (
 
       userStatistics.push({
         userId: users[username],
-        issuedAt: date,
-        createdAt: date,
+        issuedAt,
+        createdAt: issuedAt,
         txcShared: (newBlocks * hashPower * 254) / salesGroupByDate[formattedDate].hashPower,
         hashPower,
       });

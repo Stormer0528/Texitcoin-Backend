@@ -17,19 +17,18 @@ export interface SaleReport {
 
 export interface SaleReportInput {
   invoiceNo: number;
+  userId: string;
+  statisticsId: string;
   username: string;
-  mobile: string;
-  email: string;
   productName: string;
-  date: Date;
+  issuedAt: Date;
   paymentMethod: string;
   amount: number;
   hashPower: number;
-  assetId: string;
 }
 
 export interface MineStatInput {
-  date: Date;
+  issuedAt: Date;
   totalBlocks: number;
   newBlocks: number;
 }
