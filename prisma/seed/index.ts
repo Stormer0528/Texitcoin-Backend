@@ -1,18 +1,33 @@
-import { Prisma, PrismaClient } from '@prisma/client';
-import { statisticsData } from './statistics';
-import { saleData } from './sale';
-import { userData } from './user';
-import { userStatisticsData } from './userStatistics';
+import fs from 'fs';
+import { PrismaClient } from '@prisma/client';
+import { getSales } from '../../src/utils/connectMlm';
+import {
+  getUserFromMlm,
+  getStatisticsFromMlm,
+  getUserStatisticsFromMlm,
+} from '../../src/utils/getMlmData';
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log(`Start seeding ...`);
 
-  await prisma.statistics.createMany({ data: statisticsData });
-  await prisma.user.createMany({ data: userData });
-  await prisma.userStatistics.createMany({ data: userStatisticsData });
-  await prisma.sale.createMany({ data: saleData });
+  console.log('Connected to the MariaDB');
+
+  const [users, statistics] = await Promise.all([getUserFromMlm(), getStatisticsFromMlm()]);
+
+  await prisma.statistics.createMany({ data: statistics });
+  await prisma.user.createMany({ data: users, skipDuplicates: true });
+
+  const [sales] = await Promise.all([getSales()]);
+
+  // await prisma.userStatistics.createMany({ data: userStatistics });
+  await prisma.sale.createMany({ data: sales });
+
+  // const users = await getUserFromMlm();
+  // const statistics = await getStatisticsFromMlm();
+  // const sales = await getSales();
+  // const userStatistics = await getUserStatisticsFromMlm();
 
   console.log(`Seeding finished.`);
 }
