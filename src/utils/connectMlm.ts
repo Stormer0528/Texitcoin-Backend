@@ -1,7 +1,7 @@
 import { SaleReportInput } from '@/type';
 import { createConnection, Connection } from 'mysql2/promise';
 import { PrismaClient } from '@prisma/client';
-import { CreateUserInput } from '@/entity/user/user.type';
+import { CreateMemberInput } from '@/entity/member/member.type';
 import { formatDate } from './common';
 
 const prisma = new PrismaClient();
@@ -32,10 +32,10 @@ export const getSales = async () => {
 
   const data: SaleReportInput[] = rows as SaleReportInput[];
 
-  const users = await prisma.user.findMany();
+  const members = await prisma.member.findMany();
   const statistics = await prisma.statistics.findMany();
 
-  const userIds = users.reduce((prev, { id, username }) => ({ ...prev, [username]: id }), {});
+  const memberIds = members.reduce((prev, { id, username }) => ({ ...prev, [username]: id }), {});
   const statisticsIds = statistics.reduce(
     (prev, { id, issuedAt }) => ({
       ...prev,
@@ -52,7 +52,7 @@ export const getSales = async () => {
       }
 
       return {
-        userId: userIds[username],
+        memberId: memberIds[username],
         statisticsId,
         username,
         issuedAt,
@@ -68,14 +68,14 @@ export const getSales = async () => {
   return sales;
 };
 
-export const getUsers = async () => {
+export const getMembers = async () => {
   const connection: Connection = await connectToDatabase();
 
   const [rows] = await connection.execute(
     'SELECT username, CONCAT(first_name, " ", last_name) AS fullname, CONCAT("+", phone_code, " ", phone) AS mobile, email, password, primary_address AS address, asset_id AS assetId, TXCpayout AS txcPayout, blockio AS txcCold, join_date AS createdAt FROM txc_affiliate.mlm_login;'
   );
 
-  const users: CreateUserInput[] = rows as CreateUserInput[];
+  const members: CreateMemberInput[] = rows as CreateMemberInput[];
 
-  return users;
+  return members;
 };

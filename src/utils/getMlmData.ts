@@ -1,5 +1,5 @@
-import { processStatistics, processUserStatistics } from './importData';
-import { getUsers, getSales } from './connectMlm';
+import { processStatistics, processMemberStatistics } from './importData';
+import { getMembers, getSales } from './connectMlm';
 import { getBlockCount } from './getBlockCount';
 
 const issuedAt = new Date();
@@ -14,19 +14,19 @@ export const getStatisticsFromMlm = async () => {
   return statistics;
 };
 
-// get users from login on mlm
-export const getUserFromMlm = async () => {
-  const users = await getUsers();
+// get members from login on mlm
+export const getMemberFromMlm = async () => {
+  const members = await getMembers();
 
-  return users;
+  return members;
 };
 
-// get user_statistics from login, package and puchase_history on mlm
-export const getUserStatisticsFromMlm = async () => {
+// get member_statistics from login, package and puchase_history on mlm
+export const getMemberStatisticsFromMlm = async () => {
   const [newBlocks] = await Promise.all([getBlockCount()]);
   const sales = await getSales();
 
-  const userStatistics = await processUserStatistics(sales, { newBlocks, issuedAt });
+  const memberStatistics = await processMemberStatistics(sales, { newBlocks, issuedAt });
 
-  return userStatistics;
+  return memberStatistics;
 };

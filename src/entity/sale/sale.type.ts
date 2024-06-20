@@ -3,9 +3,6 @@ import { ObjectType, InputType, Field, ArgsType, ID } from 'type-graphql';
 
 import { PaginatedResponse } from '@/graphql/paginatedResponse';
 import { QueryArgsBase } from '@/graphql/queryArgs';
-
-import { User } from '@/entity/user/user.entity';
-// import { Statistics } from '@/entity/statistics/statistics.entity';
 import { Sale } from '@/entity/sale/sale.entity';
 
 // Sale Query Args
@@ -23,7 +20,7 @@ export class SalesResponse extends PaginatedResponse {
 @InputType()
 export class CreateSaleInput {
   @Field(() => ID)
-  userId: string;
+  memberId: string;
 
   @Field()
   username: string;

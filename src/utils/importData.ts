@@ -1,8 +1,7 @@
 import { MineStatInput, SaleReport, SaleReportInput } from '@/type';
 import { Statistics } from '@/entity/statistics/statistics.entity';
 import { formatDate } from './common';
-import { User } from '../entity/user/user.entity';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Member, Prisma, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -64,12 +63,12 @@ export const processStatistics = async function (
   return statistics;
 };
 
-export const processUserStatistics = async function (
+export const processMemberStatistics = async function (
   saleReports: SaleReportInput[],
   mineStats: MineStatInput
-): Promise<Prisma.UserStatisticsCreateManyInput[]> {
+): Promise<Prisma.MemberStatisticsCreateManyInput[]> {
   const { newBlocks, issuedAt } = mineStats;
-  const userStatistics: Prisma.UserStatisticsCreateManyInput[] = [];
+  const memberStatistics: Prisma.MemberStatisticsCreateManyInput[] = [];
   const salesGroupByDate: Record<string, SaleReport> = getSalesGroupByDate(saleReports);
   const users: Record<string, string> = {};
 
@@ -83,11 +82,11 @@ export const processUserStatistics = async function (
 
   Object.entries(members).forEach(async ([username, hashPower]) => {
     if (!users[username]) {
-      const user: User = await prisma.user.findUnique({ where: { username } });
+      const user: Member = await prisma.member.findUnique({ where: { username } });
       users[username] = user.username;
     }
 
-    userStatistics.push({
+    memberStatistics.push({
       username: users[username],
       issuedAt,
       createdAt: issuedAt,
@@ -96,5 +95,5 @@ export const processUserStatistics = async function (
     });
   });
 
-  return userStatistics;
+  return memberStatistics;
 };
