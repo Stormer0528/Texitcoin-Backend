@@ -25,6 +25,12 @@ export class Statistics extends BaseEntity {
   members?: number;
 
   @Field()
+  difficulty: number;
+
+  @Field()
+  hashRate: number;
+
+  @Field()
   issuedAt: Date;
 
   @Field(() => [Sale], { nullable: 'itemsAndList' })
