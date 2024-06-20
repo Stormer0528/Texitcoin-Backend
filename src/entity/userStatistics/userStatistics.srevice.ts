@@ -9,7 +9,7 @@ export class UserStatisticsService {
   constructor(
     @Inject(() => PrismaService)
     private readonly prisma: PrismaService
-  ) {}
+  ) { }
 
   async getUserStatistics(params: UserStatisticsQueryArgs) {
     return this.prisma.userStatistics.findMany({

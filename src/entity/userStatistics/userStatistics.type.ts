@@ -21,7 +21,7 @@ export class UserStatisticsResponse extends PaginatedResponse {
 @InputType()
 export class CreateUserStatisticsInput {
   @Field()
-  blocks: number;
+  txcShared: number;
 
   @Field()
   hashPower: number;
