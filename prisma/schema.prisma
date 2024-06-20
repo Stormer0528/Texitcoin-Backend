@@ -78,6 +78,8 @@ model Statistics {
   newHashPower   Int
   totalHashPower Int
   members        Int?
+  difficulty     Int
+  hashRate       Int
   issuedAt       DateTime @default(now()) @db.Timestamptz(6)
 
   createdAt DateTime  @default(now())
