@@ -29,6 +29,10 @@ export class Sale extends BaseEntity {
 
   @Field(() => User, { nullable: true })
   user?: User;
+
+  @Field()
+  username: string;
+
   @Field(() => ID)
   statisticsId: string;
 

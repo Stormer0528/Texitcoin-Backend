@@ -42,6 +42,7 @@ model User {
 model Sale {
   id            String      @id @default(uuid())
   userId        String
+  username      String
   statisticsId  String
   invoiceNo     Int         @default(0)
   productName   String      @db.VarChar
@@ -56,6 +57,7 @@ model Sale {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
+  @@index([username], map: "index_sales_on_username")
   @@index([userId], map: "index_sales_on_userId")
   @@index([statisticsId], map: "index_sales_on_statisticsId")
   @@map("sales")
