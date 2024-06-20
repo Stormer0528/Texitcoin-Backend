@@ -23,10 +23,10 @@ model User {
   password           String  @db.VarChar
   mobile             String  @db.VarChar
   assetId            String  @db.VarChar
-  commissionPayout   String  @db.VarChar
   txcPayout          String  @db.VarChar
   txcCold            String  @db.VarChar
   isAdmin            Boolean @default(false)
+  address            String  @db.VarChar
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
