@@ -82,7 +82,7 @@ export const getUserStatistics = async function (
         issuedAt: date,
         createdAt: date,
         txcShared: (newBlocks * hashPower * 254) / salesGroupByDate[formattedDate].hashPower,
-        hashPower: hashPower,
+        hashPower,
       });
     });
   });
