@@ -10,7 +10,7 @@ import { Sale } from '@/entity/sale/sale.entity';
 
 // Sale Query Args
 @ArgsType()
-export class SaleQueryArgs extends QueryArgsBase<Prisma.SaleWhereInput> {}
+export class SaleQueryArgs extends QueryArgsBase<Prisma.SaleWhereInput> { }
 
 // Sale list response with pagination ( total )
 @ObjectType()
@@ -22,6 +22,12 @@ export class SalesResponse extends PaginatedResponse {
 // Create Sale Input and Response
 @InputType()
 export class CreateSaleInput {
+  @Field(() => ID)
+  userId: string;
+
+  @Field(() => ID)
+  statisticsId: string;
+
   @Field()
   invoiceNo: number;
 
