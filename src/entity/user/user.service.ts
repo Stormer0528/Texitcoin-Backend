@@ -39,6 +39,14 @@ export class UserService {
     });
   }
 
+  async getUserByEmail(email: string) {
+    return this.prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
+  }
+
   async createUser(data: CreateUserInput & { password: string }) {
     return this.prisma.user.create({
       data,
