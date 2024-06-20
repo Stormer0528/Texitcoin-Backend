@@ -29,7 +29,7 @@ export interface SaleReportInput {
 
 export interface MineStatInput {
   issuedAt: Date;
-  totalBlocks: number;
+  totalBlocks?: number;
   newBlocks: number;
 }
 
