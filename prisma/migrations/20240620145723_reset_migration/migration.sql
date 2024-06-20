@@ -4,7 +4,7 @@ CREATE TABLE "users" (
     "username" VARCHAR NOT NULL,
     "email" VARCHAR NOT NULL,
     "password" VARCHAR NOT NULL,
-    "isAdmin" BOOLEAN NOT NULL,
+    "isAdmin" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -57,6 +57,8 @@ CREATE TABLE "statistics" (
     "newHashPower" INTEGER NOT NULL,
     "totalHashPower" INTEGER NOT NULL,
     "members" INTEGER,
+    "difficulty" INTEGER NOT NULL,
+    "hashRate" INTEGER NOT NULL,
     "issuedAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
