@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 const getSalesGroupByDate = function (saleReports: SaleReportInput[]): Record<string, SaleReport> {
   const salesGroupByDate: Record<string, SaleReport> = {};
 
-  saleReports.forEach(({ hashPower, amount, email, date }) => {
+  saleReports.forEach(({ hashPower, amount, username, date }) => {
     const formattedDate = toLocaleDate(date, 'en-CA');
 
     if (!salesGroupByDate[formattedDate]) {
@@ -18,8 +18,8 @@ const getSalesGroupByDate = function (saleReports: SaleReportInput[]): Record<st
 
     salesGroupByDate[formattedDate].hashPower += hashPower;
     salesGroupByDate[formattedDate].amount += amount;
-    salesGroupByDate[formattedDate].member[email] =
-      (salesGroupByDate[formattedDate].member[email] || 0) + hashPower;
+    salesGroupByDate[formattedDate].member[username] =
+      (salesGroupByDate[formattedDate].member[username] || 0) + hashPower;
   });
 
   return salesGroupByDate;
@@ -42,6 +42,10 @@ export const getStatistics = async function (
 
   mineStats.forEach(({ date, newBlocks, totalBlocks }) => {
     const formattedDate: string = toLocaleDate(date, 'en-CA');
+
+    if (!salesGroupByDate[formattedDate]) {
+      salesGroupByDate[formattedDate] = { hashPower: 0, amount: 0, member: {} };
+    }
 
     totalHashPower += salesGroupByDate[formattedDate].hashPower;
 
@@ -69,16 +73,21 @@ export const getUserStatistics = async function (
 
   await mineStats.forEach(async ({ date, newBlocks }) => {
     const formattedDate: string = toLocaleDate(date, 'en-CA');
+
+    if (!salesGroupByDate[formattedDate]) {
+      salesGroupByDate[formattedDate] = { hashPower: 0, amount: 0, member: {} };
+    }
+
     const members: Record<string, number> = salesGroupByDate[formattedDate].member;
 
-    Object.entries(members).forEach(async ([email, hashPower]) => {
-      if (!users[email]) {
-        const user: User = await prisma.user.findUnique({ where: { email } });
-        users[email] = user.id;
+    Object.entries(members).forEach(async ([username, hashPower]) => {
+      if (!users[username]) {
+        const user: User = await prisma.user.findUnique({ where: { username } });
+        users[username] = user.id;
       }
 
       userStatistics.push({
-        userId: users[email],
+        userId: users[username],
         issuedAt: date,
         createdAt: date,
         txcShared: (newBlocks * hashPower * 254) / salesGroupByDate[formattedDate].hashPower,
