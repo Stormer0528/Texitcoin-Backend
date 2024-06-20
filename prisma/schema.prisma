@@ -13,9 +13,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model User{
+  id       String  @id @default(uuid())
+  username String  @unique(map: "index_users_on_username") @db.VarChar
+  email    String  @unique(map: "index_users_on_email") @db.VarChar
+  password String  @db.VarChar
+  isAdmin  Boolean @db.Boolean @default(false)
+
+  @@map("users")
+}
+
+model Member {
   id                 String  @id @default(uuid())
-  username           String  @unique(map: "index_users_on_username") @db.VarChar
+  username           String  @unique(map: "index_members_on_username") @db.VarChar
   fullname           String  @db.VarChar
   sponsorName        String? @db.VarChar
   introducerFullName String? @db.VarChar
@@ -25,7 +35,6 @@ model User {
   assetId            String  @db.VarChar
   txcPayout          String  @db.VarChar
   txcCold            String  @db.VarChar
-  isAdmin            Boolean @default(false)
   address            String  @db.VarChar
 
   createdAt DateTime  @default(now())
@@ -35,12 +44,12 @@ model User {
   // Relations
   sales          Sale[]
 
-  @@map("users")
+  @@map("members")
 }
 
 model Sale {
   id            String      @id @default(uuid())
-  userId        String
+  memberId      String
   username      String
   statisticsId  String
   invoiceNo     Int         @default(0)
@@ -48,7 +57,7 @@ model Sale {
   paymentMethod String      @db.VarChar
   amount        Int
   hashPower     Int
-  user          User?       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  member          Member?       @relation(fields: [memberId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   statistics    Statistics? @relation(fields: [statisticsId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   issuedAt      DateTime    @default(now()) @db.Timestamptz(6)
 
@@ -57,7 +66,7 @@ model Sale {
   deletedAt DateTime?
 
   @@index([username], map: "index_sales_on_username")
-  @@index([userId], map: "index_sales_on_userId")
+  @@index([memberId], map: "index_sales_on_memberId")
   @@index([statisticsId], map: "index_sales_on_statisticsId")
   @@map("sales")
 }
@@ -81,9 +90,9 @@ model Statistics {
   @@map("statistics")
 }
 
-model UserStatistics {
+model MemberStatistics {
   id        String   @id @default(uuid())
-  username    String
+  username  String
   txcShared Float
   hashPower Int
   issuedAt  DateTime @default(now()) @db.Timestamptz(6)

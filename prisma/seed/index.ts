@@ -2,27 +2,28 @@ import { PrismaClient } from '@prisma/client';
 
 import { getSales } from '../../src/utils/connectMlm';
 import {
-  getUserFromMlm,
+  getMemberFromMlm,
   getStatisticsFromMlm,
-  getUserStatisticsFromMlm,
+  getMemberStatisticsFromMlm,
 } from '../../src/utils/getMlmData';
+import { userData } from './user';
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log(`Start seeding ...`);
 
-  await Promise.all([prisma.sale.deleteMany({}), prisma.user.deleteMany({})]);
-
-  const [users, statistics] = await Promise.all([getUserFromMlm(), getStatisticsFromMlm()]);
+  await Promise.all([prisma.sale.deleteMany({}), prisma.member.deleteMany({})]);
+  await prisma.user.createMany({ data: userData });
+  const [members, statistics] = await Promise.all([getMemberFromMlm(), getStatisticsFromMlm()]);
 
   await prisma.statistics.createMany({ data: statistics });
-  await prisma.user.createMany({ data: users, skipDuplicates: true });
+  await prisma.member.createMany({ data: members, skipDuplicates: true });
 
-  const [sales, userStatistics] = await Promise.all([getSales(), getUserStatisticsFromMlm()]);
+  const [sales, memberStatistics] = await Promise.all([getSales(), getMemberStatisticsFromMlm()]);
 
   await prisma.sale.createMany({ data: sales });
-  await prisma.userStatistics.createMany({ data: userStatistics });
+  await prisma.memberStatistics.createMany({ data: memberStatistics });
 
   console.log(`Seeding finished.`);
 }
