@@ -31,6 +31,7 @@ export interface MineStatInput {
   issuedAt: Date;
   totalBlocks?: number;
   newBlocks: number;
+  difficulty?: number;
 }
 
 export interface UserGroupPermission {
@@ -42,6 +43,11 @@ export interface UserGroupPermission {
   BankAccount: UserGroupRole;
   BatchUpload: UserGroupRole;
   ApprovalAmount: number;
+}
+
+export interface RPCCOMMAND {
+  method: string;
+  params: any[];
 }
 
 declare global {
