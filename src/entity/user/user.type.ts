@@ -35,6 +35,9 @@ export class CreateUserInput {
   introducerFullName: string;
 
   @Field()
+  address: string;
+
+  @Field()
   @IsEmail()
   email: string;
 
@@ -46,9 +49,6 @@ export class CreateUserInput {
 
   @Field()
   assetId: string;
-
-  @Field()
-  commissionPayout: string;
 
   @Field()
   txcPayout: string;
