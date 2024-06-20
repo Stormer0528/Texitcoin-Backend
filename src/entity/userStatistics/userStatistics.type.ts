@@ -21,6 +21,9 @@ export class UserStatisticsResponse extends PaginatedResponse {
 @InputType()
 export class CreateUserStatisticsInput {
   @Field()
+  username: string;
+
+  @Field()
   txcShared: number;
 
   @Field()
@@ -28,7 +31,4 @@ export class CreateUserStatisticsInput {
 
   @Field()
   issuedAt: Date;
-
-  // @Field(() => User, { nullable: 'itemsAndList' })
-  // user?: User;
 }
