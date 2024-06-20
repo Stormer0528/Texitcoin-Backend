@@ -35,9 +35,6 @@ export class User extends BaseEntity {
   assetId: string;
 
   @Field()
-  commissionPayout: string;
-
-  @Field()
   txcPayout: string;
 
   @Field()
@@ -45,6 +42,9 @@ export class User extends BaseEntity {
 
   @Field()
   isAdmin: boolean = false;
+
+  @Field()
+  address: string;
 
   @Field(() => [Sale], { nullable: 'itemsAndList' })
   sales?: Sale[];
