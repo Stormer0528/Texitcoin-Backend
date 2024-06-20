@@ -15,11 +15,11 @@ datasource db {
 
 model User {
   id                 String  @id @default(uuid())
-  username           String  @db.VarChar
+  username           String  @unique(map: "index_users_on_username") @db.VarChar
   fullname           String  @db.VarChar
   sponsorName        String? @db.VarChar
   introducerFullName String? @db.VarChar
-  email              String  @unique(map: "index_users_on_email") @db.VarChar
+  email              String  @db.VarChar
   password           String  @db.VarChar
   mobile             String  @db.VarChar
   assetId            String  @db.VarChar

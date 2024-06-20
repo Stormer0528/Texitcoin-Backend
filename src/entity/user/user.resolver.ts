@@ -117,7 +117,7 @@ export class UserResolver {
 
   @Mutation(() => LoginResponse)
   async login(@Arg('data') data: LoginInput): Promise<LoginResponse> {
-    const user = await this.service.getUserByEmail(data.email);
+    const user = await this.service.getUserByUsername(data.username);
 
     if (!user) {
       throw new Error('Invalid credentials are provided');
