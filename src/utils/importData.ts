@@ -28,7 +28,7 @@ export const processStatistics = async function (
   saleReports: SaleReportInput[],
   mineStats: MineStatInput
 ): Promise<Prisma.StatisticsCreateManyInput[]> {
-  const { newBlocks, issuedAt } = mineStats;
+  const { newBlocks, difficulty = 0, issuedAt } = mineStats;
   const statistics: Prisma.StatisticsCreateManyInput[] = [];
   const salesGroupByDate: Record<string, SaleReport> = getSalesGroupByDate(saleReports);
 
@@ -50,11 +50,15 @@ export const processStatistics = async function (
 
   totalHashPower += salesGroupByDate[formattedDate].hashPower;
 
+  const hashRate = Number(((difficulty * Math.pow(2, 32)) / 600 / Math.pow(10, 9)).toFixed(3));
+
   statistics.push({
     issuedAt: new Date(formattedDate),
     createdAt: issuedAt,
     newBlocks,
     totalBlocks,
+    difficulty,
+    hashRate,
     newHashPower: salesGroupByDate[formattedDate].hashPower,
     totalHashPower,
     members: Object.keys(salesGroupByDate[formattedDate].member).length,
