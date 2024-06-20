@@ -34,7 +34,6 @@ model User {
 
   // Relations
   sales          Sale[]
-  userstatistics UserStatistics[]
 
   @@map("users")
 }
@@ -84,7 +83,7 @@ model Statistics {
 
 model UserStatistics {
   id        String   @id @default(uuid())
-  userId    String
+  username    String
   txcShared Float
   hashPower Int
   issuedAt  DateTime @default(now()) @db.Timestamptz(6)
@@ -92,9 +91,7 @@ model UserStatistics {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
-  user      User?     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
-  @@index([userId], map: "index_user_statistics_on_userId")
   @@map("user_statistics")
 }
 
