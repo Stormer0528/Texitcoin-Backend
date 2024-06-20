@@ -4,7 +4,6 @@ import graphqlFields from 'graphql-fields';
 import { GraphQLResolveInfo } from 'graphql';
 
 import { UserRole } from '@/type';
-import { User } from '@/entity/user/user.entity';
 
 import { Sale } from './sale.entity';
 import { SalesResponse, SaleQueryArgs, CreateSaleInput } from './sale.type';
