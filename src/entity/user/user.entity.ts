@@ -1,8 +1,7 @@
-import { ObjectType, Field, ID, Authorized } from 'type-graphql';
+import { ObjectType, Field, ID } from 'type-graphql';
 import { IsEmail } from 'class-validator';
 
 import { BaseEntity } from '@/graphql/baseEntity';
-import { Sale } from '@/entity/sale/sale.entity';
 
 @ObjectType()
 export class User extends BaseEntity {
@@ -16,7 +15,6 @@ export class User extends BaseEntity {
   @IsEmail()
   email: string;
 
-  @Field()
   password?: string;
 
   @Field()
