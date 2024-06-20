@@ -1,25 +1,26 @@
 import fetch, { Headers } from 'node-fetch';
 
-export const getBlockCount = async () => {
+import { RPCCOMMAND } from '@/type';
+import { rpc_url, rpc_username, rpc_password } from 'src/consts';
+
+export const rpcCommand = async ({ method, params = [] }: RPCCOMMAND) => {
   try {
-    const url = 'http://127.0.0.1:15739/';
-    const username = 'texitcoin';
-    const password = 'texitcoin';
     const rpccommand = {
       jsonrpc: '1.0',
       id: 'curltest',
-      method: 'getblockcount',
-      params: [],
+      method,
+      params,
     };
 
     const headers = new Headers();
+
     headers.set(
       'Authorization',
-      'Basic ' + Buffer.from(`${username}:${password}`).toString('base64')
+      'Basic ' + Buffer.from(`${rpc_username}:${rpc_password}`).toString('base64')
     );
     headers.set('Content-Type', 'text/plain');
 
-    const response = await fetch(url, {
+    const response = await fetch(rpc_url, {
       method: 'POST',
       headers,
       body: JSON.stringify(rpccommand),
