@@ -14,43 +14,43 @@ datasource db {
 }
 
 model User {
-  id                  String @id @default(uuid())
-  username            String @db.VarChar
-  fullname            String @db.VarChar
-  sponsorName         String @db.VarChar
-  introducerFullName  String @db.VarChar
-  email               String @unique(map: "index_users_on_email") @db.VarChar
-  password            String @db.VarChar
-  mobile              String @db.VarChar
-  assetId             String @db.VarChar
-  commissionPayout    String @db.VarChar
-  txcPayout           String @db.VarChar
-  txcCold             String @db.VarChar
-  isAdmin             Boolean @default(false)
+  id                 String  @id @default(uuid())
+  username           String  @db.VarChar
+  fullname           String  @db.VarChar
+  sponsorName        String? @db.VarChar
+  introducerFullName String? @db.VarChar
+  email              String  @unique(map: "index_users_on_email") @db.VarChar
+  password           String  @db.VarChar
+  mobile             String  @db.VarChar
+  assetId            String  @db.VarChar
+  commissionPayout   String  @db.VarChar
+  txcPayout          String  @db.VarChar
+  txcCold            String  @db.VarChar
+  isAdmin            Boolean @default(false)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   // Relations
-  sales                Sale[]
-  userstatistics       UserStatistics[]
+  sales          Sale[]
+  userstatistics UserStatistics[]
 
   @@map("users")
 }
 
 model Sale {
-  id              String @id @default(uuid())
-  userId          String
-  statisticsId    String
-  invoiceNo       Int    @default(0)
-  productName     String @db.VarChar
-  paymentMethod   String @db.VarChar
-  amount          Int
-  hashPower       Int
-  user            User?   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  statistics      Statistics?   @relation(fields: [statisticsId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  issuedAt        DateTime  @default(now()) @db.Timestamptz(6)
+  id            String      @id @default(uuid())
+  userId        String
+  statisticsId  String
+  invoiceNo     Int         @default(0)
+  productName   String      @db.VarChar
+  paymentMethod String      @db.VarChar
+  amount        Int
+  hashPower     Int
+  user          User?       @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  statistics    Statistics? @relation(fields: [statisticsId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  issuedAt      DateTime    @default(now()) @db.Timestamptz(6)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -62,35 +62,35 @@ model Sale {
 }
 
 model Statistics {
-  id                String @id @default(uuid())
-  newBlocks         Int
-  totalBlocks       Int
-  newHashPower      Int
-  totalHashPower    Int
-  members           Int?
-  issuedAt          DateTime  @default(now()) @db.Timestamptz(6)
+  id             String   @id @default(uuid())
+  newBlocks      Int
+  totalBlocks    Int
+  newHashPower   Int
+  totalHashPower Int
+  members        Int?
+  issuedAt       DateTime @default(now()) @db.Timestamptz(6)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   // Relations
-  sales                Sale[]
+  sales Sale[]
 
   @@map("statistics")
 }
 
 model UserStatistics {
-  id          String @id @default(uuid())
-  userId      String
-  blocks      Int
-  hashPower   Int
-  issuedAt    DateTime  @default(now()) @db.Timestamptz(6)
+  id        String   @id @default(uuid())
+  userId    String
+  txcShared Float
+  hashPower Int
+  issuedAt  DateTime @default(now()) @db.Timestamptz(6)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
-  user           User?   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user      User?     @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   @@index([userId], map: "index_user_statistics_on_userId")
   @@map("user_statistics")
