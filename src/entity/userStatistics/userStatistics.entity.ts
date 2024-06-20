@@ -1,15 +1,14 @@
 import { ObjectType, Field, ID } from 'type-graphql';
 
 import { BaseEntity } from '@/graphql/baseEntity';
-import { User } from '@/entity/user/user.entity';
 
 @ObjectType()
 export class UserStatistics extends BaseEntity {
   @Field(() => ID)
   id: string;
 
-  @Field(() => ID)
-  userId: string;
+  @Field()
+  username: string;
 
   @Field()
   txcShared: number;
@@ -19,7 +18,4 @@ export class UserStatistics extends BaseEntity {
 
   @Field()
   issuedAt: Date;
-
-  @Field(() => User, { nullable: true })
-  user?: User;
 }
