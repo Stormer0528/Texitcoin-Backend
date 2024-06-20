@@ -14,8 +14,6 @@ import { formatError } from './formatError';
 import { UserResolver } from './entity/user/user.resolver';
 import { MemberResolver } from './entity/member/member.resolver';
 import { SaleResolver } from './entity/sale/sale.resolver';
-import { OrganizationResolver } from './entity/organization/organization.resolver';
-import { UserGroupResolver } from './entity/userGroup/userGroup.resolver';
 import { BigIntScalar } from './graphql/scalar/bigInt';
 import { StatisticsResolver } from './entity/statistics/statistics.resolver';
 import { MemberStatisticsResolver } from './entity/memberStatistics/memberStatistics.resolver';
