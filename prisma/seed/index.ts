@@ -1,5 +1,5 @@
-import fs from 'fs';
 import { PrismaClient } from '@prisma/client';
+
 import { getSales } from '../../src/utils/connectMlm';
 import {
   getUserFromMlm,
@@ -12,7 +12,7 @@ const prisma = new PrismaClient();
 async function main() {
   console.log(`Start seeding ...`);
 
-  console.log('Connected to the MariaDB');
+  await Promise.all([prisma.sale.deleteMany({}), prisma.user.deleteMany({})]);
 
   const [users, statistics] = await Promise.all([getUserFromMlm(), getStatisticsFromMlm()]);
 
