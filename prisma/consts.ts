@@ -18,4 +18,5 @@ export const STATISTICS = [
   '34f6ec8a-2d8f-11ef-8e57-00155dcc9782',
   '352803ba-2d8f-11ef-81db-00155dcc9782',
   '35479d24-2d8f-11ef-aa85-00155dcc9782',
+  'b92a55fe-2e7b-11ef-a50b-00155d2d52ac',
 ];
