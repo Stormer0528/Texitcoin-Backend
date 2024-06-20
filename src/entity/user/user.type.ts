@@ -26,18 +26,6 @@ export class CreateUserInput {
   username: string;
 
   @Field()
-  fullname: string;
-
-  @Field()
-  sponsorName?: string;
-
-  @Field()
-  introducerFullName?: string;
-
-  @Field()
-  address: string;
-
-  @Field()
   @IsEmail()
   email: string;
 
@@ -45,22 +33,7 @@ export class CreateUserInput {
   password: string;
 
   @Field()
-  mobile: string;
-
-  @Field()
-  assetId: string;
-
-  @Field()
-  txcPayout: string;
-
-  @Field()
-  txcCold: string;
-
-  @Field()
   isAdmin: boolean = false;
-
-  // @Field(() => [Sale], { nullable: 'itemsAndList' })
-  // sales?: Sale[];
 }
 
 @InputType()
@@ -96,7 +69,7 @@ export class UpdatePasswordInput {
 @InputType()
 export class LoginInput {
   @Field()
-  username: string;
+  email: string;
 
   @Field()
   password: string;

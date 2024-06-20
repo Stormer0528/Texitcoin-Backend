@@ -1,4 +1,4 @@
-export const USERS = [
+export const MEMBERS = [
   '33c9f352-2d8f-11ef-8b6e-00155dcc9782',
   '347d2058-2d8f-11ef-aabc-00155dcc9782',
   '814f0350-2d9a-11ef-b9ee-00155de6f1f4',
@@ -12,7 +12,10 @@ export const USERS = [
   'ace84c56-2d9a-11ef-8da6-00155de6f1f4',
   'b19c2de4-2d9a-11ef-9057-00155de6f1f4',
 ];
-
+export const USERS = [
+  'ac2a2a5a-2ed5-11ef-a85b-00155de6f317',
+  'aca8a9d4-2ed5-11ef-82b6-00155de6f317',
+];
 export const STATISTICS = [
   '34bcb1aa-2d8f-11ef-94f4-00155dcc9782',
   '34f6ec8a-2d8f-11ef-8e57-00155dcc9782',

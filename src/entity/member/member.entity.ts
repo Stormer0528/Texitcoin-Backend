@@ -5,12 +5,21 @@ import { BaseEntity } from '@/graphql/baseEntity';
 import { Sale } from '@/entity/sale/sale.entity';
 
 @ObjectType()
-export class User extends BaseEntity {
+export class Member extends BaseEntity {
   @Field(() => ID)
   id: string;
 
   @Field()
   username: string;
+
+  @Field()
+  fullname: string;
+
+  @Field()
+  sponsorName?: string;
+
+  @Field()
+  introducerFullName?: string;
 
   @Field()
   @IsEmail()
@@ -20,5 +29,20 @@ export class User extends BaseEntity {
   password?: string;
 
   @Field()
-  isAdmin: boolean = false;
+  mobile: string;
+
+  @Field()
+  assetId: string;
+
+  @Field()
+  txcPayout: string;
+
+  @Field()
+  txcCold: string;
+
+  @Field()
+  address: string;
+
+  @Field(() => [Sale], { nullable: 'itemsAndList' })
+  sales?: Sale[];
 }
