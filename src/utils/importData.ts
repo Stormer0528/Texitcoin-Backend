@@ -25,10 +25,11 @@ const getSalesGroupByDate = function (saleReports: SaleReportInput[]): Record<st
   return salesGroupByDate;
 };
 
-export const getStatistics = async function (
+export const processStatistics = async function (
   saleReports: SaleReportInput[],
-  mineStats: MineStatInput[]
+  mineStats: MineStatInput
 ): Promise<Prisma.StatisticsCreateManyInput[]> {
+  const { newBlocks, issuedAt } = mineStats;
   const statistics: Prisma.StatisticsCreateManyInput[] = [];
   const salesGroupByDate: Record<string, SaleReport> = getSalesGroupByDate(saleReports);
 
@@ -38,61 +39,60 @@ export const getStatistics = async function (
     },
   });
 
-  let totalHashPower: number = prevStatistic ? prevStatistic.totalHashPower : 0;
+  let { totalBlocks, totalHashPower } = prevStatistic
+    ? prevStatistic
+    : { totalBlocks: 0, totalHashPower: 0 };
 
-  mineStats.forEach(({ issuedAt, newBlocks, totalBlocks }) => {
-    const formattedDate: string = formatDate(issuedAt);
+  const formattedDate: string = formatDate(issuedAt);
 
-    if (!salesGroupByDate[formattedDate]) {
-      salesGroupByDate[formattedDate] = { hashPower: 0, amount: 0, member: {} };
-    }
+  if (!salesGroupByDate[formattedDate]) {
+    salesGroupByDate[formattedDate] = { hashPower: 0, amount: 0, member: {} };
+  }
 
-    totalHashPower += salesGroupByDate[formattedDate].hashPower;
+  totalHashPower += salesGroupByDate[formattedDate].hashPower;
 
-    statistics.push({
-      issuedAt,
-      createdAt: issuedAt,
-      newBlocks,
-      totalBlocks,
-      newHashPower: salesGroupByDate[formattedDate].hashPower,
-      totalHashPower,
-      members: Object.keys(salesGroupByDate[formattedDate].member).length,
-    });
+  statistics.push({
+    issuedAt: new Date(formattedDate),
+    createdAt: issuedAt,
+    newBlocks,
+    totalBlocks,
+    newHashPower: salesGroupByDate[formattedDate].hashPower,
+    totalHashPower,
+    members: Object.keys(salesGroupByDate[formattedDate].member).length,
   });
 
   return statistics;
 };
 
-export const getUserStatistics = async function (
+export const processUserStatistics = async function (
   saleReports: SaleReportInput[],
-  mineStats: MineStatInput[]
+  mineStats: MineStatInput
 ): Promise<Prisma.UserStatisticsCreateManyInput[]> {
+  const { newBlocks, issuedAt } = mineStats;
   const userStatistics: Prisma.UserStatisticsCreateManyInput[] = [];
   const salesGroupByDate: Record<string, SaleReport> = getSalesGroupByDate(saleReports);
   const users: Record<string, string> = {};
 
-  await mineStats.forEach(async ({ issuedAt, newBlocks }) => {
-    const formattedDate: string = formatDate(issuedAt);
+  const formattedDate: string = formatDate(issuedAt);
 
-    if (!salesGroupByDate[formattedDate]) {
-      salesGroupByDate[formattedDate] = { hashPower: 0, amount: 0, member: {} };
+  if (!salesGroupByDate[formattedDate]) {
+    salesGroupByDate[formattedDate] = { hashPower: 0, amount: 0, member: {} };
+  }
+
+  const members: Record<string, number> = salesGroupByDate[formattedDate].member;
+
+  Object.entries(members).forEach(async ([username, hashPower]) => {
+    if (!users[username]) {
+      const user: User = await prisma.user.findUnique({ where: { username } });
+      users[username] = user.username;
     }
 
-    const members: Record<string, number> = salesGroupByDate[formattedDate].member;
-
-    Object.entries(members).forEach(async ([username, hashPower]) => {
-      if (!users[username]) {
-        const user: User = await prisma.user.findUnique({ where: { username } });
-        users[username] = user.id;
-      }
-
-      userStatistics.push({
-        userId: users[username],
-        issuedAt,
-        createdAt: issuedAt,
-        txcShared: (newBlocks * hashPower * 254) / salesGroupByDate[formattedDate].hashPower,
-        hashPower,
-      });
+    userStatistics.push({
+      username: users[username],
+      issuedAt,
+      createdAt: issuedAt,
+      txcShared: (newBlocks * hashPower * 254) / salesGroupByDate[formattedDate].hashPower,
+      hashPower,
     });
   });
 
