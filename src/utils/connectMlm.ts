@@ -17,6 +17,12 @@ async function connectToDatabase(): Promise<Connection> {
   return connection;
 }
 
+export const getStatistics = async () => {
+  const statistics = await prisma.statistics.findMany();
+
+  return statistics;
+};
+
 export const getSales = async () => {
   const connection: Connection = await connectToDatabase();
 
