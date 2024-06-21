@@ -36,12 +36,6 @@ export class CreateStatisticsInput {
   members?: number;
 
   @Field()
-  difficulty: number;
-
-  @Field()
-  hashRate: number;
-
-  @Field()
   status: boolean;
 
   @Field()
