@@ -23,7 +23,7 @@ export class MemberResolver {
 
   @Authorized()
   @Query(() => MembersResponse)
-  async members(
+  async fetchMembers(
     @Args() query: MemberQueryArgs,
     @Info() info: GraphQLResolveInfo
   ): Promise<MembersResponse> {

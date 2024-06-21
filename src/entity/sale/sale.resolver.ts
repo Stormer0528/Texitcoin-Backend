@@ -15,7 +15,7 @@ export class SaleResolver {
   constructor(private readonly service: SaleService) {}
 
   @Query(() => SalesResponse)
-  async sales(
+  async fetchSales(
     @Args() query: SaleQueryArgs,
     @Info() info: GraphQLResolveInfo
   ): Promise<SalesResponse> {
