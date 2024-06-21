@@ -81,6 +81,18 @@ CREATE TABLE "user_statistics" (
     CONSTRAINT "user_statistics_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "block" (
+    "id" TEXT NOT NULL,
+    "hashRate" DOUBLE PRECISION NOT NULL,
+    "difficulty" DOUBLE PRECISION NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
+
+    CONSTRAINT "block_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "index_users_on_username" ON "users"("username");
 
