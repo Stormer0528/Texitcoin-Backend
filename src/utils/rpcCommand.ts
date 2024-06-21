@@ -1,13 +1,14 @@
-import fetch, { Headers } from 'node-fetch';
-
 import { RPCCOMMAND } from '@/type';
-import { rpc_url, rpc_username, rpc_password } from 'src/consts';
 
 export const rpcCommand = async ({ method, params = [] }: RPCCOMMAND) => {
   try {
+    const url = process.env.RPC_URL;
+    const username = process.env.RPC_USERNAME;
+    const password = process.env.RPC_PASSWORD;
+
     const rpccommand = {
       jsonrpc: '1.0',
-      id: 'curltest',
+      id: 'block_info',
       method,
       params,
     };
@@ -16,11 +17,11 @@ export const rpcCommand = async ({ method, params = [] }: RPCCOMMAND) => {
 
     headers.set(
       'Authorization',
-      'Basic ' + Buffer.from(`${rpc_username}:${rpc_password}`).toString('base64')
+      'Basic ' + Buffer.from(`${username}:${password}`).toString('base64')
     );
     headers.set('Content-Type', 'text/plain');
 
-    const response = await fetch(rpc_url, {
+    const response = await fetch(url, {
       method: 'POST',
       headers,
       body: JSON.stringify(rpccommand),
@@ -30,9 +31,9 @@ export const rpcCommand = async ({ method, params = [] }: RPCCOMMAND) => {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    const { value } = await response.json();
+    const { result }: any = await response.json();
 
-    return value;
+    return result;
   } catch (error) {
     console.log('error => ', error);
   }
