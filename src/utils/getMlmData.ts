@@ -1,7 +1,7 @@
 import { rpcCommand } from './rpcCommand';
 import { getMembers, getSales } from './connectMlm';
 import { GET_BLOCK_COUNT, GET_DIFFICULTY } from 'src/consts';
-import { processStatistics, processMemberStatistics } from './importData';
+import { processStatistics, processMemberStatistics } from './processData';
 
 const issuedAt = new Date();
 
@@ -13,7 +13,7 @@ export const getStatisticsFromMlm = async () => {
 
   const sales = await getSales();
 
-  const statistics = await processStatistics(sales, { newBlocks, difficulty, issuedAt });
+  const statistics = await processStatistics(sales);
 
   return statistics;
 };
