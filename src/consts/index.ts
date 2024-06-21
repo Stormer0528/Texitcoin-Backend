@@ -17,5 +17,7 @@ export const rpc_url = process.env.RPC_URL;
 export const rpc_username = process.env.RPC_USERNAME;
 export const rpc_password = process.env.RPC_PASSWORD;
 
-export const GET_BLOCK_COUNT = 'getblockcount';
+export const GET_BLOCK = 'getblock';
+export const GET_BLOCK_HASH = 'getblockhash';
 export const GET_DIFFICULTY = 'getdifficulty';
+export const GET_BLOCK_COUNT = 'getblockcount';
