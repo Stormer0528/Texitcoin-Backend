@@ -25,9 +25,6 @@ export class CreateSaleInput {
   @Field()
   username: string;
 
-  @Field(() => ID)
-  statisticsId: string;
-
   @Field()
   invoiceNo: number;
 
@@ -45,10 +42,4 @@ export class CreateSaleInput {
 
   @Field()
   issuedAt: Date;
-
-  // @Field(() => Statistics)
-  // statistics: Statistics;
-
-  // @Field(() => User, { nullable: 'itemsAndList' })
-  // user?: User;
 }
