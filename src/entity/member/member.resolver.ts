@@ -4,7 +4,7 @@ import graphqlFields from 'graphql-fields';
 import { GraphQLResolveInfo } from 'graphql';
 
 import { type Context } from '@/context';
-import { UserRole } from '@/type';
+import { GroupedByCreatedAt, UserRole } from '@/type';
 import { hashPassword } from '@/utils/auth';
 
 import { Member } from './member.entity';
@@ -13,6 +13,8 @@ import {
   MemberQueryArgs,
   CreateMemberInput,
   UpdateMemberInput,
+  MemberIncreaseRate,
+  MemberIncreaseRatesResponse,
 } from './member.type';
 import { MemberService } from './member.service';
 
@@ -42,6 +44,41 @@ export class MemberResolver {
     const result = await Promise.all(Object.entries(promises));
 
     let response: { total?: number; members?: Member[] } = {};
+
+    for (let [key, value] of result) {
+      response[key] = value;
+    }
+
+    return response;
+  }
+
+  @Authorized()
+  @Query(() => MemberIncreaseRatesResponse)
+  async fetchMembersGroupByDate(
+    @Args() query: MemberQueryArgs,
+    @Info() info: GraphQLResolveInfo
+  ): Promise<MemberIncreaseRatesResponse> {
+    const fields = graphqlFields(info);
+
+    let promises: { total?: Promise<number>; rates?: Promise<MemberIncreaseRate[]> } = {};
+
+    if ('total' in fields) {
+      promises.total = this.service.getGroupsCountByDate(query);
+    }
+
+    if ('rates' in fields) {
+      promises.rates = this.service
+        .getMembersGroupByDate(query)
+        .then((totalGroups: GroupedByCreatedAt[]) =>
+          totalGroups.map(({ createdAt, _count: { _all: count } }: GroupedByCreatedAt) => {
+            return { date: createdAt.toISOString().split('T')[0], count };
+          })
+        );
+    }
+
+    const result = await Promise.all(Object.entries(promises));
+
+    let response: MemberIncreaseRatesResponse = {};
 
     for (let [key, value] of result) {
       response[key] = value;
