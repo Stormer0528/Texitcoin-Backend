@@ -1,3 +1,4 @@
+import fetch, { Headers } from 'node-fetch';
 import { RPCCOMMAND } from '@/type';
 
 export const rpcCommand = async ({ method, params = [] }: RPCCOMMAND) => {
