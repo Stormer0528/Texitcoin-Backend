@@ -123,5 +123,5 @@ model Block{
   deletedAt DateTime?
 
   @@index([blockNo], map: "index_blocks_on_block_number")
-  @@map("block")
+  @@map("blocks")
 }
