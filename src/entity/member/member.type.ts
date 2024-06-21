@@ -6,7 +6,6 @@ import { PaginatedResponse } from '@/graphql/paginatedResponse';
 import { QueryArgsBase } from '@/graphql/queryArgs';
 
 import { Member } from '@/entity/member/member.entity';
-import { Sale } from '@/entity/sale/sale.entity';
 
 // Member Query Args
 @ArgsType()
@@ -17,6 +16,20 @@ export class MemberQueryArgs extends QueryArgsBase<Prisma.MemberWhereInput> {}
 export class MembersResponse extends PaginatedResponse {
   @Field(() => [Member], { nullable: 'itemsAndList' })
   members?: Member[];
+}
+
+@ObjectType()
+export class MemberIncreaseRatesResponse extends PaginatedResponse {
+  @Field(() => [MemberIncreaseRate], { nullable: 'itemsAndList' })
+  rates?: MemberIncreaseRate[];
+}
+
+@ObjectType()
+export class MemberIncreaseRate {
+  @Field()
+  date: string;
+  @Field()
+  count: number;
 }
 
 // Create Member Input and Response
