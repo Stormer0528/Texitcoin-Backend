@@ -25,6 +25,13 @@ export interface SaleReportInput {
   hashPower: number;
 }
 
+export interface GroupedByCreatedAt {
+  createdAt: Date;
+  _count: {
+    _all: number;
+  };
+}
+
 export interface MineStatInput {
   issuedAt: Date;
   totalBlocks?: number;
