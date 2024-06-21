@@ -1,6 +1,7 @@
 import { ObjectType, Field, ID } from 'type-graphql';
 
 import { BaseEntity } from '@/graphql/baseEntity';
+import { Member, Statistics } from '@prisma/client';
 
 @ObjectType()
 export class MemberStatistics extends BaseEntity {
@@ -8,7 +9,10 @@ export class MemberStatistics extends BaseEntity {
   id: string;
 
   @Field()
-  username: string;
+  memberId: string;
+
+  @Field()
+  statisticsId: string;
 
   @Field()
   txcShared: number;
@@ -17,5 +21,14 @@ export class MemberStatistics extends BaseEntity {
   hashPower: number;
 
   @Field()
+  percent: number;
+
+  @Field()
   issuedAt: Date;
+
+  @Field()
+  member?: Member;
+
+  @Field()
+  statistics?: Statistics;
 }

@@ -3,6 +3,7 @@ import { IsEmail } from 'class-validator';
 
 import { BaseEntity } from '@/graphql/baseEntity';
 import { Sale } from '@/entity/sale/sale.entity';
+import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
 
 @ObjectType()
 export class Member extends BaseEntity {
@@ -45,4 +46,7 @@ export class Member extends BaseEntity {
 
   @Field(() => [Sale], { nullable: 'itemsAndList' })
   sales?: Sale[];
+
+  @Field(() => [MemberStatistics], { nullable: 'itemsAndList' })
+  statistics?: MemberStatistics[];
 }
