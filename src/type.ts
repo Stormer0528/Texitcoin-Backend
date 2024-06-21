@@ -47,7 +47,7 @@ export interface UserGroupPermission {
 
 export interface RPCCOMMAND {
   method: string;
-  params: any[];
+  params?: any[];
 }
 
 declare global {
