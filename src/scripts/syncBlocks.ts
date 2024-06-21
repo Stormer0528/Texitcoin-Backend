@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 
 const getBlockCountFromDatabase = async () => {
   try {
-    const block = await prisma.block.findFirst({ orderBy: { createdAt: 'desc' } });
+    const block = await prisma.block.findFirst({ orderBy: { blockNo: 'desc' } });
 
     return block ? block.blockNo : 0;
   } catch (err) {
