@@ -15,7 +15,7 @@ export class StatisticsResolver {
   constructor(private readonly service: StatisticsService) {}
 
   @Query(() => StatisticsResponse)
-  async statistics(
+  async fetchStatistics(
     @Args() query: StatisticsQueryArgs,
     @Info() info: GraphQLResolveInfo
   ): Promise<StatisticsResponse> {

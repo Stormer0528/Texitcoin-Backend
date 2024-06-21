@@ -17,7 +17,7 @@ export class BlockResolver {
 
   @Authorized([UserRole.Admin])
   @Query(() => BlocksResponse)
-  async blocks(
+  async fetchBlocks(
     @Args() query: BlockQueryArgs,
     @Info() info: GraphQLResolveInfo
   ): Promise<BlocksResponse> {
