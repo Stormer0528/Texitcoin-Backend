@@ -76,8 +76,6 @@ model Statistics {
   newHashPower   Int
   totalHashPower Int
   members        Int?
-  difficulty     Int
-  hashRate       Int
   status         Boolean @default(false)
 
   issuedAt DateTime @default(now())
