@@ -42,5 +42,14 @@ export class CreateStatisticsInput {
   hashRate: number;
 
   @Field()
+  status: boolean;
+
+  @Field()
   issuedAt: Date;
+
+  @Field()
+  from: Date;
+
+  @Field()
+  to: Date;
 }

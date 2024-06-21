@@ -13,7 +13,6 @@ export class StatisticsService {
 
   async getStatistics(params: StatisticsQueryArgs) {
     return this.prisma.statistics.findMany({
-      include: { sales: true },
       where: params.where,
       orderBy: params.orderBy,
       ...params.parsePage,
