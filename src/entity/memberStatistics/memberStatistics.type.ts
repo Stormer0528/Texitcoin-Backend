@@ -21,13 +21,19 @@ export class MemberStatisticsResponse extends PaginatedResponse {
 @InputType()
 export class CreateMemberStatisticsInput {
   @Field()
-  username: string;
+  memberId: string;
+
+  @Field()
+  statisticsId: string;
 
   @Field()
   txcShared: number;
 
   @Field()
   hashPower: number;
+
+  @Field()
+  percent: number;
 
   @Field()
   issuedAt: Date;
