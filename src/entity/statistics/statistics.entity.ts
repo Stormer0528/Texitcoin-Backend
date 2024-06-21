@@ -26,12 +26,6 @@ export class Statistics extends BaseEntity {
   members?: number;
 
   @Field()
-  difficulty: number;
-
-  @Field()
-  hashRate: number;
-
-  @Field()
   status: boolean = false;
 
   @Field()
