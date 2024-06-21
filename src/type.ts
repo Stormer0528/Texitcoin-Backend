@@ -11,8 +11,7 @@ enum UserGroupRole {
 
 export interface SaleReport {
   hashPower: number;
-  amount: number;
-  member: Record<string, number>;
+  members: object;
 }
 
 export interface SaleReportInput {
@@ -30,6 +29,7 @@ export interface SaleReportInput {
 export interface MineStatInput {
   issuedAt: Date;
   totalBlocks?: number;
+  totalHashPower?: number;
   newBlocks: number;
   difficulty?: number;
 }
