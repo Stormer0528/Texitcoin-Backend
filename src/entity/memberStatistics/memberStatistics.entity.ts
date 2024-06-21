@@ -1,7 +1,8 @@
 import { ObjectType, Field, ID } from 'type-graphql';
 
 import { BaseEntity } from '@/graphql/baseEntity';
-import { Member, Statistics } from '@prisma/client';
+import { Member } from '../member/member.entity';
+import { Statistics } from '../statistics/statistics.entity';
 
 @ObjectType()
 export class MemberStatistics extends BaseEntity {
@@ -26,9 +27,9 @@ export class MemberStatistics extends BaseEntity {
   @Field()
   issuedAt: Date;
 
-  @Field()
+  @Field(() => Member, { nullable: true })
   member?: Member;
 
-  @Field()
+  @Field(() => Statistics, { nullable: true })
   statistics?: Statistics;
 }
