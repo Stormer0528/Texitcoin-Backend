@@ -12,7 +12,7 @@ export class SaleService {
   ) {}
   async getSales(params: SaleQueryArgs) {
     const allItems = await this.prisma.sale.findMany({
-      include: { member: true, statistics: true },
+      include: { member: true },
       where: params.where,
       orderBy: params.orderBy,
       ...params.parsePage,
@@ -21,7 +21,7 @@ export class SaleService {
   }
   async getSalesGroupByDate(params: SaleQueryArgs) {
     const allItems = await this.prisma.sale.findMany({
-      include: { member: true, statistics: true },
+      include: { member: true },
       where: params.where,
       orderBy: params.orderBy,
       ...params.parsePage,
