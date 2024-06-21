@@ -29,6 +29,7 @@ model Member {
   fullname           String  @db.VarChar
   sponsorName        String? @db.VarChar
   introducerFullName String? @db.VarChar
+  userId             Int     @unique(map: "index_users_on_userId") @db.Integer
   email              String  @db.VarChar
   password           String  @db.VarChar
   mobile             String  @db.VarChar
