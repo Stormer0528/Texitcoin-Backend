@@ -42,6 +42,9 @@ export class CreateMemberInput {
   email: string;
 
   @Field()
+  userId: number;
+
+  @Field()
   password: string;
 
   @Field()
