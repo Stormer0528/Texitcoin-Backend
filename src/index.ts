@@ -17,6 +17,7 @@ import { SaleResolver } from './entity/sale/sale.resolver';
 import { BigIntScalar } from './graphql/scalar/bigInt';
 import { StatisticsResolver } from './entity/statistics/statistics.resolver';
 import { MemberStatisticsResolver } from './entity/memberStatistics/memberStatistics.resolver';
+import { BlockResolver } from './entity/block/block.resolver';
 
 // import "./env";
 
@@ -28,6 +29,7 @@ const app = async () => {
       SaleResolver,
       StatisticsResolver,
       MemberStatisticsResolver,
+      BlockResolver,
     ],
     authChecker,
     scalarsMap: [
