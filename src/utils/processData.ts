@@ -28,11 +28,9 @@ export const processStatistics = async function (saleReports: SaleReportInput[])
 export const processMemberStatistics = async function (saleReports: SaleReportInput[]) {
   const sales: SaleReport = formatGroupByDate(saleReports);
 
-  const statistics = await prisma.statistics.findFirst({
+  const { id, issuedAt, newBlocks, newHashPower } = await prisma.statistics.findFirst({
     orderBy: { issuedAt: 'desc' },
   });
-
-  const { id, issuedAt, newBlocks, newHashPower } = statistics;
 
   const membersData = await prisma.member.findMany({
     where: { username: { in: Object.keys(sales.members) } },
