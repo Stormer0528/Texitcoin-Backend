@@ -19,21 +19,6 @@ export const formatError = (
           path: ['email'],
         };
       }
-
-      if (modelName === 'Organization') {
-        if ((target as string[]).includes('name')) {
-          return {
-            message: 'Organization name already exists',
-            path: ['name'],
-          };
-        }
-        if ((target as string[]).includes('slug')) {
-          return {
-            message: 'Organization slug already exists',
-            path: ['slug'],
-          };
-        }
-      }
     }
   }
   return formattedError;
