@@ -15,7 +15,6 @@ import { BlockService } from './block.service';
 export class BlockResolver {
   constructor(private readonly service: BlockService) {}
 
-  @Authorized([UserRole.Admin])
   @Query(() => BlocksResponse)
   async fetchBlocks(
     @Args() query: BlockQueryArgs,
