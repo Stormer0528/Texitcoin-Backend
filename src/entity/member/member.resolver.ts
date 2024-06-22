@@ -23,7 +23,6 @@ import { MemberService } from './member.service';
 export class MemberResolver {
   constructor(private readonly service: MemberService) {}
 
-  @Authorized()
   @Query(() => MembersResponse)
   async fetchMembers(
     @Args() query: MemberQueryArgs,
