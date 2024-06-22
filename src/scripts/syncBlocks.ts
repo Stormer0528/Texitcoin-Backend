@@ -9,7 +9,7 @@ const getBlockCountFromDatabase = async () => {
   try {
     const block = await prisma.block.findFirst({ orderBy: { blockNo: 'desc' } });
 
-    return block ? block.blockNo : 0;
+    return block?.blockNo ?? 0;
   } catch (err) {
     console.log('error => ', err);
   }
@@ -27,7 +27,7 @@ const createBlocks = async (data) => {
   }
 };
 
-export const syncBlocks = async () => {
+async function syncBlocks() {
   try {
     console.log('Syncing block');
     console.log('Connecting to PostgreSQL database');
@@ -64,4 +64,6 @@ export const syncBlocks = async () => {
   } catch (err) {
     console.log('error => ', err);
   }
-};
+}
+
+syncBlocks();
