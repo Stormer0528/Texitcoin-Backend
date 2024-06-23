@@ -79,7 +79,7 @@ model Statistics {
   members        Int?
   status         Boolean @default(false)
 
-  issuedAt DateTime @unique(map: "index_statistics_on_issuedAt") @default(now()) 
+  issuedAt DateTime @default(now()) 
   from     DateTime
   to       DateTime
 
