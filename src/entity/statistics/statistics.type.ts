@@ -35,8 +35,8 @@ export class CreateStatisticsInput {
   @Field()
   members?: number;
 
-  @Field()
-  status: boolean;
+  @Field({ nullable: true })
+  status: boolean = false;
 
   @Field()
   issuedAt: Date;
