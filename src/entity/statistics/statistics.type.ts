@@ -47,3 +47,17 @@ export class CreateStatisticsInput {
   @Field()
   to: Date;
 }
+
+@ObjectType()
+export class StatisticsConfirmResult {
+  @Field()
+  txcCold: string;
+  @Field()
+  txcShared: number;
+}
+
+@ObjectType()
+export class StatisticsConfirmResponse {
+  @Field(() => [StatisticsConfirmResult])
+  results: StatisticsConfirmResult[];
+}
