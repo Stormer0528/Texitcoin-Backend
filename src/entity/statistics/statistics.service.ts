@@ -13,6 +13,13 @@ export class StatisticsService {
 
   async getStatistics(params: StatisticsQueryArgs) {
     return this.prisma.statistics.findMany({
+      include: {
+        memberStatistics: {
+          include: {
+            member: true,
+          },
+        },
+      },
       where: params.where,
       orderBy: params.orderBy,
       ...params.parsePage,
