@@ -24,7 +24,7 @@ export class MemberResolver {
   constructor(private readonly service: MemberService) {}
 
   @Query(() => MembersResponse)
-  async fetchMembers(
+  async members(
     @Args() query: MemberQueryArgs,
     @Info() info: GraphQLResolveInfo
   ): Promise<MembersResponse> {
@@ -51,9 +51,8 @@ export class MemberResolver {
     return response;
   }
 
-  @Authorized()
   @Query(() => MemberIncreaseRatesResponse)
-  async fetchMembersGroupByDate(
+  async membersGroupByDate(
     @Args() query: MemberQueryArgs,
     @Info() info: GraphQLResolveInfo
   ): Promise<MemberIncreaseRatesResponse> {

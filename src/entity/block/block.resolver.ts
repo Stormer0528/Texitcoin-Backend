@@ -16,7 +16,7 @@ export class BlockResolver {
   constructor(private readonly service: BlockService) {}
 
   @Query(() => BlocksResponse)
-  async fetchBlocks(
+  async blocks(
     @Args() query: BlockQueryArgs,
     @Info() info: GraphQLResolveInfo
   ): Promise<BlocksResponse> {
