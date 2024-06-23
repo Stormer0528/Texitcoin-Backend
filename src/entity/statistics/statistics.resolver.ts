@@ -6,8 +6,16 @@ import { GraphQLResolveInfo } from 'graphql';
 import { UserRole } from '@/type';
 
 import { Statistics } from './statistics.entity';
-import { StatisticsResponse, StatisticsQueryArgs, CreateStatisticsInput } from './statistics.type';
+import {
+  StatisticsResponse,
+  StatisticsQueryArgs,
+  CreateStatisticsInput,
+  StatisticsConfirmResponse,
+  StatisticsConfirmResult,
+} from './statistics.type';
 import { StatisticsService } from './statistics.service';
+import { formatDate } from '@/utils/common';
+import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
 
 @Service()
 @Resolver(() => Statistics)
@@ -42,5 +50,21 @@ export class StatisticsResolver {
   @Mutation(() => Statistics)
   async createStatistics(@Arg('data') data: CreateStatisticsInput): Promise<Statistics> {
     return this.service.createStatistics({ ...data });
+  }
+
+  @Authorized([UserRole.Admin])
+  @Mutation(() => StatisticsConfirmResponse)
+  async confirmStatistics(): Promise<StatisticsConfirmResponse> {
+    const today = new Date(formatDate(new Date()));
+    const updatedStatistics: Statistics = await this.service.updateStatistics(today);
+    const results: StatisticsConfirmResult[] = updatedStatistics.memberStatistics.map(
+      ({ member: { txcCold }, txcShared }) => {
+        return {
+          txcCold,
+          txcShared,
+        };
+      }
+    );
+    return { results };
   }
 }
