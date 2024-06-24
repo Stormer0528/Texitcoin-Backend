@@ -103,7 +103,7 @@ model MemberStatistics {
   issuedAt     DateTime @default(now())
 
   member Member @relation(fields: [memberId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  statistic Statistics @relation(fields: [statisticsId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  statistics Statistics @relation(fields: [statisticsId], references: [id], onDelete: NoAction, onUpdate: NoAction)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
