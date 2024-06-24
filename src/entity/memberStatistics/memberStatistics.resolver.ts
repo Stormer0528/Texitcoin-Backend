@@ -11,7 +11,7 @@ import {
   MemberStatisticsQueryArgs,
   CreateMemberStatisticsInput,
 } from './memberStatistics.type';
-import { MemberStatisticsService } from './memberStatistics.srevice';
+import { MemberStatisticsService } from './memberStatistics.service';
 
 @Service()
 @Resolver(() => MemberStatistics)
