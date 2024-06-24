@@ -5,15 +5,12 @@ import { PrismaClient, User } from '@prisma/client';
 
 import { verifyToken } from '@/utils/auth';
 
-import RootDataLoader from '@/graphql/loader';
-
 const prisma = new PrismaClient({ log: ['query'] });
 
 export interface Context {
   user?: User;
   prisma: PrismaClient;
   req: IncomingMessage;
-  dataLoader: RootDataLoader;
 }
 
 export const context: ContextFunction<[StandaloneServerContextFunctionArgument], Context> = async ({
@@ -31,6 +28,5 @@ export const context: ContextFunction<[StandaloneServerContextFunctionArgument],
     user,
     req,
     prisma,
-    dataLoader: new RootDataLoader(prisma, {}),
   };
 };
