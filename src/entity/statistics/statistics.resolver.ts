@@ -10,12 +10,13 @@ import {
   StatisticsResponse,
   StatisticsQueryArgs,
   CreateStatisticsInput,
-  StatisticsConfirmResponse,
-  StatisticsConfirmResult,
+  ConfirmStatistics,
+  PendingStatisticsResponse,
+  PendingStatistics,
+  Status,
 } from './statistics.type';
 import { StatisticsService } from './statistics.service';
-import { formatDate } from '@/utils/common';
-import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
+import { today } from '@/utils/common';
 
 @Service()
 @Resolver(() => Statistics)
@@ -52,12 +53,11 @@ export class StatisticsResolver {
     return this.service.createStatistics({ ...data });
   }
 
-  @Authorized([UserRole.Admin])
-  @Mutation(() => StatisticsConfirmResponse)
-  async confirmStatistics(): Promise<StatisticsConfirmResponse> {
-    const today = new Date(formatDate(new Date()));
-    const updatedStatistics: Statistics = await this.service.updateStatistics(today);
-    const results: StatisticsConfirmResult[] = updatedStatistics.memberStatistics.map(
+  @Query(() => PendingStatisticsResponse)
+  async pendingStatistics(): Promise<PendingStatisticsResponse> {
+    const pendingStatistics: Statistics = await this.service.getPendingStatistics(today());
+
+    const results: PendingStatistics[] = pendingStatistics.memberStatistics.map(
       ({ member: { txcCold }, txcShared }) => {
         return {
           txcCold,
@@ -65,6 +65,15 @@ export class StatisticsResolver {
         };
       }
     );
+
     return { results };
+  }
+
+  @Authorized([UserRole.Admin])
+  @Mutation(() => Status)
+  async confirmStatistics(@Arg('data') data: ConfirmStatistics): Promise<Status> {
+    const { count } = await this.service.updatePendingStatistics(today());
+
+    return { success: count === 1 };
   }
 }
