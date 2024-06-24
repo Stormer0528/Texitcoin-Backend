@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import Bluebird from 'bluebird';
 
 import { rpcCommand } from '../utils/rpcCommand';
 import { GET_BLOCK_COUNT, GET_BLOCK_HASH, GET_BLOCK, GET_NETWORK_HASH_PS } from '../consts';
@@ -37,18 +38,20 @@ async function syncBlocks() {
       rpcCommand({ method: GET_BLOCK_COUNT }),
     ]);
 
+    console.log(`synced blocks: ${block}, total blocks: ${count}`);
+
     const arr = Array.from({ length: count - block }, (_, index) => block + index + 1);
 
-    const blocks = await Promise.all(
-      arr.map(async (item) => {
-        const [hash] = await Promise.all([rpcCommand({ method: GET_BLOCK_HASH, params: [item] })]);
+    const blocks = await Bluebird.map(
+      arr,
+      async (item) => {
+        console.log(`Syncing ${item}`);
+        const hash = await rpcCommand({ method: GET_BLOCK_HASH, params: [item] });
 
-        const [{ height, time, difficulty }] = await Promise.all([
-          await rpcCommand({
-            method: GET_BLOCK,
-            params: [hash],
-          }),
-        ]);
+        const { height, time, difficulty } = await rpcCommand({
+          method: GET_BLOCK,
+          params: [hash],
+        });
 
         console.log('height => ', height);
 
@@ -57,7 +60,8 @@ async function syncBlocks() {
         const createdAt = new Date(time * 1000);
 
         return { blockNo: height, difficulty, hashRate, createdAt, updatedAt: createdAt };
-      })
+      },
+      { concurrency: 10 }
     );
 
     await createBlocks(blocks);
