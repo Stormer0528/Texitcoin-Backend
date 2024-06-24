@@ -8,29 +8,34 @@ import { getMemberFromMlm, getMemberStatisticsFromMlm } from '../../src/utils/ge
 
 const prisma = new PrismaClient();
 
-async function rewardTXC() {
-  const result = await prisma.statistics.findFirst({
-    orderBy: { to: 'desc' },
-  });
+const createStatistics = async () => {
+  try {
+    const result = await prisma.statistics.findFirst({
+      orderBy: { to: 'desc' },
+    });
 
-  const last = result ?? {
-    to: new Date('2001-01-01'),
-    totalBlocks: 0,
-    totalHashPower: 0,
-  };
+    const last = result ?? {
+      to: new Date('2001-01-01'),
+      totalBlocks: 0,
+      totalHashPower: 0,
+    };
 
-  const [data, sales] = await Promise.all([
-    prisma.block.findMany({ where: { createdAt: { gt: last.to } } }),
-    getSales(),
-  ]);
+    console.log(`last blocks: ${last.totalBlocks}`);
+    console.log(`last date: ${last.to}`);
 
-  const newBlocks = data.length;
+    const [data, sales] = await Promise.all([
+      prisma.block.findMany({ where: { createdAt: { gt: last.to } } }),
+      getSales(),
+    ]);
 
-  const statistics = await processStatistics(sales);
+    const newBlocks = data.length;
 
-  if (newBlocks !== 0) {
-    const result = await Promise.all([
-      prisma.statistics.create({
+    console.log(`new blocks: ${newBlocks}`);
+
+    const statistics = await processStatistics(sales);
+
+    if (newBlocks !== 0) {
+      await prisma.statistics.create({
         data: {
           ...statistics,
           newBlocks,
@@ -40,16 +45,18 @@ async function rewardTXC() {
           from: newBlocks === 0 ? new Date() : data[0].createdAt,
           to: newBlocks === 0 ? new Date() : data[newBlocks - 1].createdAt,
         },
-      }),
-    ]);
+      });
+    }
 
-    return result;
+    console.log('Successfully created statistics');
+  } catch (err) {
+    console.log('error => ', err);
   }
-}
+};
 
-rewardTXC()
-  .then(async () => {
-    console.log('creating members');
+const createMember = async () => {
+  try {
+    console.log('Creating members');
 
     const members = await getMemberFromMlm();
 
@@ -66,23 +73,47 @@ rewardTXC()
       },
       { concurrency: 10 }
     );
-  })
-  .then(async () => {
-    console.log('creating sales');
+  } catch (err) {
+    console.log('error => ', err);
+  }
+};
 
-    const [sales] = await Promise.all([getSales(), await prisma.sale.deleteMany()]);
+const createSales = async () => {
+  try {
+    console.log('Creating sales');
+
+    await prisma.sale.deleteMany();
+    const sales = await getSales();
 
     await prisma.sale.createMany({ data: sales });
 
-    console.log(`Seeding finished.`);
-  })
-  .then(async () => {
-    console.log('creating memberStatistics');
+    console.log('Successfully created sales');
+  } catch (err) {
+    console.log('error => ', err);
+  }
+};
+
+const createMemberStatistics = async () => {
+  try {
+    console.log('Creating memberStatistics');
 
     const memberStatistics = await getMemberStatisticsFromMlm();
 
     await prisma.memberStatistics.createMany({ data: memberStatistics });
+  } catch (err) {
+    console.log('error => ', err);
+  }
+};
 
-    console.log('Finished seed');
-  })
-  .catch((err) => console.log('error => ', err));
+async function rewardTXC() {
+  console.log('Start database operation');
+
+  await createStatistics();
+  await createMember();
+  await createSales();
+  await createMemberStatistics();
+
+  console.log('Finished database operation');
+}
+
+rewardTXC();

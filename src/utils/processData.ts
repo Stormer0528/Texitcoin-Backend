@@ -7,7 +7,7 @@ export const formatGroupByDate = function (saleReports: SaleReportInput[]): Sale
   const sales = saleReports.reduce(
     (prev, { hashPower, username }) => ({
       ...prev,
-      members: { ...prev.members, [username]: prev.members[username] || 0 + hashPower },
+      members: { ...prev.members, [username]: (prev.members[username] || 0) + hashPower },
       hashPower: prev.hashPower + hashPower,
     }),
     { hashPower: 0, members: {} }
