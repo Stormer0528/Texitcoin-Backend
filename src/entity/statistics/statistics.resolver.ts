@@ -54,7 +54,10 @@ export class StatisticsResolver {
   }
 
   @Query(() => PendingStatisticsResponse)
-  async pendingStatistics(): Promise<PendingStatisticsResponse> {
+  async pendingStatistics(
+    @Args() query: StatisticsQueryArgs,
+    @Info() info: GraphQLResolveInfo
+  ): Promise<PendingStatisticsResponse> {
     const pendingStatistics: Statistics = await this.service.getPendingStatistics(today());
 
     const results: PendingStatistics[] = pendingStatistics.memberStatistics.map(
