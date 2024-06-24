@@ -7,3 +7,7 @@ export const formatDate = function (date: Date): string {
 
   return formattedDate;
 };
+
+export const today = function (): Date {
+  return new Date(formatDate(new Date()));
+};
