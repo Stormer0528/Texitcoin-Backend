@@ -20,6 +20,10 @@ model User{
   password String  @db.VarChar
   isAdmin  Boolean @db.Boolean @default(false)
 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
   @@map("users")
 }
 
@@ -110,7 +114,7 @@ model MemberStatistics {
   deletedAt DateTime?
 
   @@index([memberId], map: "index_memberStatistics_on_memberId")
-  @@map("user_statistics")
+  @@map("member_statistics")
 }
 
 model Block{
