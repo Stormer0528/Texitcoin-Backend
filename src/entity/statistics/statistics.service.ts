@@ -36,6 +36,7 @@ export class StatisticsService {
         },
       },
       where: {
+        status: false,
         issuedAt: date,
       },
     });
