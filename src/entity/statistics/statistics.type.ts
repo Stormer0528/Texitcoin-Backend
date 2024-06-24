@@ -48,8 +48,20 @@ export class CreateStatisticsInput {
   to: Date;
 }
 
+@InputType()
+export class ConfirmStatistics {
+  @Field()
+  status: boolean;
+}
+
 @ObjectType()
-export class StatisticsConfirmResult {
+export class Status {
+  @Field()
+  success: boolean;
+}
+
+@ObjectType()
+export class PendingStatistics {
   @Field()
   txcCold: string;
   @Field()
@@ -57,7 +69,7 @@ export class StatisticsConfirmResult {
 }
 
 @ObjectType()
-export class StatisticsConfirmResponse {
-  @Field(() => [StatisticsConfirmResult])
-  results: StatisticsConfirmResult[];
+export class PendingStatisticsResponse {
+  @Field(() => [PendingStatistics])
+  results: PendingStatistics[];
 }
