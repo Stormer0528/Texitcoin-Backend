@@ -3,7 +3,6 @@ import { Service, Inject } from 'typedi';
 import { PrismaService } from '@/service/prisma';
 
 import { CreateStatisticsInput, StatisticsQueryArgs } from './statistics.type';
-import { Member } from '../member/member.entity';
 
 @Service()
 export class StatisticsService {
@@ -27,6 +26,21 @@ export class StatisticsService {
     });
   }
 
+  async getPendingStatistics(date: Date) {
+    return this.prisma.statistics.findFirst({
+      include: {
+        memberStatistics: {
+          include: {
+            member: true,
+          },
+        },
+      },
+      where: {
+        issuedAt: date,
+      },
+    });
+  }
+
   async getStatisticsById(id: string) {
     return this.prisma.statistics.findUnique({ where: { id } });
   }
@@ -35,23 +49,15 @@ export class StatisticsService {
     return this.prisma.statistics.create({ data });
   }
 
-  async updateStatistics(issuedAt: Date) {
-    return this.prisma.statistics.findFirst({ where: { issuedAt } }).then((statistics) => {
-      return this.prisma.statistics.update({
-        where: {
-          id: statistics.id,
-        },
-        data: {
-          status: true,
-        },
-        include: {
-          memberStatistics: {
-            include: {
-              member: true,
-            },
-          },
-        },
-      });
+  async updatePendingStatistics(issuedAt: Date) {
+    return this.prisma.statistics.updateMany({
+      where: {
+        issuedAt,
+        status: false,
+      },
+      data: {
+        status: true,
+      },
     });
   }
 }
