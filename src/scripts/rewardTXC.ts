@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import Bluebird from 'bluebird';
 
 import { processStatistics } from '../utils/processData';
 import { getSales } from '../utils/connectMlm';
@@ -50,10 +51,11 @@ rewardTXC()
   .then(async () => {
     console.log('creating members');
 
-    const [members] = await Promise.all([getMemberFromMlm()]);
+    const members = await getMemberFromMlm();
 
-    await Promise.all(
-      members.map(async (member) => {
+    await Bluebird.map(
+      members,
+      async (member) => {
         const result = await prisma.member.upsert({
           where: { userId: member.userId },
           create: member,
@@ -61,7 +63,8 @@ rewardTXC()
         });
 
         return result;
-      })
+      },
+      { concurrency: 10 }
     );
   })
   .then(async () => {
@@ -76,7 +79,7 @@ rewardTXC()
   .then(async () => {
     console.log('creating memberStatistics');
 
-    const [memberStatistics] = await Promise.all([getMemberStatisticsFromMlm()]);
+    const memberStatistics = await getMemberStatisticsFromMlm();
 
     await prisma.memberStatistics.createMany({ data: memberStatistics });
 
