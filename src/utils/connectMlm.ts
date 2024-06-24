@@ -28,7 +28,7 @@ export const getSales = async () => {
   console.log('Connected to affiliate database to fetch sales');
 
   const [rows] = await connection.execute(
-    'SELECT txc_affiliate.mlm_purchase_history.invoice_no AS invoiceNo, txc_affiliate.mlm_login.username AS username, CONCAT("+", txc_affiliate.mlm_login.phone_code, " ", txc_affiliate.mlm_login.phone) AS mobile, txc_affiliate.mlm_login.email AS email, txc_affiliate.mlm_package.package AS productName, txc_affiliate.mlm_purchase_history.order_date AS issuedAt, txc_affiliate.mlm_purchase_history.payment_method AS paymentMethod, txc_affiliate.mlm_purchase_history.order_amount AS amount, txc_affiliate.mlm_purchase_history.hashpower AS hashPower, txc_affiliate.mlm_login.asset_id AS assetId FROM txc_affiliate.mlm_purchase_history LEFT JOIN txc_affiliate.mlm_login ON txc_affiliate.mlm_purchase_history.order_user_id = txc_affiliate.mlm_login.user_id LEFT JOIN txc_affiliate.mlm_package ON txc_affiliate.mlm_purchase_history.order_product_id = txc_affiliate.mlm_package.package_id;'
+    `SELECT mlm_purchase_history.invoice_no AS invoiceNo, mlm_login.username AS username, CONCAT("+", mlm_login.phone_code, " ", mlm_login.phone) AS mobile, mlm_login.email AS email, mlm_package.package AS productName, mlm_purchase_history.order_date AS issuedAt, mlm_purchase_history.payment_method AS paymentMethod, mlm_purchase_history.order_amount AS amount, mlm_purchase_history.hashpower AS hashPower, mlm_login.asset_id AS assetId FROM mlm_purchase_history LEFT JOIN mlm_login ON mlm_purchase_history.order_user_id = mlm_login.user_id LEFT JOIN mlm_package ON mlm_purchase_history.order_product_id = mlm_package.package_id;`
   );
 
   console.log('Fetched users info from affiliate');
@@ -63,7 +63,7 @@ export const getMembers = async () => {
   console.log('Connected affiliate database to fetch members');
 
   const [rows] = await connection.execute(
-    'SELECT username, CONCAT(first_name, " ", last_name) AS fullname, user_id AS userId, CONCAT("+", phone_code, " ", phone) AS mobile, email, password, primary_address AS address, asset_id AS assetId, TXCpayout AS txcPayout, blockio AS txcCold, join_date AS createdAt FROM txc_affiliate.mlm_login;'
+    'SELECT username, CONCAT(first_name, " ", last_name) AS fullname, user_id AS userId, CONCAT("+", phone_code, " ", phone) AS mobile, email, password, primary_address AS address, asset_id AS assetId, TXCpayout AS txcPayout, blockio AS txcCold, join_date AS createdAt FROM mlm_login;'
   );
 
   const members: CreateMemberInput[] = rows as CreateMemberInput[];
