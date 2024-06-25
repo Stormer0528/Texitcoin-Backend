@@ -26,7 +26,7 @@ export interface SaleReportInput {
 }
 
 export interface GroupedByCreatedAt {
-  createdAt: Date;
+  issuedAt: Date;
   _count: {
     _all: number;
   };
