@@ -6,12 +6,12 @@ export const userData: Prisma.UserCreateManyInput[] = [
     username: 'vitalii',
     email: 'vitovodenko@gmail.com',
     isAdmin: true,
-    password: hashSync('123456789', 12),
+    password: hashSync('vitalii0528', 12),
   },
   {
     username: 'bobby',
     email: 'bobby@blockchainmint.com',
     isAdmin: true,
-    password: hashSync('123456789', 12),
+    password: hashSync('bobby20240624', 12),
   },
 ];
