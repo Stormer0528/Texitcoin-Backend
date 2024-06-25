@@ -2,7 +2,7 @@ import { Service, Inject } from 'typedi';
 
 import { PrismaService } from '@/service/prisma';
 
-import { CreateStatisticsInput, StatisticsQueryArgs } from './statistics.type';
+import { ConfirmStatistics, CreateStatisticsInput, StatisticsQueryArgs } from './statistics.type';
 
 @Service()
 export class StatisticsService {
@@ -55,10 +55,10 @@ export class StatisticsService {
     return this.prisma.statistics.create({ data });
   }
 
-  async updatePendingStatistics(issuedAt: Date) {
+  async updateStatistics(data: ConfirmStatistics) {
     return this.prisma.statistics.updateMany({
       where: {
-        issuedAt,
+        id: data.id,
         status: false,
       },
       data: {
