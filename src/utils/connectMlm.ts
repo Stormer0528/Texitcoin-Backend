@@ -35,7 +35,7 @@ export const getSales = async (members: Member[]) => {
       mph.payment_method AS paymentMethod,
       mph.order_amount AS amount,
       mph.hashpower AS hashPower,
-      mph.order_date AS orderedAt,
+      mph.order_date AS orderedAt
     FROM 
       mlm_purchase_history as mph
       LEFT JOIN mlm_login as ml ON mph.order_user_id = ml.user_id
