@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { Service, Inject } from 'typedi';
 
 import { PrismaService } from '@/service/prisma';
@@ -27,6 +28,23 @@ export class BlockService {
     return this.prisma.block.findUnique({
       where: {
         id,
+      },
+    });
+  }
+
+  async getBlocksByDate(params: BlockQueryArgs) {
+    const {
+      filter: { period },
+    } = params;
+
+    return this.prisma.block.groupBy({
+      where: { OR: [{ createdAt: { gte: period[0] } }, { createdAt: { lte: period[1] } }] },
+      by: ['issuedAt'],
+      _count: {
+        _all: true,
+      },
+      orderBy: {
+        issuedAt: 'desc',
       },
     });
   }
