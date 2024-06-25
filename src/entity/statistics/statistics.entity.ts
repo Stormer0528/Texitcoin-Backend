@@ -20,7 +20,7 @@ export class Statistics extends BaseEntity {
   totalHashPower: number;
 
   @Field()
-  members?: number;
+  totalMembers?: number;
 
   @Field()
   status: boolean = false;
@@ -34,8 +34,9 @@ export class Statistics extends BaseEntity {
   @Field()
   to: Date;
 
-  @Field(() => [Sale], { nullable: 'itemsAndList' })
-  sales?: Sale[];
+  // TODO: Syncing with sales
+  // @Field(() => [Sale], { nullable: 'itemsAndList' })
+  // sales?: Sale[];
 
   @Field(() => [MemberStatistics], { nullable: 'itemsAndList' })
   memberStatistics?: MemberStatistics[];
