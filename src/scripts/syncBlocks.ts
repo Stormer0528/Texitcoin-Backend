@@ -59,7 +59,14 @@ async function syncBlocks() {
 
         const createdAt = new Date(time * 1000);
 
-        return { blockNo: height, difficulty, hashRate, createdAt, updatedAt: createdAt };
+        return {
+          blockNo: height,
+          difficulty,
+          hashRate,
+          issuedAt: new Date(createdAt.toISOString().split('T')[0]),
+          createdAt,
+          updatedAt: createdAt,
+        };
       },
       { concurrency: 10 }
     );
