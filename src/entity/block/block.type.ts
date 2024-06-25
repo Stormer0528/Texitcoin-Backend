@@ -17,21 +17,6 @@ export class BlocksResponse extends PaginatedResponse {
   blocks?: Block[];
 }
 
-@ObjectType()
-export class DailyBlocksResponse {
-  @Field(() => [DailyBlocks], { nullable: 'itemsAndList' })
-  blockInfo?: DailyBlocks[];
-}
-
-@ObjectType()
-export class DailyBlocks {
-  @Field()
-  date: string;
-
-  @Field()
-  count: number;
-}
-
 // Create Block Input and Response
 @InputType()
 export class CreateBlockInput {
