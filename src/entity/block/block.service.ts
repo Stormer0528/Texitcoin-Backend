@@ -32,6 +32,14 @@ export class BlockService {
     });
   }
 
+  async getLatestBlock() {
+    return this.prisma.block.findFirst({
+      orderBy: {
+        blockNo: 'desc',
+      },
+    });
+  }
+
   async getBlocksCountByDate(range: { start: Date; end: Date }) {
     return await this.prisma.$queryRaw<{ date: Date; count: number }[]>`
       SELECT 
