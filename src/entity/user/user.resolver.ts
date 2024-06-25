@@ -67,11 +67,6 @@ export class UserResolver {
     return response;
   }
 
-  @Query(() => Number)
-  async count(@Ctx() ctx: Context): Promise<Number> {
-    return this.service.getUsersCount({ orderBy: {}, parsePage: {}, where: {} });
-  }
-
   @Authorized()
   @Query(() => User)
   async me(@Ctx() ctx: Context): Promise<User> {

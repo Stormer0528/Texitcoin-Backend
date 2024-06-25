@@ -42,6 +42,11 @@ export class StatisticsService {
     });
   }
 
+  async getLatestStatistics() {
+    // TODO: `to` should be renamed to `endBlockTime`
+    return this.prisma.statistics.findFirst({ orderBy: { to: 'desc' } });
+  }
+
   async getStatisticsById(id: string) {
     return this.prisma.statistics.findUnique({ where: { id } });
   }
