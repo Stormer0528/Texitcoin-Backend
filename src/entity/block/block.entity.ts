@@ -1,5 +1,4 @@
 import { ObjectType, Field, ID } from 'type-graphql';
-import { IsEmail } from 'class-validator';
 
 import { BaseEntity } from '@/graphql/baseEntity';
 
@@ -16,4 +15,7 @@ export class Block extends BaseEntity {
 
   @Field()
   difficulty: number;
+
+  @Field()
+  issuedAt: Date;
 }
