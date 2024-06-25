@@ -26,10 +26,8 @@ export class Member extends BaseEntity {
   @IsEmail()
   email: string;
 
-  @Field()
   userId: number;
 
-  @Field()
   password?: string;
 
   @Field()
