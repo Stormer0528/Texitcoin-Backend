@@ -16,10 +16,8 @@ export class Member extends BaseEntity {
   @Field()
   fullName: string;
 
-  @Field()
   sponsorName?: string;
 
-  @Field()
   introducerFullName?: string;
 
   @Field()
