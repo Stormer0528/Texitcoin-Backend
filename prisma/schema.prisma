@@ -30,7 +30,7 @@ model User {
 model Member {
   id                 String  @id @default(uuid())
   username           String  @unique(map: "index_members_on_username") @db.VarChar
-  fullname           String  @db.VarChar
+  fullName           String  @db.VarChar
   sponsorName        String? @db.VarChar
   introducerFullName String? @db.VarChar
   userId             Int     @unique(map: "index_users_on_userId") @db.Integer
@@ -56,20 +56,19 @@ model Member {
 model Sale {
   id            String   @id @default(uuid())
   memberId      String
-  username      String
   invoiceNo     Int      @default(0)
   productName   String   @db.VarChar
   paymentMethod String   @db.VarChar
   amount        Int
   hashPower     Int
-  member        Member?  @relation(fields: [memberId], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  issuedAt      DateTime @default(now()) @db.Timestamptz(6)
+  orderedAt     DateTime @default(now()) @db.Timestamptz(6)
+
+  member Member? @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  @@index([username], map: "index_sales_on_username")
   @@index([memberId], map: "index_sales_on_memberId")
   @@map("sales")
 }
@@ -78,9 +77,8 @@ model Statistics {
   id             String  @id @default(uuid())
   newBlocks      Int
   totalBlocks    Int
-  newHashPower   Int
   totalHashPower Int
-  members        Int?
+  totalMembers   Int?
   status         Boolean @default(false)
 
   issuedAt DateTime @default(now())
