@@ -1,10 +1,9 @@
 import { Service } from 'typedi';
-import { Arg, Args, Resolver, Query, Mutation, Authorized, Ctx, Info } from 'type-graphql';
+import { Arg, Args, Resolver, Query, Mutation, Authorized, Info } from 'type-graphql';
 import graphqlFields from 'graphql-fields';
 import { GraphQLResolveInfo } from 'graphql';
 
-import { type Context } from '@/context';
-import { GroupedByCreatedAt, UserRole } from '@/type';
+import { UserRole } from '@/type';
 import { hashPassword } from '@/utils/auth';
 
 import { Member } from './member.entity';
@@ -13,8 +12,6 @@ import {
   MemberQueryArgs,
   CreateMemberInput,
   UpdateMemberInput,
-  MemberIncreaseRate,
-  MemberIncreaseRatesResponse,
 } from './member.type';
 import { MemberService } from './member.service';
 

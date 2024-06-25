@@ -1,6 +1,6 @@
 import { IsEmail } from 'class-validator';
 import type { Prisma } from '@prisma/client';
-import { ObjectType, InputType, Field, ArgsType, ID, Authorized, Int } from 'type-graphql';
+import { ObjectType, InputType, Field, ArgsType, ID } from 'type-graphql';
 
 import { PaginatedResponse } from '@/graphql/paginatedResponse';
 import { QueryArgsBase } from '@/graphql/queryArgs';
@@ -16,20 +16,6 @@ export class MemberQueryArgs extends QueryArgsBase<Prisma.MemberWhereInput> {}
 export class MembersResponse extends PaginatedResponse {
   @Field(() => [Member], { nullable: 'itemsAndList' })
   members?: Member[];
-}
-
-@ObjectType()
-export class MemberIncreaseRatesResponse extends PaginatedResponse {
-  @Field(() => [MemberIncreaseRate], { nullable: 'itemsAndList' })
-  rates?: MemberIncreaseRate[];
-}
-
-@ObjectType()
-export class MemberIncreaseRate {
-  @Field()
-  date: string;
-  @Field()
-  count: number;
 }
 
 // Create Member Input and Response

@@ -1,12 +1,11 @@
 import { IsEmail } from 'class-validator';
 import type { Prisma } from '@prisma/client';
-import { ObjectType, InputType, Field, ArgsType, ID, Authorized, Int } from 'type-graphql';
+import { ObjectType, InputType, Field, ArgsType, ID, Authorized } from 'type-graphql';
 
 import { PaginatedResponse } from '@/graphql/paginatedResponse';
 import { QueryArgsBase } from '@/graphql/queryArgs';
 
 import { User } from '@/entity/user/user.entity';
-import { Sale } from '@/entity/sale/sale.entity';
 
 // User Query Args
 @ArgsType()
