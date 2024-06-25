@@ -23,9 +23,6 @@ export class CreateSaleInput {
   memberId: string;
 
   @Field()
-  username: string;
-
-  @Field()
   invoiceNo: number;
 
   @Field()
@@ -41,5 +38,5 @@ export class CreateSaleInput {
   hashPower: number;
 
   @Field()
-  issuedAt: Date;
+  orderedAt: Date;
 }

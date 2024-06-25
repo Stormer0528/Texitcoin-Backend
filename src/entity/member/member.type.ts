@@ -25,7 +25,7 @@ export class CreateMemberInput {
   username: string;
 
   @Field()
-  fullname: string;
+  fullName: string;
 
   @Field()
   sponsorName?: string;

@@ -1,7 +1,6 @@
 import { ObjectType, Field, ID } from 'type-graphql';
 
 import { BaseEntity } from '@/graphql/baseEntity';
-import { Statistics } from '../statistics/statistics.entity';
 import { Member } from '../member/member.entity';
 
 @ObjectType()
@@ -31,8 +30,5 @@ export class Sale extends BaseEntity {
   member?: Member;
 
   @Field()
-  username: string;
-
-  @Field()
-  issuedAt: Date;
+  orderedAt: Date;
 }

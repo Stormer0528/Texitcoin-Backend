@@ -19,18 +19,6 @@ export class SaleService {
     });
   }
 
-  async getSalesGroupByDate(params: SaleQueryArgs) {
-    return await this.prisma.sale.groupBy({
-      by: ['issuedAt'],
-      _sum: {
-        hashPower: true,
-      },
-      where: params.where,
-      orderBy: { issuedAt: 'desc' },
-      ...params.parsePage,
-    });
-  }
-
   async getSalesCount(params: SaleQueryArgs): Promise<number> {
     return this.prisma.sale.count({ where: params.where });
   }
