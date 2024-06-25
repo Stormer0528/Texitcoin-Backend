@@ -48,7 +48,7 @@ export class CreateStatisticsInput {
 @InputType()
 export class ConfirmStatistics {
   @Field()
-  status: boolean;
+  id: string;
 }
 
 @ObjectType()

@@ -75,8 +75,8 @@ export class StatisticsResolver {
   @Authorized([UserRole.Admin])
   @Mutation(() => Status)
   async confirmStatistics(@Arg('data') data: ConfirmStatistics): Promise<Status> {
-    const { count } = await this.service.updatePendingStatistics(today());
+    await this.service.updateStatistics(data);
 
-    return { success: count === 1 };
+    return { success: true };
   }
 }
