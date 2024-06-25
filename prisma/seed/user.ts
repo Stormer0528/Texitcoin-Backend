@@ -5,19 +5,13 @@ export const userData: Prisma.UserCreateManyInput[] = [
   {
     username: 'vitalii',
     email: 'vitovodenko@gmail.com',
-    isAdmin: false,
+    isAdmin: true,
     password: hashSync('123456789', 12),
   },
   {
-    username: 'finix',
-    email: 'goldenfinix@outlook.com',
-    isAdmin: false,
+    username: 'bobby',
+    email: 'bobby@blockchainmint.com',
+    isAdmin: true,
     password: hashSync('123456789', 12),
-  },
-  {
-    username: 'temp',
-    email: 'temp@outlook.com',
-    password: hashSync('123456789', 12),
-    isAdmin: false,
   },
 ];
