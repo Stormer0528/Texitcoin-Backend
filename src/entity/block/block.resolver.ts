@@ -4,10 +4,16 @@ import graphqlFields from 'graphql-fields';
 import { GraphQLResolveInfo } from 'graphql';
 
 import { type Context } from '@/context';
-import { UserRole } from '@/type';
+import { GroupedByCreatedAt, UserRole } from '@/type';
 
 import { Block } from './block.entity';
-import { BlocksResponse, BlockQueryArgs, CreateBlockInput } from './block.type';
+import {
+  BlocksResponse,
+  BlockQueryArgs,
+  CreateBlockInput,
+  DailyBlocksResponse,
+  DailyBlocks,
+} from './block.type';
 import { BlockService } from './block.service';
 
 @Service()
@@ -35,6 +41,40 @@ export class BlockResolver {
     const result = await Promise.all(Object.entries(promises));
 
     let response: { total?: number; blocks?: Block[] } = {};
+
+    for (let [key, value] of result) {
+      response[key] = value;
+    }
+
+    return response;
+  }
+
+  @Query(() => DailyBlocksResponse)
+  async blocksByDate(
+    @Args() query: BlockQueryArgs,
+    @Info() info: GraphQLResolveInfo
+  ): Promise<DailyBlocksResponse> {
+    const fields = graphqlFields(info);
+
+    let promises: { total?: Promise<number>; blockInfo?: Promise<DailyBlocks[]> } = {};
+
+    if ('total' in fields) {
+      promises.total = this.service.getBlocksCount(query);
+    }
+
+    if ('blockInfo' in fields) {
+      promises.blockInfo = this.service
+        .getBlocksByDate(query)
+        .then((totalGroups: GroupedByCreatedAt[]) =>
+          totalGroups.map(({ issuedAt, _count: { _all: count } }: GroupedByCreatedAt) => {
+            return { date: issuedAt.toISOString().split('T')[0], count };
+          })
+        );
+    }
+
+    const result = await Promise.all(Object.entries(promises));
+
+    let response: DailyBlocksResponse = {};
 
     for (let [key, value] of result) {
       response[key] = value;
