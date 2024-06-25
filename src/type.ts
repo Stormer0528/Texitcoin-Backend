@@ -17,7 +17,7 @@ export interface SaleReport {
 export interface SaleReportInput {
   invoiceNo: number;
   memberId: string;
-  username: string;
+  userId: string;
   productName: string;
   issuedAt: Date;
   paymentMethod: string;

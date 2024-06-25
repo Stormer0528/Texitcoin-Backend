@@ -1,6 +1,6 @@
 import { SaleReportInput } from '@/type';
 import { createConnection, Connection } from 'mysql2/promise';
-import { PrismaClient } from '@prisma/client';
+import { Member, PrismaClient } from '@prisma/client';
 import { CreateMemberInput } from '@/entity/member/member.type';
 
 const prisma = new PrismaClient();
@@ -22,37 +22,36 @@ export const getStatistics = async () => {
   return statistics;
 };
 
-export const getSales = async () => {
+export const getSales = async (members: Member[]) => {
   const connection: Connection = await connectToDatabase();
 
-  console.log('Connected to affiliate database to fetch sales');
+  console.log('Connected to affiliate database to fetch sales...');
 
   const [rows] = await connection.execute(
-    `SELECT mlm_purchase_history.invoice_no AS invoiceNo, mlm_login.username AS username, CONCAT("+", mlm_login.phone_code, " ", mlm_login.phone) AS mobile, mlm_login.email AS email, mlm_package.package AS productName, mlm_purchase_history.order_date AS issuedAt, mlm_purchase_history.payment_method AS paymentMethod, mlm_purchase_history.order_amount AS amount, mlm_purchase_history.hashpower AS hashPower, mlm_login.asset_id AS assetId FROM mlm_purchase_history LEFT JOIN mlm_login ON mlm_purchase_history.order_user_id = mlm_login.user_id LEFT JOIN mlm_package ON mlm_purchase_history.order_product_id = mlm_package.package_id;`
+    `SELECT
+      mph.invoice_no AS invoiceNo,
+      ml.user_id AS userId,    
+      mp.package AS productName,
+      mph.payment_method AS paymentMethod,
+      mph.order_amount AS amount,
+      mph.hashpower AS hashPower,
+      mph.order_date AS orderedAt,
+    FROM 
+      mlm_purchase_history as mph
+      LEFT JOIN mlm_login as ml ON mph.order_user_id = ml.user_id
+      LEFT JOIN mlm_package as mp ON mph.order_product_id = mp.package_id;`
   );
 
-  console.log('Fetched users info from affiliate');
+  console.log(`Fetched ${(rows as []).length} users info from affiliate`);
 
   const data: SaleReportInput[] = rows as SaleReportInput[];
 
-  const members = await prisma.member.findMany();
+  const memberIds = members.reduce((prev, { id, userId }) => ({ ...prev, [userId]: id }), {});
 
-  const memberIds = members.reduce((prev, { id, username }) => ({ ...prev, [username]: id }), {});
+  const sales = data.map(({ userId, ...row }) => ({ ...row, memberId: memberIds[userId] }));
 
-  const sales = data.map(
-    ({ username, issuedAt, invoiceNo, productName, paymentMethod, amount, hashPower }) => {
-      return {
-        memberId: memberIds[username],
-        username,
-        issuedAt,
-        invoiceNo,
-        productName,
-        paymentMethod,
-        amount,
-        hashPower,
-      };
-    }
-  );
+  await connection.end();
+  console.log(`Close connection to affiliate database successfully...`);
 
   return sales;
 };
@@ -60,13 +59,27 @@ export const getSales = async () => {
 export const getMembers = async () => {
   const connection: Connection = await connectToDatabase();
 
-  console.log('Connected affiliate database to fetch members');
+  console.log('Connected affiliate database to fetch members...');
 
-  const [rows] = await connection.execute(
-    'SELECT username, CONCAT(first_name, " ", last_name) AS fullname, user_id AS userId, CONCAT("+", phone_code, " ", phone) AS mobile, email, password, primary_address AS address, asset_id AS assetId, TXCpayout AS txcPayout, blockio AS txcCold, join_date AS createdAt FROM mlm_login;'
-  );
+  const [rows] = await connection.execute(`
+    SELECT
+      username,
+      CONCAT(first_name, " ", last_name) AS fullName,
+      user_id AS userId,
+      CONCAT("+", phone_code, " ", phone) AS mobile,
+      email,
+      password,
+      primary_address AS address,
+      asset_id AS assetId,
+      TXCpayout AS txcPayout,
+      blockio AS txcCold,
+      join_date AS createdAt 
+    FROM mlm_login;`);
 
-  const members: CreateMemberInput[] = rows as CreateMemberInput[];
+  console.log(`Fetched ${(rows as []).length} members from affiliate`);
 
-  return members;
+  await connection.end();
+  console.log(`Close connection to affiliate database successfully...`);
+
+  return rows as CreateMemberInput[];
 };
