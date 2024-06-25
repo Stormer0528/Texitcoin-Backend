@@ -1,67 +1,65 @@
-import { PrismaClient } from '@prisma/client';
+import { Member, PrismaClient, Sale, Statistics } from '@prisma/client';
 import Bluebird from 'bluebird';
 
 import { processStatistics } from '../utils/processData';
-import { getSales } from '../utils/connectMlm';
-import { formatDate } from '../utils/common';
-import { getMemberFromMlm, getMemberStatisticsFromMlm } from '../../src/utils/getMlmData';
+import { getSales, getMembers } from '../utils/connectMlm';
 
 const prisma = new PrismaClient();
 
-const createStatistics = async () => {
+const createStatistics = async (sales: Sale[]) => {
   try {
-    const result = await prisma.statistics.findFirst({
+    const latestReward = (await prisma.statistics.findFirst({
       orderBy: { to: 'desc' },
-    });
-
-    const last = result ?? {
-      to: new Date('2001-01-01'),
-      totalBlocks: 0,
+    })) ?? {
+      to: new Date(process.env.LAST_MANUAL_REWARD_TIMESTAMP),
+      totalBlocks: +process.env.LAST_MANUAL_REWARD_BLOCK,
       totalHashPower: 0,
     };
 
-    console.log(`last blocks: ${last.totalBlocks}`);
-    console.log(`last date: ${last.to}`);
+    console.log(`Last reward block: ${latestReward.totalBlocks}`);
+    console.log(`Last reward date: ${latestReward.to}`);
 
-    const [data, sales] = await Promise.all([
-      prisma.block.findMany({ where: { createdAt: { gt: last.to } } }),
-      getSales(),
-    ]);
+    const newBlocks = await prisma.block.findMany({
+      where: { createdAt: { gt: latestReward.to }, blockNo: { gt: latestReward.totalBlocks } },
+      orderBy: { blockNo: 'desc' },
+    });
 
-    const newBlocks = data.length;
+    if (newBlocks.length) {
+      console.log(`New blocks since last reward: ${newBlocks.length}`);
+      console.log(`Current block to reward: ${newBlocks[0].blockNo}`);
 
-    console.log(`new blocks: ${newBlocks}`);
-
-    const statistics = await processStatistics(sales);
-
-    if (newBlocks !== 0) {
-      await prisma.statistics.create({
+      const statistics = await processStatistics(sales);
+      const newReward = await prisma.statistics.create({
         data: {
           ...statistics,
-          newBlocks,
-          totalBlocks: last.totalBlocks + newBlocks,
-          totalHashPower: last.totalHashPower + statistics.newHashPower,
-          issuedAt: new Date(formatDate(new Date())),
-          from: newBlocks === 0 ? new Date() : data[0].createdAt,
-          to: newBlocks === 0 ? new Date() : data[newBlocks - 1].createdAt,
+          newBlocks: newBlocks.length,
+          totalBlocks: latestReward.totalBlocks + newBlocks.length,
+          issuedAt: new Date(),
+          from: newBlocks[newBlocks.length - 1].createdAt,
+          to: newBlocks[0].createdAt,
         },
       });
-    }
 
-    console.log('Successfully created statistics');
+      console.log('Successfully created statistics');
+
+      return newReward;
+    } else {
+      console.log('No new blocks since last reward, skipping statistics creation.');
+      return null;
+    }
   } catch (err) {
     console.log('error => ', err);
   }
 };
 
-const createMember = async () => {
+const syncMembers = async () => {
   try {
-    console.log('Creating members');
+    console.log('Syncing members...');
 
-    const members = await getMemberFromMlm();
+    const mlmMembers = await getMembers();
 
-    await Bluebird.map(
-      members,
+    const members = await Bluebird.map(
+      mlmMembers,
       async (member) => {
         const result = await prisma.member.upsert({
           where: { userId: member.userId },
@@ -73,47 +71,77 @@ const createMember = async () => {
       },
       { concurrency: 10 }
     );
+
+    console.log(`Successfully synced ${members.length} members`);
+
+    return members;
   } catch (err) {
     console.log('error => ', err);
   }
 };
 
-const createSales = async () => {
+const syncSales = async (members: Member[]) => {
   try {
-    console.log('Creating sales');
+    console.log('Syncing sales...');
 
     await prisma.sale.deleteMany();
-    const sales = await getSales();
+    console.log('Successfully deleted current sales.');
 
-    await prisma.sale.createMany({ data: sales });
+    const mlmSales = await getSales(members);
+
+    const sales = await prisma.sale.createManyAndReturn({ data: mlmSales });
 
     console.log('Successfully created sales');
+
+    return sales;
   } catch (err) {
     console.log('error => ', err);
   }
 };
 
-const createMemberStatistics = async () => {
+const createMemberStatistics = async (newReward: Statistics, sales: Sale[]) => {
   try {
-    console.log('Creating memberStatistics');
+    console.log('Creating memberStatistics...');
 
-    const memberStatistics = await getMemberStatisticsFromMlm();
+    const hashPowerByMember: Record<string, number> = sales.reduce(
+      (prev, { hashPower, memberId }) => ({
+        ...prev,
+        [memberId]: (prev[memberId] || 0) + hashPower,
+      }),
+      {}
+    );
 
-    await prisma.memberStatistics.createMany({ data: memberStatistics });
+    const memberStatistics = Object.entries(hashPowerByMember).map(([memberId, hashPower]) => ({
+      memberId: memberId,
+      statisticsId: newReward.id,
+      issuedAt: newReward.issuedAt,
+      txcShared: Number(
+        ((newReward.newBlocks * hashPower * 254) / newReward.totalHashPower).toFixed(6)
+      ),
+      hashPower,
+      percent: Number(((hashPower * 100) / newReward.totalHashPower).toFixed(3)),
+    }));
+
+    const result = await prisma.memberStatistics.createMany({ data: memberStatistics });
+
+    console.log(`Successfully created ${result.count} memberStatistics`);
   } catch (err) {
     console.log('error => ', err);
   }
 };
 
 async function rewardTXC() {
-  console.log('Start database operation');
+  console.log('Started rewarding operation');
 
-  await createStatistics();
-  await createMember();
-  await createSales();
-  await createMemberStatistics();
+  const members = await syncMembers();
+  const sales = await syncSales(members);
+  const newReward = await createStatistics(sales);
 
-  console.log('Finished database operation');
+  if (newReward) {
+    await createMemberStatistics(newReward, sales);
+  }
+
+  console.log('Finished rewarding operation');
 }
 
 rewardTXC();
