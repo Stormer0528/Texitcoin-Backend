@@ -20,7 +20,7 @@ export class BlockService {
     });
   }
 
-  async getBlocksCount(params: BlockQueryArgs): Promise<number> {
+  async getBlocksCount(params: Pick<BlockQueryArgs, 'where'>): Promise<number> {
     return this.prisma.block.count({ where: params.where });
   }
 
@@ -32,21 +32,32 @@ export class BlockService {
     });
   }
 
-  async getBlocksByDate(params: BlockQueryArgs) {
-    const {
-      filter: { period },
-    } = params;
+  async getBlocksCountByDate(range: { start: Date; end: Date }) {
+    return await this.prisma.$queryRaw<{ date: Date; count: number }[]>`
+      SELECT 
+        DATE("createdAt") as date, 
+        CAST(COUNT("blockNo") as INT) as count
+      FROM 
+        Blocks
+      WHERE 
+        "createdAt" BETWEEN ${range.start} AND ${range.end}
+      GROUP BY 
+        DATE("createdAt")
+      ORDER BY
+        date ASC`;
+  }
 
-    return this.prisma.block.groupBy({
-      where: { OR: [{ createdAt: { gte: period[0] } }, { createdAt: { lte: period[1] } }] },
-      by: ['issuedAt'],
-      _count: {
-        _all: true,
-      },
-      orderBy: {
-        issuedAt: 'desc',
-      },
-    });
+  async getTimeTookForBlock(range: { start: Date; end: Date }) {
+    return this.prisma.$queryRaw<{ blockNo: number; timeTookInSeconds: number }[]>`
+      SELECT 
+        "blockNo",
+        EXTRACT(EPOCH FROM ("createdAt" - LAG("createdAt") OVER (ORDER BY "createdAt"))) AS "timeTookInSeconds"
+      FROM 
+        Blocks
+      WHERE 
+        "createdAt" BETWEEN ${range.start} AND ${range.end}
+      ORDER BY
+        "blockNo" DESC`;
   }
 
   async createBlock(data: CreateBlockInput) {
