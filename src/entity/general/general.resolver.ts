@@ -1,11 +1,7 @@
 import { Service } from 'typedi';
-import { Arg, Args, Resolver, Query, Mutation, Authorized, Ctx, Info } from 'type-graphql';
-import graphqlFields from 'graphql-fields';
-import { GraphQLResolveInfo } from 'graphql';
+import { Arg, Args, Resolver, Query } from 'type-graphql';
 import dayjs from 'dayjs';
 
-import { type Context } from '@/context';
-import { GroupedByCreatedAt, UserRole } from '@/type';
 import { BlockService } from '@/entity/block/block.service';
 import { StatisticsService } from '@/entity/statistics/statistics.service';
 import { MemberService } from '@/entity/member/member.service';

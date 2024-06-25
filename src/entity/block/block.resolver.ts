@@ -3,7 +3,6 @@ import { Arg, Args, Resolver, Query, Mutation, Authorized, Ctx, Info } from 'typ
 import graphqlFields from 'graphql-fields';
 import { GraphQLResolveInfo } from 'graphql';
 
-import { type Context } from '@/context';
 import { UserRole } from '@/type';
 
 import { Block } from './block.entity';

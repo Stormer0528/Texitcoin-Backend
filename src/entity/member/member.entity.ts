@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID, Authorized } from 'type-graphql';
+import { ObjectType, Field, ID } from 'type-graphql';
 import { IsEmail } from 'class-validator';
 
 import { BaseEntity } from '@/graphql/baseEntity';
