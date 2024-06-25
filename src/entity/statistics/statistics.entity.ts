@@ -17,9 +17,6 @@ export class Statistics extends BaseEntity {
   totalBlocks: number;
 
   @Field()
-  newHashPower: number;
-
-  @Field()
   totalHashPower: number;
 
   @Field()

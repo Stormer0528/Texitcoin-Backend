@@ -27,9 +27,6 @@ export class CreateStatisticsInput {
   totalBlocks: number;
 
   @Field()
-  newHashPower: number;
-
-  @Field()
   totalHashPower: number;
 
   @Field()

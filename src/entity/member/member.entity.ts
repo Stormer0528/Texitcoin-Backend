@@ -14,7 +14,7 @@ export class Member extends BaseEntity {
   username: string;
 
   @Field()
-  fullname: string;
+  fullName: string;
 
   @Field()
   sponsorName?: string;
