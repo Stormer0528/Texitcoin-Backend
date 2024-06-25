@@ -19,32 +19,23 @@ export class MemberService {
     });
   }
 
-  async getMembersGroupByDate(params: MemberQueryArgs) {
-    return this.prisma.member.groupBy({
-      by: ['createdAt'],
-      _count: {
-        _all: true,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-      ...params.parsePage,
-    });
-  }
-
-  async getGroupsCountByDate(params: MemberQueryArgs) {
-    return this.prisma.member
-      .groupBy({
-        by: ['createdAt'],
-        orderBy: {
-          createdAt: 'desc',
-        },
-      })
-      .then((result) => result.length);
-  }
-
-  async getMembersCount(params: MemberQueryArgs): Promise<number> {
+  async getMembersCount(params: Pick<MemberQueryArgs, 'where'>): Promise<number> {
     return this.prisma.member.count({ where: params.where });
+  }
+
+  async getMembersCountByDate(range: { start: Date; end: Date }) {
+    return await this.prisma.$queryRaw<{ date: Date; count: number }[]>`
+      SELECT 
+        DATE("createdAt") as date, 
+        CAST(COUNT("userId") as INT) as count
+      FROM 
+        Members
+      WHERE 
+        "createdAt" BETWEEN ${range.start} AND ${range.end}
+      GROUP BY 
+        DATE("createdAt")
+      ORDER BY
+        date ASC`;
   }
 
   async getMemberById(id: string) {

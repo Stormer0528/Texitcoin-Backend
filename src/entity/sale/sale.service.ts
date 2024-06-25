@@ -11,23 +11,16 @@ export class SaleService {
     private readonly prisma: PrismaService
   ) {}
   async getSales(params: SaleQueryArgs) {
-    const allItems = await this.prisma.sale.findMany({
+    return await this.prisma.sale.findMany({
       include: { member: true },
       where: params.where,
       orderBy: params.orderBy,
       ...params.parsePage,
     });
-    return allItems;
   }
-  async getSalesGroupByDate(params: SaleQueryArgs) {
-    const allItems = await this.prisma.sale.findMany({
-      include: { member: true },
-      where: params.where,
-      orderBy: params.orderBy,
-      ...params.parsePage,
-    });
 
-    const result = await this.prisma.sale.groupBy({
+  async getSalesGroupByDate(params: SaleQueryArgs) {
+    return await this.prisma.sale.groupBy({
       by: ['issuedAt'],
       _sum: {
         hashPower: true,
@@ -36,9 +29,8 @@ export class SaleService {
       orderBy: { issuedAt: 'desc' },
       ...params.parsePage,
     });
-
-    return result;
   }
+
   async getSalesCount(params: SaleQueryArgs): Promise<number> {
     return this.prisma.sale.count({ where: params.where });
   }
