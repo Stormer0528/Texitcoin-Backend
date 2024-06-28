@@ -12,7 +12,6 @@ export class SaleService {
   ) {}
   async getSales(params: SaleQueryArgs) {
     return await this.prisma.sale.findMany({
-      include: { member: true },
       where: params.where,
       orderBy: params.orderBy,
       ...params.parsePage,
