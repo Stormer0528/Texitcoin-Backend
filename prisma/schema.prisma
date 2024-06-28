@@ -139,11 +139,15 @@ model Package {
   productName String
   amount      Int
   status      Boolean
-  Date        DateTime @default(now())
-  Token       Int
+  date        DateTime @default(now())
+  token       Int
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   // relation
   sales Sale[]
-  
+
   @@map("packages")
 }

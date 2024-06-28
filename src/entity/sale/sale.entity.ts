@@ -2,6 +2,7 @@ import { ObjectType, Field, ID } from 'type-graphql';
 
 import { BaseEntity } from '@/graphql/baseEntity';
 import { Member } from '../member/member.entity';
+import { Package } from '../package/package.entity';
 
 @ObjectType()
 export class Sale extends BaseEntity {
@@ -10,9 +11,6 @@ export class Sale extends BaseEntity {
 
   @Field()
   invoiceNo: number;
-
-  @Field()
-  productName: string;
 
   @Field()
   paymentMethod: string;
@@ -28,6 +26,12 @@ export class Sale extends BaseEntity {
 
   @Field(() => Member, { nullable: true })
   member?: Member;
+
+  @Field(() => ID)
+  packageId: string;
+
+  @Field(() => Package, { nullable: true })
+  package?: Package;
 
   @Field()
   orderedAt: Date;
