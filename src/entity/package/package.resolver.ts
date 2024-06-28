@@ -18,6 +18,8 @@ import { UserRole } from '@/type';
 import { Package } from './package.entity';
 import { PackageService } from './package.service';
 import { CreatePackageInput, PackageQueryArgs, PackageResponse } from './package.type';
+import { Context } from '@/context';
+import { Sale } from '../sale/sale.entity';
 
 @Service()
 @Resolver(() => Package)
@@ -57,5 +59,10 @@ export class PackageResolver {
   @Mutation(() => Package)
   async createPackage(@Arg('data') data: CreatePackageInput): Promise<Package> {
     return this.service.createPackage({ ...data });
+  }
+
+  @FieldResolver({ nullable: 'itemsAndList' })
+  async sales(@Root() pkg: Package, @Ctx() ctx: Context): Promise<Sale[]> {
+    return ctx.dataLoader.get('salesForPackageLoader').load(pkg.id);
   }
 }

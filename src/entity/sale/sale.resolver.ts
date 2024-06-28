@@ -21,6 +21,7 @@ import { SalesResponse, SaleQueryArgs, CreateSaleInput } from './sale.type';
 import { SaleService } from './sale.service';
 import { Context } from '@/context';
 import { Member } from '../member/member.entity';
+import { Package } from '../package/package.entity';
 
 @Service()
 @Resolver(() => Sale)
@@ -65,5 +66,10 @@ export class SaleResolver {
   @FieldResolver({ nullable: 'itemsAndList' })
   async member(@Root() sale: Sale, @Ctx() ctx: Context): Promise<Member> {
     return ctx.dataLoader.get('memberForSaleLoader').load(sale.id);
+  }
+
+  @FieldResolver({ nullable: 'itemsAndList' })
+  async package(@Root() sale: Sale, @Ctx() ctx: Context): Promise<Package> {
+    return ctx.dataLoader.get('packageForSaleLoader').load(sale.id);
   }
 }
