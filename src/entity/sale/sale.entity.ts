@@ -16,10 +16,10 @@ export class Sale extends BaseEntity {
   paymentMethod: string;
 
   @Field()
-  amount: number;
+  hashPower: number;
 
   @Field()
-  hashPower: number;
+  status: boolean;
 
   @Field(() => ID)
   memberId: string;
