@@ -60,9 +60,9 @@ model Sale {
   productName   String   @db.VarChar
   packageId     String
   paymentMethod String   @db.VarChar
-  amount        Int
   hashPower     Int
   orderedAt     DateTime @default(now()) @db.Timestamptz(6)
+  status        Boolean  @default(true)
 
   member  Member?  @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   package Package? @relation(fields: [packageId], references: [id], onDelete: Cascade, onUpdate: NoAction)
@@ -82,7 +82,7 @@ model Statistics {
   totalBlocks    Int
   totalHashPower Int
   totalMembers   Int?
-  status         Boolean @default(false)
+  status         Boolean @default(true)
 
   issuedAt DateTime @default(now())
   from     DateTime
@@ -138,7 +138,7 @@ model Package {
   id          String   @id @default(uuid())
   productName String
   amount      Int
-  status      Boolean
+  status      Boolean  @default(true)
   date        DateTime @default(now())
   token       Int
 
