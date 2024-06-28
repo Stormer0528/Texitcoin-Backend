@@ -26,7 +26,7 @@ export class CreateSaleInput {
   invoiceNo: number;
 
   @Field()
-  productName: string;
+  packageId: string;
 
   @Field()
   paymentMethod: string;

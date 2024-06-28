@@ -31,7 +31,7 @@ export const getSales = async (members: Member[]) => {
     `SELECT
       mph.invoice_no AS invoiceNo,
       ml.user_id AS userId,    
-      mp.package AS productName,
+      mp.package_id AS packageId,
       mph.payment_method AS paymentMethod,
       mph.order_amount AS amount,
       mph.hashpower AS hashPower,
