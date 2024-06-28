@@ -1,5 +1,16 @@
 import { Service } from 'typedi';
-import { Arg, Args, Resolver, Query, Mutation, Info, Authorized } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Resolver,
+  Query,
+  Mutation,
+  Info,
+  Authorized,
+  FieldResolver,
+  Root,
+  Ctx,
+} from 'type-graphql';
 import graphqlFields from 'graphql-fields';
 import { GraphQLResolveInfo } from 'graphql';
 
@@ -12,6 +23,9 @@ import {
   CreateMemberStatisticsInput,
 } from './memberStatistics.type';
 import { MemberStatisticsService } from './memberStatistics.service';
+import { Member } from '../member/member.entity';
+import { Context } from '@/context';
+import { Statistics } from '../statistics/statistics.entity';
 
 @Service()
 @Resolver(() => MemberStatistics)
@@ -53,5 +67,18 @@ export class MemberStatisticsResolver {
     @Arg('data') data: CreateMemberStatisticsInput
   ): Promise<MemberStatistics> {
     return this.service.createMemberStatistics({ ...data });
+  }
+
+  @FieldResolver({ nullable: 'itemsAndList' })
+  async member(@Root() memberStatistics: MemberStatistics, @Ctx() ctx: Context): Promise<Member> {
+    return ctx.dataLoader.get('memberForMemberStatisticsLoader').load(memberStatistics.id);
+  }
+
+  @FieldResolver({ nullable: 'itemsAndList' })
+  async statistics(
+    @Root() memberStatistics: MemberStatistics,
+    @Ctx() ctx: Context
+  ): Promise<Statistics> {
+    return ctx.dataLoader.get('statisticsForMemberStatisticsLoader').load(memberStatistics.id);
   }
 }
