@@ -2,7 +2,7 @@ import { Service, Inject } from 'typedi';
 
 import { PrismaService } from '@/service/prisma';
 
-import { CreateSaleInput, SaleQueryArgs } from './sale.type';
+import { CreateSaleInput, SaleQueryArgs, UpdateSaleInput } from './sale.type';
 
 @Service()
 export class SaleService {
@@ -33,6 +33,15 @@ export class SaleService {
   async createSale(data: CreateSaleInput) {
     return this.prisma.sale.create({
       data,
+    });
+  }
+
+  async updateSale(data: UpdateSaleInput) {
+    return this.prisma.sale.update({
+      data,
+      where: {
+        id: data.id,
+      },
     });
   }
 }
