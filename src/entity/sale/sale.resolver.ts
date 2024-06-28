@@ -17,7 +17,7 @@ import { GraphQLResolveInfo } from 'graphql';
 import { UserRole } from '@/type';
 
 import { Sale } from './sale.entity';
-import { SalesResponse, SaleQueryArgs, CreateSaleInput } from './sale.type';
+import { SalesResponse, SaleQueryArgs, CreateSaleInput, UpdateSaleInput } from './sale.type';
 import { SaleService } from './sale.service';
 import { Context } from '@/context';
 import { Member } from '../member/member.entity';
@@ -61,6 +61,12 @@ export class SaleResolver {
   @Mutation(() => Sale)
   async createSale(@Arg('data') data: CreateSaleInput): Promise<Sale> {
     return this.service.createSale({ ...data });
+  }
+
+  @Authorized([UserRole.Admin])
+  @Mutation(() => Sale)
+  async updateSale(@Arg('data') data: UpdateSaleInput): Promise<Sale> {
+    return this.service.updateSale({ ...data });
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })

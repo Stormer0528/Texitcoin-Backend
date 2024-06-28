@@ -40,3 +40,25 @@ export class CreateSaleInput {
   @Field()
   orderedAt: Date;
 }
+
+// Update Sale Input and Response
+@InputType()
+export class UpdateSaleInput {
+  @Field(() => ID)
+  id: string;
+
+  @Field(() => ID, { nullable: true })
+  packageId?: string;
+
+  @Field({ nullable: true })
+  paymentMethod?: string;
+
+  @Field({ nullable: true })
+  amount?: number;
+
+  @Field({ nullable: true })
+  hashPower?: number;
+
+  @Field({ nullable: true })
+  orderedAt?: Date;
+}
