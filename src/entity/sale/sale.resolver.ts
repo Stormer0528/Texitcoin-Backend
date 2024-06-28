@@ -1,5 +1,16 @@
 import { Service } from 'typedi';
-import { Arg, Args, Resolver, Query, Mutation, Info, Authorized } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Resolver,
+  Query,
+  Mutation,
+  Info,
+  Authorized,
+  FieldResolver,
+  Ctx,
+  Root,
+} from 'type-graphql';
 import graphqlFields from 'graphql-fields';
 import { GraphQLResolveInfo } from 'graphql';
 
@@ -8,6 +19,8 @@ import { UserRole } from '@/type';
 import { Sale } from './sale.entity';
 import { SalesResponse, SaleQueryArgs, CreateSaleInput } from './sale.type';
 import { SaleService } from './sale.service';
+import { Context } from '@/context';
+import { Member } from '../member/member.entity';
 
 @Service()
 @Resolver(() => Sale)
@@ -47,5 +60,10 @@ export class SaleResolver {
   @Mutation(() => Sale)
   async createSale(@Arg('data') data: CreateSaleInput): Promise<Sale> {
     return this.service.createSale({ ...data });
+  }
+
+  @FieldResolver({ nullable: 'itemsAndList' })
+  async member(@Root() sale: Sale, @Ctx() ctx: Context): Promise<Member> {
+    return ctx.dataLoader.get('memberForSaleLoader').load(sale.id);
   }
 }
