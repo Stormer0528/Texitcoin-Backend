@@ -21,16 +21,22 @@ import {
   MemberStatisticsResponse,
   MemberStatisticsQueryArgs,
   CreateMemberStatisticsInput,
+  MemberOverview,
+  MemberOverviewInput,
 } from './memberStatistics.type';
 import { MemberStatisticsService } from './memberStatistics.service';
 import { Member } from '../member/member.entity';
 import { Context } from '@/context';
 import { Statistics } from '../statistics/statistics.entity';
+import { MemberService } from '../member/member.service';
 
 @Service()
 @Resolver(() => MemberStatistics)
 export class MemberStatisticsResolver {
-  constructor(private readonly service: MemberStatisticsService) {}
+  constructor(
+    private readonly service: MemberStatisticsService,
+    private readonly memberService: MemberService
+  ) {}
 
   @Query(() => MemberStatisticsResponse)
   async memberStatistics(
@@ -80,5 +86,19 @@ export class MemberStatisticsResolver {
     @Ctx() ctx: Context
   ): Promise<Statistics> {
     return ctx.dataLoader.get('statisticsForMemberStatisticsLoader').load(memberStatistics.id);
+  }
+
+  // @Authorized([UserRole.Admin])
+  @Query(() => MemberOverview)
+  async memberOverview(@Arg('data') { id }: MemberOverviewInput): Promise<MemberOverview> {
+    const { hashPower: totalHashPower, txcShared: totalTXCShared } =
+      await this.service.getTotalHashPowerAndTXCShared(id);
+    const { createdAt: joinDate } = await this.memberService.getMemberById(id);
+
+    return {
+      totalHashPower,
+      totalTXCShared,
+      joinDate,
+    };
   }
 }

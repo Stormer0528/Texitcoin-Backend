@@ -1,5 +1,5 @@
 import type { Prisma } from '@prisma/client';
-import { ObjectType, InputType, Field, ArgsType } from 'type-graphql';
+import { ObjectType, InputType, Field, ArgsType, ID } from 'type-graphql';
 
 import { PaginatedResponse } from '@/graphql/paginatedResponse';
 import { QueryArgsBase } from '@/graphql/queryArgs';
@@ -37,4 +37,22 @@ export class CreateMemberStatisticsInput {
 
   @Field()
   issuedAt: Date;
+}
+
+@InputType()
+export class MemberOverviewInput {
+  @Field(() => ID)
+  id: string;
+}
+
+@ObjectType()
+export class MemberOverview {
+  @Field()
+  totalHashPower: number;
+
+  @Field()
+  totalTXCShared: number;
+
+  @Field()
+  joinDate: Date;
 }
