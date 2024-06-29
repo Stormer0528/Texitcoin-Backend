@@ -36,4 +36,18 @@ export class MemberStatisticsService {
       data,
     });
   }
+
+  async getTotalHashPowerAndTXCShared(memberId: string) {
+    const { _sum: data } = await this.prisma.memberStatistics.aggregate({
+      _sum: {
+        hashPower: true,
+        txcShared: true,
+      },
+      where: {
+        memberId,
+      },
+    });
+
+    return data;
+  }
 }

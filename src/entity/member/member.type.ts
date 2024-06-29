@@ -67,9 +67,18 @@ export class UpdateMemberInput {
   @Field(() => ID)
   id: string;
 
-  @Field()
-  username: string;
+  @Field({ nullable: true })
+  mobile: string;
 
-  @Field()
-  email: string;
+  @Field({ nullable: true })
+  assertId?: string;
+
+  @Field({ nullable: true })
+  txcPayout?: string;
+
+  @Field({ nullable: true })
+  txtCode?: string;
+
+  @Field({ nullable: true })
+  address?: string;
 }

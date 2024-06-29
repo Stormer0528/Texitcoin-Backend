@@ -22,3 +22,5 @@ export const GET_BLOCK_HASH = 'getblockhash';
 export const GET_DIFFICULTY = 'getdifficulty';
 export const GET_BLOCK_COUNT = 'getblockcount';
 export const GET_NETWORK_HASH_PS = 'getnetworkhashps';
+
+export const DEFAULT_PASSWORD = '123456789';
