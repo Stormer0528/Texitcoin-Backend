@@ -56,3 +56,27 @@ export class MemberOverview {
   @Field()
   joinDate: Date;
 }
+
+@InputType()
+export class MemberDailyRewardsInput {
+  @Field(() => ID)
+  id: string;
+
+  @Field({ nullable: true })
+  startDate?: string;
+
+  @Field({ nullable: true })
+  endDate?: string;
+}
+
+@ObjectType()
+export class MemberDailyReward {
+  @Field()
+  issuedAt: Date;
+
+  @Field()
+  txcShared: number;
+
+  @Field()
+  hashPower: number;
+}
