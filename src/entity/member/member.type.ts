@@ -59,13 +59,13 @@ export class UpdateMemberInput {
   mobile: string;
 
   @Field({ nullable: true })
-  assertId?: string;
+  assetId?: string;
 
   @Field({ nullable: true })
   txcPayout?: string;
 
   @Field({ nullable: true })
-  txtCode?: string;
+  txcCold?: string;
 
   @Field({ nullable: true })
   address?: string;
