@@ -28,7 +28,6 @@ import { MemberService } from './member.service';
 import { Context } from '@/context';
 import { Sale } from '../sale/sale.entity';
 import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
-import { DEFAULT_PASSWORD } from '@/consts';
 
 @Service()
 @Resolver(() => Member)
@@ -66,9 +65,7 @@ export class MemberResolver {
   @Authorized([UserRole.Admin])
   @Mutation(() => Member)
   async createMember(@Arg('data') data: CreateMemberInput): Promise<Member> {
-    // Hash the password
-    const hashedPassword = await hashPassword(DEFAULT_PASSWORD);
-    return this.service.createMember({ ...data, password: hashedPassword });
+    return this.service.createMember({ ...data });
   }
 
   @Authorized([UserRole.Admin])

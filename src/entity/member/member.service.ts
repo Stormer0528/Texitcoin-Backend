@@ -54,9 +54,17 @@ export class MemberService {
     });
   }
 
-  async createMember(data: CreateMemberInput & { password: string }) {
+  async createMember(data: CreateMemberInput) {
+    const maxUserId = await this.prisma.member.aggregate({
+      _max: {
+        userId: true,
+      },
+    });
     return this.prisma.member.create({
-      data,
+      data: {
+        ...data,
+        userId: maxUserId._max.userId + 1,
+      },
     });
   }
 
@@ -64,13 +72,6 @@ export class MemberService {
     return this.prisma.member.update({
       where: { id },
       data,
-    });
-  }
-
-  async updatePassword({ id, password }: { id: string; password: string }) {
-    return this.prisma.member.update({
-      where: { id },
-      data: { password },
     });
   }
 }
