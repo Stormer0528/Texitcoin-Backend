@@ -56,7 +56,7 @@ model Member {
 model Sale {
   id            String   @id @default(uuid())
   memberId      String
-  invoiceNo     Int      @default(0)
+  invoiceNo     Int      @unique(map: "index_sales_on_invoiceNo") @default(0)
   productName   String   @db.VarChar
   paymentMethod String   @db.VarChar
   amount        Int
