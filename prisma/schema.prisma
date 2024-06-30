@@ -28,19 +28,18 @@ model User {
 }
 
 model Member {
-  id                 String  @id @default(uuid())
-  username           String  @unique(map: "index_members_on_username") @db.VarChar
-  fullName           String  @db.VarChar
-  sponsorName        String? @db.VarChar
-  introducerFullName String? @db.VarChar
-  userId             Int     @unique(map: "index_users_on_userId") @db.Integer
-  email              String  @db.VarChar
-  password           String  @db.VarChar
-  mobile             String  @db.VarChar
-  assetId            String  @db.VarChar
-  txcPayout          String  @db.VarChar
-  txcCold            String  @db.VarChar
-  address            String  @db.VarChar
+  id                 String   @id @default(uuid())
+  username           String   @unique(map: "index_members_on_username") @db.VarChar
+  fullName           String   @db.VarChar
+  sponsorName        String?  @db.VarChar
+  introducerFullName String?  @db.VarChar
+  userId             Int      @unique(map: "index_users_on_userId") @db.Integer
+  email              String   @db.VarChar
+  mobile             String   @db.VarChar
+  assetId            String   @db.VarChar
+  txcPayout          String   @db.VarChar
+  txcCold            String   @db.VarChar
+  address            String   @db.VarChar
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -57,7 +56,6 @@ model Sale {
   id            String   @id @default(uuid())
   memberId      String
   invoiceNo     Int      @unique(map: "index_sales_on_invoiceNo") @default(0)
-  productName   String   @db.VarChar
   packageId     String
   paymentMethod String   @db.VarChar
   hashPower     Int

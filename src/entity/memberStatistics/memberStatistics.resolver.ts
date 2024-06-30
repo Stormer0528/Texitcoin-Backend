@@ -90,7 +90,7 @@ export class MemberStatisticsResolver {
     return ctx.dataLoader.get('statisticsForMemberStatisticsLoader').load(memberStatistics.id);
   }
 
-  // @Authorized([UserRole.Admin])
+  @Authorized([UserRole.Admin])
   @Query(() => MemberOverview)
   async memberOverview(@Arg('data') { id }: MemberOverviewInput): Promise<MemberOverview> {
     const { hashPower: totalHashPower, txcShared: totalTXCShared } =
@@ -104,6 +104,7 @@ export class MemberStatisticsResolver {
     };
   }
 
+  @Authorized([UserRole.Admin])
   @Query(() => [MemberDailyReward])
   async memberDailyReward(
     @Arg('data') { id, startDate, endDate }: MemberDailyRewardsInput

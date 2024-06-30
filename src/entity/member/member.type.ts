@@ -28,23 +28,11 @@ export class CreateMemberInput {
   fullName: string;
 
   @Field()
-  sponsorName?: string;
-
-  @Field()
-  introducerFullName?: string;
-
-  @Field()
   address: string;
 
   @Field()
   @IsEmail()
   email: string;
-
-  @Field()
-  userId: number;
-
-  @Field()
-  password: string;
 
   @Field()
   mobile: string;
