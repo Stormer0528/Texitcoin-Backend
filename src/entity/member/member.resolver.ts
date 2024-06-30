@@ -65,7 +65,7 @@ export class MemberResolver {
   @Authorized([UserRole.Admin])
   @Mutation(() => Member)
   async createMember(@Arg('data') data: CreateMemberInput): Promise<Member> {
-    return this.service.createMember({ ...data });
+    return this.service.createMember(data);
   }
 
   @Authorized([UserRole.Admin])
