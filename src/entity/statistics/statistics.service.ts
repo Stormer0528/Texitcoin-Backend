@@ -19,7 +19,7 @@ export class StatisticsService {
     });
   }
 
-  async getPendingStatistics(date: Date) {
+  async getPendingStatistics(params, date: Date) {
     return this.prisma.statistics.findFirst({
       include: {
         memberStatistics: {
@@ -31,6 +31,7 @@ export class StatisticsService {
       where: {
         status: false,
         issuedAt: date,
+        ...params.where,
       },
     });
   }
