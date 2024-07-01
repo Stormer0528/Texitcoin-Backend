@@ -5,23 +5,23 @@ import { MemberStatistics } from '@/entity/memberStatistics/memberStatistics.ent
 
 export const memberStatisticsForStatisticsLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, MemberStatistics[]>(
-    async (memberIds: string[]) => {
-      const statisticsWithMemberStatistics = await parent.prisma.member.findMany({
+    async (statisticsIds: string[]) => {
+      const statisticsWithMemberStatistics = await parent.prisma.statistics.findMany({
         select: {
           id: true,
-          statistics: true,
+          memberStatistics: true,
         },
-        where: { id: { in: memberIds } },
+        where: { id: { in: statisticsIds } },
       });
 
       const statisticsWithMemberStatisticsMap: Record<string, MemberStatistics[]> = {};
-      statisticsWithMemberStatistics.forEach(({ id, statistics }) => {
-        statisticsWithMemberStatisticsMap[id] = statistics.map(
-          (memberStatistics) => memberStatistics
+      statisticsWithMemberStatistics.forEach(({ id, memberStatistics }) => {
+        statisticsWithMemberStatisticsMap[id] = memberStatistics.map(
+          (memberStatistic) => memberStatistic
         );
       });
 
-      return memberIds.map((id) => statisticsWithMemberStatisticsMap[id]);
+      return statisticsIds.map((id) => statisticsWithMemberStatisticsMap[id]);
     },
     {
       ...parent.dataLoaderOptions,
