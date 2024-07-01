@@ -32,9 +32,6 @@ export class CreateSaleInput {
   paymentMethod: string;
 
   @Field()
-  hashPower: number;
-
-  @Field()
   status: boolean;
 
   @Field()
@@ -52,9 +49,6 @@ export class UpdateSaleInput {
 
   @Field({ nullable: true })
   paymentMethod?: string;
-
-  @Field({ nullable: true })
-  hashPower?: number;
 
   @Field({ nullable: true })
   orderedAt?: Date;
