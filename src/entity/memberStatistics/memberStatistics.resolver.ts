@@ -23,8 +23,6 @@ import {
   CreateMemberStatisticsInput,
   MemberOverview,
   MemberOverviewInput,
-  MemberDailyRewardsInput,
-  MemberDailyReward,
 } from './memberStatistics.type';
 import { MemberStatisticsService } from './memberStatistics.service';
 import { Member } from '../member/member.entity';
@@ -102,13 +100,5 @@ export class MemberStatisticsResolver {
       totalTXCShared,
       joinDate,
     };
-  }
-
-  @Authorized([UserRole.Admin])
-  @Query(() => [MemberDailyReward])
-  async memberDailyReward(
-    @Arg('data') { id, startDate, endDate }: MemberDailyRewardsInput
-  ): Promise<MemberDailyReward[]> {
-    return await this.service.getMemberDailyRewards(id, startDate, endDate);
   }
 }

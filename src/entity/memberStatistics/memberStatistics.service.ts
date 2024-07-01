@@ -3,7 +3,6 @@ import { Service, Inject } from 'typedi';
 import { PrismaService } from '@/service/prisma';
 
 import { CreateMemberStatisticsInput, MemberStatisticsQueryArgs } from './memberStatistics.type';
-import dayjs from 'dayjs';
 
 @Service()
 export class MemberStatisticsService {
@@ -50,26 +49,5 @@ export class MemberStatisticsService {
     });
 
     return data;
-  }
-
-  async getMemberDailyRewards(memberId: string, startDate?: string, endDate?: string) {
-    const issuedAt = {};
-    if (startDate) {
-      issuedAt['gte'] = dayjs(startDate).startOf('day');
-    }
-    if (endDate) {
-      issuedAt['lte'] = dayjs(endDate).endOf('day');
-    }
-    return await this.prisma.memberStatistics.findMany({
-      select: {
-        txcShared: true,
-        hashPower: true,
-        issuedAt: true,
-      },
-      where: {
-        memberId,
-        issuedAt,
-      },
-    });
   }
 }
