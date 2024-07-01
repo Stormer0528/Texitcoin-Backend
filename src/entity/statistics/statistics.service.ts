@@ -19,6 +19,12 @@ export class StatisticsService {
     });
   }
 
+  async getStatisticsCount(params: StatisticsQueryArgs) {
+    return this.prisma.statistics.count({
+      where: params.where,
+    });
+  }
+
   async getPendingStatistics(params, date: Date) {
     return this.prisma.statistics.findFirst({
       include: {
