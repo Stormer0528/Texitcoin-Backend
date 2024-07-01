@@ -16,9 +16,6 @@ export class Sale extends BaseEntity {
   paymentMethod: string;
 
   @Field()
-  hashPower: number;
-
-  @Field()
   status: boolean;
 
   @Field(() => ID)

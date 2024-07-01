@@ -58,7 +58,6 @@ model Sale {
   invoiceNo     Int      @unique(map: "index_sales_on_invoiceNo") @default(0)
   packageId     String
   paymentMethod String   @db.VarChar
-  hashPower     Int
   orderedAt     DateTime @default(now()) @db.Timestamptz(6)
   status        Boolean  @default(true)
 
@@ -81,7 +80,7 @@ model Statistics {
   totalHashPower Int
   totalMembers   Int?
   status         Boolean @default(true)
-  txcShared      Int
+  txcShared      Int     @default(0)
 
   issuedAt DateTime @default(now())
   from     DateTime
