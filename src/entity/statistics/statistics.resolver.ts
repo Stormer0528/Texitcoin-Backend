@@ -45,6 +45,10 @@ export class StatisticsResolver {
 
     let promises: { total?: Promise<number>; statistics?: Promise<Statistics[]> } = {};
 
+    if ('total' in fields) {
+      promises.total = this.service.getStatisticsCount(query);
+    }
+
     if ('statistics' in fields) {
       promises.statistics = this.service.getStatistics(query);
     }
