@@ -28,18 +28,18 @@ model User {
 }
 
 model Member {
-  id                 String   @id @default(uuid())
-  username           String   @unique(map: "index_members_on_username") @db.VarChar
-  fullName           String   @db.VarChar
-  sponsorName        String?  @db.VarChar
-  introducerFullName String?  @db.VarChar
-  userId             Int      @unique(map: "index_users_on_userId") @db.Integer
-  email              String   @db.VarChar
-  mobile             String   @db.VarChar
-  assetId            String   @db.VarChar
-  txcPayout          String   @db.VarChar
-  txcCold            String   @db.VarChar
-  address            String   @db.VarChar
+  id                 String  @id @default(uuid())
+  username           String  @unique(map: "index_members_on_username") @db.VarChar
+  fullName           String  @db.VarChar
+  sponsorName        String? @db.VarChar
+  introducerFullName String? @db.VarChar
+  userId             Int     @unique(map: "index_users_on_userId") @db.Integer
+  email              String  @db.VarChar
+  mobile             String  @db.VarChar
+  assetId            String  @db.VarChar
+  txcPayout          String  @db.VarChar
+  txcCold            String  @db.VarChar
+  address            String  @db.VarChar
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -81,6 +81,7 @@ model Statistics {
   totalHashPower Int
   totalMembers   Int?
   status         Boolean @default(true)
+  txcShared      Int
 
   issuedAt DateTime @default(now())
   from     DateTime

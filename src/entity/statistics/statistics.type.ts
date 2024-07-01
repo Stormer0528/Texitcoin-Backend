@@ -36,6 +36,9 @@ export class CreateStatisticsInput {
   status: boolean = false;
 
   @Field()
+  txcShared: number;
+
+  @Field()
   issuedAt: Date;
 
   @Field()

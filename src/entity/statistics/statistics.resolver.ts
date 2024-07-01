@@ -63,7 +63,7 @@ export class StatisticsResolver {
   @Authorized([UserRole.Admin])
   @Mutation(() => Statistics)
   async createStatistics(@Arg('data') data: CreateStatisticsInput): Promise<Statistics> {
-    return this.service.createStatistics({ ...data });
+    return this.service.createStatistics(data);
   }
 
   @Query(() => PendingStatisticsResponse)
