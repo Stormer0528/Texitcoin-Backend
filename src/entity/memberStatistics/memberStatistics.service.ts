@@ -2,7 +2,11 @@ import { Service, Inject } from 'typedi';
 
 import { PrismaService } from '@/service/prisma';
 
-import { CreateMemberStatisticsInput, MemberStatisticsQueryArgs } from './memberStatistics.type';
+import {
+  CreateManyMemberStatisticsInput,
+  CreateMemberStatisticsInput,
+  MemberStatisticsQueryArgs,
+} from './memberStatistics.type';
 
 @Service()
 export class MemberStatisticsService {
@@ -34,6 +38,12 @@ export class MemberStatisticsService {
   async createMemberStatistics(data: CreateMemberStatisticsInput) {
     return this.prisma.memberStatistics.create({
       data,
+    });
+  }
+
+  async createManyMemberStatistics(data: CreateManyMemberStatisticsInput) {
+    return this.prisma.memberStatistics.createMany({
+      data: data.memberStatistics,
     });
   }
 
