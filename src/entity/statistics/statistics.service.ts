@@ -2,7 +2,12 @@ import { Service, Inject } from 'typedi';
 
 import { PrismaService } from '@/service/prisma';
 
-import { ConfirmStatistics, CreateStatisticsInput, StatisticsQueryArgs } from './statistics.type';
+import {
+  ConfirmStatistics,
+  CreateStatisticsInput,
+  StatisticsQueryArgs,
+  UpdateStatisticsTXCInput,
+} from './statistics.type';
 
 @Service()
 export class StatisticsService {
@@ -63,6 +68,17 @@ export class StatisticsService {
       },
       data: {
         status: true,
+      },
+    });
+  }
+
+  async updateTXCShared(data: UpdateStatisticsTXCInput) {
+    return this.prisma.statistics.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        txcShared: data.txcShared,
       },
     });
   }

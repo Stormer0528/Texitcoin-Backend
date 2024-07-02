@@ -25,6 +25,7 @@ import {
   PendingStatisticsResponse,
   PendingStatistics,
   Status,
+  UpdateStatisticsTXCInput,
 } from './statistics.type';
 import { StatisticsService } from './statistics.service';
 import { today } from '@/utils/common';
@@ -103,5 +104,11 @@ export class StatisticsResolver {
     @Ctx() ctx: Context
   ): Promise<MemberStatistics[]> {
     return ctx.dataLoader.get('memberStatisticsForStatisticsLoader').load(statistics.id);
+  }
+
+  @Authorized([UserRole.Admin])
+  @Mutation(() => Statistics)
+  async updateTXCShare(@Arg('data') data: UpdateStatisticsTXCInput): Promise<Statistics> {
+    return this.service.updateTXCShared(data);
   }
 }

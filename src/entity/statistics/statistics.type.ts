@@ -73,3 +73,12 @@ export class PendingStatisticsResponse {
   @Field(() => [PendingStatistics])
   results: PendingStatistics[];
 }
+
+@InputType()
+export class UpdateStatisticsTXCInput {
+  @Field(() => ID)
+  id: string;
+
+  @Field()
+  txcShared: number;
+}
