@@ -67,5 +67,5 @@ export class CreateManyMemberStatisticsInput {
 @ObjectType()
 export class ManySuccessResponse {
   @Field()
-  createdCound: number;
+  createdCount: number;
 }
