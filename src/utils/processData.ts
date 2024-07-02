@@ -1,13 +1,26 @@
-import { Sale } from '@prisma/client';
+import { PrismaClient, Sale } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export const processStatistics = async function (sales: Sale[]) {
-  const saleStatistics = sales.reduce(
-    (prev, { hashPower, memberId }) => ({
-      ...prev,
-      members: { ...prev.members, [memberId]: (prev.members[memberId] || 0) + hashPower },
-      hashPower: prev.hashPower + hashPower,
-    }),
-    { hashPower: 0, members: {} }
+  const saleStatistics = await sales.reduce(
+    async (promisePrev, { packageId, memberId }) => {
+      const prev = await promisePrev;
+      const { token: hashPower } = await prisma.package.findUnique({
+        select: {
+          token: true,
+        },
+        where: {
+          id: packageId,
+        },
+      });
+      return {
+        ...prev,
+        members: { ...prev.members, [memberId]: (prev.members[memberId] || 0) + hashPower },
+        hashPower: prev.hashPower + hashPower,
+      };
+    },
+    Promise.resolve({ hashPower: 0, members: {} })
   );
 
   return {

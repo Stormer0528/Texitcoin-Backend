@@ -52,63 +52,27 @@ const createStatistics = async (sales: Sale[]) => {
   }
 };
 
-const syncMembers = async () => {
-  try {
-    console.log('Syncing members...');
-
-    const mlmMembers = await getMembers();
-
-    const members = await Bluebird.map(
-      mlmMembers,
-      async (member) => {
-        const result = await prisma.member.upsert({
-          where: { userId: member.userId },
-          create: member,
-          update: member,
-        });
-
-        return result;
-      },
-      { concurrency: 10 }
-    );
-
-    console.log(`Successfully synced ${members.length} members`);
-
-    return members;
-  } catch (err) {
-    console.log('error => ', err);
-  }
-};
-
-const syncSales = async (members: Member[]) => {
-  try {
-    console.log('Syncing sales...');
-
-    await prisma.sale.deleteMany();
-    console.log('Successfully deleted current sales.');
-
-    const mlmSales = await getSales(members);
-
-    const sales = await prisma.sale.createManyAndReturn({ data: mlmSales });
-
-    console.log('Successfully created sales');
-
-    return sales;
-  } catch (err) {
-    console.log('error => ', err);
-  }
-};
-
 const createMemberStatistics = async (newReward: Statistics, sales: Sale[]) => {
   try {
     console.log('Creating memberStatistics...');
 
-    const hashPowerByMember: Record<string, number> = sales.reduce(
-      (prev, { hashPower, memberId }) => ({
-        ...prev,
-        [memberId]: (prev[memberId] || 0) + hashPower,
-      }),
-      {}
+    const hashPowerByMember: Record<string, number> = await sales.reduce(
+      async (promisePrev, { packageId, memberId }) => {
+        const prev = await promisePrev;
+        const pkg = await prisma.package.findUnique({
+          select: {
+            token: true,
+          },
+          where: {
+            id: packageId,
+          },
+        });
+        return {
+          ...prev,
+          [memberId]: (prev[memberId] || 0) + pkg.token,
+        };
+      },
+      Promise.resolve({})
     );
 
     const memberStatistics = Object.entries(hashPowerByMember).map(([memberId, hashPower]) => ({
@@ -133,8 +97,7 @@ const createMemberStatistics = async (newReward: Statistics, sales: Sale[]) => {
 async function rewardTXC() {
   console.log('Started rewarding operation');
 
-  const members = await syncMembers();
-  const sales = await syncSales(members);
+  const sales = await prisma.sale.findMany();
   const newReward = await createStatistics(sales);
 
   if (newReward) {
