@@ -23,6 +23,8 @@ import {
   CreateMemberStatisticsInput,
   MemberOverview,
   MemberOverviewInput,
+  CreateManyMemberStatisticsInput,
+  ManySuccessResponse,
 } from './memberStatistics.type';
 import { MemberStatisticsService } from './memberStatistics.service';
 import { Member } from '../member/member.entity';
@@ -72,7 +74,20 @@ export class MemberStatisticsResolver {
   async createMemberStatistics(
     @Arg('data') data: CreateMemberStatisticsInput
   ): Promise<MemberStatistics> {
-    return this.service.createMemberStatistics({ ...data });
+    return this.service.createMemberStatistics(data);
+  }
+
+  @Authorized([UserRole.Admin])
+  @Mutation(() => ManySuccessResponse)
+  async createManyMemberStatistics(
+    @Arg('data') data: CreateManyMemberStatisticsInput
+  ): Promise<ManySuccessResponse> {
+    try {
+      const { count } = await this.service.createManyMemberStatistics(data);
+      return { createdCound: count };
+    } catch (err) {
+      return { createdCound: 0 };
+    }
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })

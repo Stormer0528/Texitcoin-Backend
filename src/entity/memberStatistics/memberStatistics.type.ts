@@ -56,3 +56,16 @@ export class MemberOverview {
   @Field()
   joinDate: Date;
 }
+
+// Create Multil UserStatistics Input and Response
+@InputType()
+export class CreateManyMemberStatisticsInput {
+  @Field(() => [CreateMemberStatisticsInput])
+  memberStatistics: CreateMemberStatisticsInput[];
+}
+
+@ObjectType()
+export class ManySuccessResponse {
+  @Field()
+  createdCound: number;
+}
