@@ -55,12 +55,6 @@ export class ConfirmStatistics {
 }
 
 @ObjectType()
-export class Status {
-  @Field()
-  success: boolean;
-}
-
-@ObjectType()
 export class PendingStatistics {
   @Field()
   txcCold: string;
@@ -75,10 +69,13 @@ export class PendingStatisticsResponse {
 }
 
 @InputType()
-export class UpdateStatisticsTXCInput {
+export class UpdateStatisticsInput {
   @Field(() => ID)
   id: string;
 
-  @Field()
-  txcShared: number;
+  @Field({ nullable: true })
+  txcShared?: number;
+
+  @Field({ nullable: true })
+  status?: boolean;
 }
