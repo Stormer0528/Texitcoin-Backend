@@ -22,6 +22,7 @@ import { SaleService } from './sale.service';
 import { Context } from '@/context';
 import { Member } from '../member/member.entity';
 import { Package } from '../package/package.entity';
+import dayjs from 'dayjs';
 
 @Service()
 @Resolver(() => Sale)
@@ -37,6 +38,17 @@ export class SaleResolver {
     const fields = graphqlFields(info);
 
     let promises: { total?: Promise<number>; sales?: any } = {};
+
+    if (query.where.orderedAt) {
+      query.filter.orderedAt = {
+        gte: dayjs(query.where.orderedAt as string)
+          .startOf('day')
+          .toDate(),
+        lte: dayjs(query.where.orderedAt as string)
+          .endOf('day')
+          .toDate(),
+      };
+    }
 
     if ('total' in fields) {
       promises.total = this.service.getSalesCount(query);
