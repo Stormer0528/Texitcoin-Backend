@@ -31,6 +31,7 @@ import { Member } from '../member/member.entity';
 import { Context } from '@/context';
 import { Statistics } from '../statistics/statistics.entity';
 import { MemberService } from '../member/member.service';
+import dayjs from 'dayjs';
 
 @Service()
 @Resolver(() => MemberStatistics)
@@ -49,6 +50,17 @@ export class MemberStatisticsResolver {
     const fields = graphqlFields(info);
 
     let promises: { total?: Promise<number>; memberStatistics?: any } = {};
+
+    if (query.where.issuedAt) {
+      query.filter.issuedAt = {
+        gte: dayjs(query.where.issuedAt as string)
+          .startOf('day')
+          .toDate(),
+        lte: dayjs(query.where.issuedAt as string)
+          .endOf('day')
+          .toDate(),
+      };
+    }
 
     if ('total' in fields) {
       promises.total = this.service.getMemberStatisticsCount(query);
@@ -84,9 +96,9 @@ export class MemberStatisticsResolver {
   ): Promise<ManySuccessResponse> {
     try {
       const { count } = await this.service.createManyMemberStatistics(data);
-      return { createdCound: count };
+      return { createdCount: count };
     } catch (err) {
-      return { createdCound: 0 };
+      return { createdCount: 0 };
     }
   }
 
