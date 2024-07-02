@@ -1,8 +1,6 @@
-import { Member, PrismaClient, Sale, Statistics } from '@prisma/client';
-import Bluebird from 'bluebird';
+import { PrismaClient, Sale, Statistics } from '@prisma/client';
 
 import { processStatistics } from '../utils/processData';
-import { getSales, getMembers } from '../utils/connectMlm';
 
 const prisma = new PrismaClient();
 

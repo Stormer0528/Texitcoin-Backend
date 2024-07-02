@@ -21,11 +21,9 @@ import {
   StatisticsResponse,
   StatisticsQueryArgs,
   CreateStatisticsInput,
-  ConfirmStatistics,
   PendingStatisticsResponse,
   PendingStatistics,
-  Status,
-  UpdateStatisticsTXCInput,
+  UpdateStatisticsInput,
 } from './statistics.type';
 import { StatisticsService } from './statistics.service';
 import { today } from '@/utils/common';
@@ -91,11 +89,9 @@ export class StatisticsResolver {
   }
 
   @Authorized([UserRole.Admin])
-  @Mutation(() => Status)
-  async confirmStatistics(@Arg('data') data: ConfirmStatistics): Promise<Status> {
-    await this.service.updateStatistics(data);
-
-    return { success: true };
+  @Mutation(() => Statistics)
+  async updateStatistics(@Arg('data') data: UpdateStatisticsInput): Promise<Statistics> {
+    return await this.service.updateStatistics(data);
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })
@@ -104,11 +100,5 @@ export class StatisticsResolver {
     @Ctx() ctx: Context
   ): Promise<MemberStatistics[]> {
     return ctx.dataLoader.get('memberStatisticsForStatisticsLoader').load(statistics.id);
-  }
-
-  @Authorized([UserRole.Admin])
-  @Mutation(() => Statistics)
-  async updateTXCShare(@Arg('data') data: UpdateStatisticsTXCInput): Promise<Statistics> {
-    return this.service.updateTXCShared(data);
   }
 }
