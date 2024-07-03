@@ -118,12 +118,22 @@ export class MemberStatisticsResolver {
   @Authorized([UserRole.Admin])
   @Query(() => MemberOverview)
   async memberOverview(@Arg('data') { id }: MemberOverviewInput): Promise<MemberOverview> {
-    const { hashPower: totalHashPower, txcShared: totalTXCShared } =
-      await this.service.getTotalHashPowerAndTXCShared(id);
+    const { txcShared: totalTXCShared } = await this.service.getTotalTXCShared(id);
+    const { hashPower: lastHashPower } = await this.service.getMemberStatistic({
+      where: {
+        memberId: id,
+      },
+      select: {
+        hashPower: true,
+      },
+      orderBy: {
+        issuedAt: 'desc',
+      },
+    });
     const { createdAt: joinDate } = await this.memberService.getMemberById(id);
 
     return {
-      totalHashPower,
+      lastHashPower,
       totalTXCShared,
       joinDate,
     };

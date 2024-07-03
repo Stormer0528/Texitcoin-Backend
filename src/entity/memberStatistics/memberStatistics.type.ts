@@ -48,7 +48,7 @@ export class MemberOverviewInput {
 @ObjectType()
 export class MemberOverview {
   @Field()
-  totalHashPower: number;
+  lastHashPower: number;
 
   @Field()
   totalTXCShared: number;
