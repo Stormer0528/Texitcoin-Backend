@@ -1,6 +1,7 @@
 import { PrismaClient, Sale, Statistics } from '@prisma/client';
 
 import { processStatistics } from '../utils/processData';
+import dayjs from 'dayjs';
 
 const prisma = new PrismaClient();
 
@@ -32,7 +33,7 @@ const createStatistics = async (sales: Sale[]) => {
           ...statistics,
           newBlocks: newBlocks.length,
           totalBlocks: latestReward.totalBlocks + newBlocks.length,
-          issuedAt: new Date(),
+          issuedAt: dayjs(new Date()).format('YYYY-MM-DD 00:00:00'),
           from: newBlocks[newBlocks.length - 1].createdAt,
           to: newBlocks[0].createdAt,
         },
@@ -45,48 +46,6 @@ const createStatistics = async (sales: Sale[]) => {
       console.log('No new blocks since last reward, skipping statistics creation.');
       return null;
     }
-  } catch (err) {
-    console.log('error => ', err);
-  }
-};
-
-const createMemberStatistics = async (newReward: Statistics, sales: Sale[]) => {
-  try {
-    console.log('Creating memberStatistics...');
-
-    const hashPowerByMember: Record<string, number> = await sales.reduce(
-      async (promisePrev, { packageId, memberId }) => {
-        const prev = await promisePrev;
-        const pkg = await prisma.package.findUnique({
-          select: {
-            token: true,
-          },
-          where: {
-            id: packageId,
-          },
-        });
-        return {
-          ...prev,
-          [memberId]: (prev[memberId] || 0) + pkg.token,
-        };
-      },
-      Promise.resolve({})
-    );
-
-    const memberStatistics = Object.entries(hashPowerByMember).map(([memberId, hashPower]) => ({
-      memberId: memberId,
-      statisticsId: newReward.id,
-      issuedAt: newReward.issuedAt,
-      txcShared: Number(
-        ((newReward.newBlocks * hashPower * 254) / newReward.totalHashPower).toFixed(6)
-      ),
-      hashPower,
-      percent: Number(((hashPower * 100) / newReward.totalHashPower).toFixed(3)),
-    }));
-
-    const result = await prisma.memberStatistics.createMany({ data: memberStatistics });
-
-    console.log(`Successfully created ${result.count} memberStatistics`);
   } catch (err) {
     console.log('error => ', err);
   }
