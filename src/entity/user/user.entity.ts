@@ -1,5 +1,5 @@
 import { ObjectType, Field, ID } from 'type-graphql';
-import { IsEmail } from 'class-validator';
+import { IsEmail, IsUrl } from 'class-validator';
 
 import { BaseEntity } from '@/graphql/baseEntity';
 
@@ -19,4 +19,8 @@ export class User extends BaseEntity {
 
   @Field()
   isAdmin: boolean = false;
+
+  @Field()
+  @IsUrl()
+  avatar: string;
 }
