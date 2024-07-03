@@ -39,7 +39,7 @@ export class SaleResolver {
 
     let promises: { total?: Promise<number>; sales?: any } = {};
 
-    if (query.where.orderedAt) {
+    if (query.where?.orderedAt) {
       query.filter.orderedAt = {
         gte: dayjs(query.where.orderedAt as string)
           .startOf('day')

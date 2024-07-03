@@ -96,11 +96,7 @@ async function rewardTXC() {
   console.log('Started rewarding operation');
 
   const sales = await prisma.sale.findMany();
-  const newReward = await createStatistics(sales);
-
-  if (newReward) {
-    await createMemberStatistics(newReward, sales);
-  }
+  await createStatistics(sales);
 
   console.log('Finished rewarding operation');
 }
