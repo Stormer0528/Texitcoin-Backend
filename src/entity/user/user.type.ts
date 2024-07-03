@@ -1,4 +1,4 @@
-import { IsEmail } from 'class-validator';
+import { IsEmail, IsUrl } from 'class-validator';
 import type { Prisma } from '@prisma/client';
 import { ObjectType, InputType, Field, ArgsType, ID, Authorized } from 'type-graphql';
 
@@ -33,6 +33,10 @@ export class CreateUserInput {
 
   @Field()
   isAdmin: boolean = false;
+
+  @Field({ nullable: true })
+  @IsUrl()
+  avatar: string;
 }
 
 @InputType()
@@ -49,6 +53,10 @@ export class UpdateUserInput {
   @Authorized()
   @Field({ nullable: true })
   isAdmin: boolean;
+
+  @Field({ nullable: true })
+  @IsUrl()
+  avatar: string;
 }
 
 @InputType()

@@ -19,6 +19,7 @@ model User {
   email    String  @unique(map: "index_users_on_email") @db.VarChar
   password String  @db.VarChar
   isAdmin  Boolean @default(false) @db.Boolean
+  avatar   String  @default("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcrrCHjN9kChJVJtWxXCHoUcgEhxWwTclnURuK20T8EDX_rVt0NMik5tYpLhKzqPBnvP0&usqp=CAU")
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
