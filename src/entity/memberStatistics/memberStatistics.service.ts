@@ -7,6 +7,7 @@ import {
   CreateMemberStatisticsInput,
   MemberStatisticsQueryArgs,
 } from './memberStatistics.type';
+import { Prisma } from '@prisma/client';
 
 @Service()
 export class MemberStatisticsService {
@@ -47,10 +48,9 @@ export class MemberStatisticsService {
     });
   }
 
-  async getTotalHashPowerAndTXCShared(memberId: string) {
+  async getTotalTXCShared(memberId: string) {
     const { _sum: data } = await this.prisma.memberStatistics.aggregate({
       _sum: {
-        hashPower: true,
         txcShared: true,
       },
       where: {
@@ -59,5 +59,9 @@ export class MemberStatisticsService {
     });
 
     return data;
+  }
+
+  async getMemberStatistic(query: Prisma.MemberStatisticsFindFirstArgs) {
+    return this.prisma.memberStatistics.findFirst(query);
   }
 }
