@@ -51,7 +51,7 @@ export class MemberStatisticsResolver {
 
     let promises: { total?: Promise<number>; memberStatistics?: any } = {};
 
-    if (query.where.issuedAt) {
+    if (query.where?.issuedAt) {
       query.filter.issuedAt = {
         gte: dayjs(query.where.issuedAt as string)
           .startOf('day')
