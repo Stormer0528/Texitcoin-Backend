@@ -20,6 +20,7 @@ import { MemberStatisticsResolver } from './entity/memberStatistics/memberStatis
 import { BlockResolver } from './entity/block/block.resolver';
 import { GeneralResolver } from './entity/general/general.resolver';
 import { PackageResolver } from './entity/package/package.resolver';
+import { PayoutResolver } from './entity/payout/payout.resolver';
 
 // import "./env";
 
@@ -34,6 +35,7 @@ const app = async () => {
       BlockResolver,
       GeneralResolver,
       PackageResolver,
+      PayoutResolver,
     ],
     authChecker,
     scalarsMap: [
