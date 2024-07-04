@@ -57,7 +57,7 @@ export class ConfirmStatistics {
 @ObjectType()
 export class PendingStatistics {
   @Field()
-  txcCold: string;
+  wallet: string;
   @Field()
   txcShared: number;
 }

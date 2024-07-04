@@ -39,7 +39,7 @@ export class Member extends BaseEntity {
   payoutId: string;
 
   @Field()
-  txcCold: string;
+  wallet: string;
 
   @Field()
   address: string;

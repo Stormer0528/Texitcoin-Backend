@@ -41,10 +41,10 @@ export class CreateMemberInput {
   assetId: string;
 
   @Field()
-  txcPayout: string;
+  payoutId: string;
 
   @Field()
-  txcCold: string;
+  wallet: string;
 
   // @Field(() => [Sale], { nullable: 'itemsAndList' })
   // sales?: Sale[];
@@ -62,10 +62,10 @@ export class UpdateMemberInput {
   assetId?: string;
 
   @Field({ nullable: true })
-  txcPayout?: string;
+  payoutId?: string;
 
   @Field({ nullable: true })
-  txcCold?: string;
+  wallet?: string;
 
   @Field({ nullable: true })
   address?: string;

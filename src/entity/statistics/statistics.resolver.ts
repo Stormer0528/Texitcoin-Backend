@@ -77,9 +77,9 @@ export class StatisticsResolver {
     const pendingStatistics: Statistics = await this.service.getPendingStatistics(query, today());
 
     const results: PendingStatistics[] = pendingStatistics.memberStatistics.map(
-      ({ member: { txcCold }, txcShared }) => {
+      ({ member: { wallet }, txcShared }) => {
         return {
-          txcCold,
+          wallet,
           txcShared,
         };
       }

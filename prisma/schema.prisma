@@ -38,7 +38,7 @@ model Member {
   email              String  @db.VarChar
   mobile             String  @db.VarChar
   assetId            String  @db.VarChar
-  txcCold            String  @db.VarChar
+  wallet             String  @db.VarChar
   address            String  @db.VarChar
   payoutId           String?
 
