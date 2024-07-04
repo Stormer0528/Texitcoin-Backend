@@ -49,7 +49,7 @@ model Member {
   // Relations
   sales      Sale[]
   statistics MemberStatistics[]
-  Payout     Payout?            @relation(fields: [payoutId], references: [id])
+  payout     Payout?            @relation(fields: [payoutId], references: [id])
 
   @@map("members")
 }

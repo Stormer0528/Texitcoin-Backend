@@ -1,5 +1,16 @@
 import { Service } from 'typedi';
-import { Arg, Args, Resolver, Query, Mutation, Info, Authorized } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Resolver,
+  Query,
+  Mutation,
+  Info,
+  Authorized,
+  FieldResolver,
+  Root,
+  Ctx,
+} from 'type-graphql';
 import graphqlFields from 'graphql-fields';
 import { GraphQLResolveInfo } from 'graphql';
 
@@ -7,6 +18,8 @@ import { UserRole } from '@/type';
 import { PayoutService } from './payout.service';
 import { CreatePayoutInput, PayoutQueryArgs, PayoutResponse } from './payout.type';
 import { Payout } from './payout.entity';
+import { Context } from '@/context';
+import { Member } from '../member/member.entity';
 
 @Service()
 @Resolver(() => Payout)
@@ -45,5 +58,10 @@ export class PayoutResolver {
   @Mutation(() => Payout)
   async createPayout(@Arg('data') data: CreatePayoutInput): Promise<Payout> {
     return this.service.createPayout(data);
+  }
+
+  @FieldResolver({ nullable: 'itemsAndList' })
+  async members(@Root() payout: Payout, @Ctx() ctx: Context): Promise<Member[]> {
+    return ctx.dataLoader.get('membersForPayoutLoader').load(payout.id);
   }
 }

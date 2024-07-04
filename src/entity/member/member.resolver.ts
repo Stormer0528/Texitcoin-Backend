@@ -15,7 +15,6 @@ import graphqlFields from 'graphql-fields';
 import { GraphQLResolveInfo } from 'graphql';
 
 import { UserRole } from '@/type';
-import { hashPassword } from '@/utils/auth';
 
 import { Member } from './member.entity';
 import {
@@ -28,6 +27,7 @@ import { MemberService } from './member.service';
 import { Context } from '@/context';
 import { Sale } from '../sale/sale.entity';
 import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
+import { Payout } from '../payout/payout.entity';
 
 @Service()
 @Resolver(() => Member)
@@ -82,5 +82,10 @@ export class MemberResolver {
   @FieldResolver({ nullable: 'itemsAndList' })
   async statistics(@Root() member: Member, @Ctx() ctx: Context): Promise<MemberStatistics[]> {
     return ctx.dataLoader.get('memberStatisticsForMemberLoader').load(member.id);
+  }
+
+  @FieldResolver({ nullable: 'itemsAndList' })
+  async payout(@Root() member: Member, @Ctx() ctx: Context): Promise<Payout> {
+    return ctx.dataLoader.get('payoutForMemberLoader').load(member.id);
   }
 }
