@@ -4,6 +4,7 @@ import { IsEmail } from 'class-validator';
 import { BaseEntity } from '@/graphql/baseEntity';
 import { Sale } from '@/entity/sale/sale.entity';
 import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
+import { Payout } from '../payout/payout.entity';
 
 @ObjectType()
 export class Member extends BaseEntity {
@@ -34,8 +35,8 @@ export class Member extends BaseEntity {
   @Field()
   assetId: string;
 
-  @Field()
-  txcPayout: string;
+  @Field(() => ID)
+  payoutId: string;
 
   @Field()
   txcCold: string;
@@ -48,4 +49,7 @@ export class Member extends BaseEntity {
 
   @Field(() => [MemberStatistics], { nullable: 'itemsAndList' })
   statistics?: MemberStatistics[];
+
+  @Field(() => Payout)
+  payout?: Payout;
 }
