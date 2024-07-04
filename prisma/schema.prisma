@@ -38,9 +38,9 @@ model Member {
   email              String  @db.VarChar
   mobile             String  @db.VarChar
   assetId            String  @db.VarChar
-  txcPayout          String  @db.VarChar
   txcCold            String  @db.VarChar
   address            String  @db.VarChar
+  payoutId           String?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -49,6 +49,7 @@ model Member {
   // Relations
   sales      Sale[]
   statistics MemberStatistics[]
+  Payout     Payout?            @relation(fields: [payoutId], references: [id])
 
   @@map("members")
 }
@@ -149,4 +150,21 @@ model Package {
   sales Sale[]
 
   @@map("packages")
+}
+
+model Payout {
+  id      String  @id @default(uuid())
+  method  String
+  status  Boolean @default(true)
+  name    String
+  display String
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  // relation
+  members Member[]
+
+  @@map("payouts")
 }
