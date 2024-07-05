@@ -5,11 +5,12 @@ import dayjs from 'dayjs';
 import { getMembers, getSales } from '@/utils/connectMlm';
 import Bluebird from 'bluebird';
 import { PAYOUTS } from '@/consts';
+import { SaleSearchResult } from '@/type';
 
 const prisma = new PrismaClient();
 
-const createStatistic = async (startDate, endDate, sales) => {
-  const newBlocks = await prisma.block.count({
+const createStatistic = async (startDate: Date, endDate: Date, sales: SaleSearchResult[]) => {
+  const newBlocks: number = await prisma.block.count({
     where: {
       issuedAt: {
         gte: startDate,
@@ -17,28 +18,28 @@ const createStatistic = async (startDate, endDate, sales) => {
       },
     },
   });
-  const totalBlocks = await prisma.block.count({
+  const totalBlocks: number = await prisma.block.count({
     where: {
       issuedAt: {
         lte: endDate,
       },
     },
   });
-  const totalHashPower = sales.reduce((prev, sale) => {
+  const totalHashPower: number = sales.reduce((prev: number, sale: SaleSearchResult) => {
     return prev + sale.package.token;
   }, 0);
-  const memberIds = [];
-  const membersWithHashPower = {};
+  const memberIds: string[] = [];
+  const membersWithHashPower: Record<string, number> = {};
   sales.map((sale) => {
     if (!membersWithHashPower[sale.memberId]) {
       membersWithHashPower[sale.memberId] = 0;
     }
     membersWithHashPower[sale.memberId] = membersWithHashPower[sale.memberId] + sale.package.token;
   });
-  const totalMembers = memberIds.length;
-  const txcShared = newBlocks * 254;
-  const issuedAt = startDate;
-  const statistic = await prisma.statistics.create({
+  const totalMembers: number = memberIds.length;
+  const txcShared: number = newBlocks * 254;
+  const issuedAt: Date = startDate;
+  const statistic: Statistics = await prisma.statistics.create({
     data: {
       newBlocks,
       totalBlocks,
@@ -58,24 +59,30 @@ const createStatistic = async (startDate, endDate, sales) => {
   };
 };
 
-const createMemberStatistics = async (statistic, memberIds, membersWithHashPower, issuedAt) => {
-  const totalHashPower = statistic.totalHashPower;
-  const totalTxcShared = statistic.txcShared;
-  await prisma.memberStatistics.createMany(
-    memberIds.map((memberId) => {
-      const txcShared = (totalTxcShared * membersWithHashPower[memberId]) / totalHashPower;
-      const hashPower = membersWithHashPower[memberId];
-      const percent = membersWithHashPower[memberId] / totalHashPower;
-      const statisticsId = statistic.id;
+const createMemberStatistics = async (
+  statistic: Statistics,
+  memberIds: string[],
+  membersWithHashPower: Record<string, number>,
+  issuedAt: Date
+) => {
+  const totalHashPower: number = statistic.totalHashPower;
+  const totalTxcShared: number = statistic.txcShared;
+  await prisma.memberStatistics.createMany({
+    data: memberIds.map((memberId: string) => {
+      const txcShared: number = (totalTxcShared * membersWithHashPower[memberId]) / totalHashPower;
+      const hashPower: number = membersWithHashPower[memberId];
+      const percent: number = membersWithHashPower[memberId] / totalHashPower;
+      const statisticsId: string = statistic.id;
       return {
         txcShared,
         hashPower,
         percent,
         statisticsId,
         issuedAt,
+        memberId,
       };
-    })
-  );
+    }),
+  });
 };
 
 const createStatisticsAndMemberStatistics = async () => {
@@ -83,7 +90,7 @@ const createStatisticsAndMemberStatistics = async () => {
   for (const iDate = dayjs('2024-04-01'); iDate.isBefore(now); iDate.add(1, 'day')) {
     const startDate = iDate.startOf('day').toDate();
     const endDate = iDate.endOf('day').toDate();
-    const sales = await prisma.sale.findMany({
+    const sales: SaleSearchResult[] = await prisma.sale.findMany({
       where: {
         orderedAt: {
           gte: startDate,
