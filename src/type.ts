@@ -1,3 +1,5 @@
+import { Package } from '@prisma/client';
+
 export enum UserRole {
   Admin = 'Admin',
 }
@@ -61,4 +63,9 @@ declare global {
     // you can use classes, interfaces, types, etc.
     type UserGroupPermissionJSON = UserGroupPermission;
   }
+}
+
+export interface SaleSearchResult {
+  memberId: string;
+  package: Package;
 }
