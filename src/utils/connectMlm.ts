@@ -1,6 +1,8 @@
 import { SaleReportInput } from '@/type';
 import { createConnection, Connection } from 'mysql2/promise';
 import { Member, Prisma, PrismaClient } from '@prisma/client';
+import { PACKAGES } from '@/consts';
+import { packageData } from 'prisma/seed/package';
 
 const prisma = new PrismaClient();
 
@@ -30,7 +32,7 @@ export const getSales = async (members: Member[]) => {
     `SELECT
       mph.invoice_no AS invoiceNo,
       ml.user_id AS userId,    
-      mp.package_id AS packageId,
+      mp.package AS packageName,
       mph.payment_method AS paymentMethod,
       mph.order_amount AS amount,
       mph.hashpower AS hashPower,
@@ -47,7 +49,11 @@ export const getSales = async (members: Member[]) => {
 
   const memberIds = members.reduce((prev, { id, userId }) => ({ ...prev, [userId]: id }), {});
 
-  const sales = data.map(({ userId, ...row }) => ({ ...row, memberId: memberIds[userId] }));
+  const sales = data.map(({ userId, packageName, ...row }) => ({
+    ...row,
+    memberId: memberIds[userId],
+    packageId: packageData.find((pkgData) => pkgData.productName === packageName).id,
+  }));
 
   await connection.end();
   console.log(`Close connection to affiliate database successfully...`);
