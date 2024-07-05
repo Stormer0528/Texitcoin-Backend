@@ -21,31 +21,10 @@ export class StatisticsResponse extends PaginatedResponse {
 @InputType()
 export class CreateStatisticsInput {
   @Field()
-  newBlocks: number;
-
-  @Field()
-  totalBlocks: number;
-
-  @Field()
   totalHashPower: number;
 
   @Field()
-  members?: number;
-
-  @Field({ nullable: true })
-  status: boolean = false;
-
-  @Field()
-  txcShared: number;
-
-  @Field()
-  issuedAt: Date;
-
-  @Field()
-  from: Date;
-
-  @Field()
-  to: Date;
+  totalMembers: number;
 }
 
 @InputType()
