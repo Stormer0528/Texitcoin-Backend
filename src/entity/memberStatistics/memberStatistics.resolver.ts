@@ -25,6 +25,7 @@ import {
   MemberOverviewInput,
   CreateManyMemberStatisticsInput,
   ManySuccessResponse,
+  MemberStatisticsIDsInput,
 } from './memberStatistics.type';
 import { MemberStatisticsService } from './memberStatistics.service';
 import { Member } from '../member/member.entity';
@@ -96,9 +97,22 @@ export class MemberStatisticsResolver {
   ): Promise<ManySuccessResponse> {
     try {
       const { count } = await this.service.createManyMemberStatistics(data);
-      return { createdCount: count };
+      return { count };
     } catch (err) {
-      return { createdCount: 0 };
+      return { count: 0 };
+    }
+  }
+
+  // @Authorized([UserRole.Admin])
+  @Mutation(() => ManySuccessResponse)
+  async removeManyMemberStatistics(
+    @Arg('data') data: MemberStatisticsIDsInput
+  ): Promise<ManySuccessResponse> {
+    try {
+      const { count } = await this.service.removeManyMemberStatistics(data);
+      return { count };
+    } catch (err) {
+      return { count: 0 };
     }
   }
 
