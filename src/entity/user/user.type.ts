@@ -36,7 +36,7 @@ export class CreateUserInput {
 
   @Field({ nullable: true })
   @IsUrl()
-  avatar: string;
+  avatar?: string;
 }
 
 @InputType()
@@ -56,7 +56,7 @@ export class UpdateUserInput {
 
   @Field({ nullable: true })
   @IsUrl()
-  avatar: string;
+  avatar?: string;
 }
 
 @InputType()
