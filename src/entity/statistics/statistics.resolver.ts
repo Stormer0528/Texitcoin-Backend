@@ -71,8 +71,10 @@ export class StatisticsResolver {
   @Mutation(() => Statistics)
   async createStatistics(@Arg('data') data: CreateStatisticsInput): Promise<Statistics> {
     const lastStatistics = await this.statisticsService.getLastStatistic();
-    const from = lastStatistics.to;
     const to = new Date();
+    const isExist = formatDate(lastStatistics.to) === formatDate(to);
+    const from = isExist ? lastStatistics.from : lastStatistics.to;
+    const issuedAt = new Date(formatDate(to));
     const newBlocks = await this.blockService.getBlocksCount({
       where: {
         issuedAt: {
@@ -81,12 +83,12 @@ export class StatisticsResolver {
         },
       },
     });
+
     const totalBlocks = await this.blockService.getBlocksCount({ where: {} });
     const status = false;
-    const txcShared = 0;
-    const issuedAt = new Date(formatDate(to));
+    const txcShared = newBlocks * 254;
 
-    return this.statisticsService.createStatistics({
+    const payload = {
       newBlocks,
       totalBlocks,
       status,
@@ -95,7 +97,11 @@ export class StatisticsResolver {
       from,
       to,
       ...data,
-    });
+    };
+
+    return isExist
+      ? this.statisticsService.updateStatisticsWholeById(lastStatistics.id, payload)
+      : this.statisticsService.createStatistics(payload);
   }
 
   @Query(() => PendingStatisticsResponse)
