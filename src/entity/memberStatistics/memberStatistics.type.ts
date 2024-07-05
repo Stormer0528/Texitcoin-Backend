@@ -75,3 +75,9 @@ export class MemberStatisticsIDsInput {
   @Field(() => [ID])
   ids: string[];
 }
+
+@InputType()
+export class StatisticIDInput {
+  @Field(() => ID)
+  id: string;
+}
