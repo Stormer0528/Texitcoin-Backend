@@ -20,6 +20,26 @@ export class BlockService {
     });
   }
 
+  async getBlockDataRange(params: Prisma.BlockWhereInput) {
+    const {
+      _min: { createdAt: from },
+      _max: { createdAt: to },
+      _count: count,
+    } = await this.prisma.block.aggregate({
+      _min: {
+        createdAt: true,
+      },
+      _max: {
+        createdAt: true,
+      },
+      _count: true,
+      where: {
+        ...params,
+      },
+    });
+    return { from, to, count };
+  }
+
   async getBlocksCount(params: Pick<BlockQueryArgs, 'where'>): Promise<number> {
     return this.prisma.block.count({ where: params.where });
   }
