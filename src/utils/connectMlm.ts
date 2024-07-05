@@ -70,8 +70,7 @@ export const getMembers = async () => {
       password,
       primary_address AS address,
       asset_id AS assetId,
-      TXCpayout AS txcPayout,
-      blockio AS txcCold,
+      blockio AS wallet,
       join_date AS createdAt 
     FROM mlm_login;`);
 
@@ -80,5 +79,5 @@ export const getMembers = async () => {
   await connection.end();
   console.log(`Close connection to affiliate database successfully...`);
 
-  return rows as Prisma.MemberCreateInput[];
+  return rows as Prisma.MemberUncheckedCreateInput[];
 };

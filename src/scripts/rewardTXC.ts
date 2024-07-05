@@ -114,8 +114,14 @@ const syncMembers = async () => {
       async (member) => {
         const result = await prisma.member.upsert({
           where: { userId: member.userId },
-          create: member,
-          update: member,
+          create: {
+            ...member,
+            payoutId: '6f7681f0-9ccf-4a79-b1cb-f87e56cf7e8a',
+          },
+          update: {
+            ...member,
+            payoutId: '6f7681f0-9ccf-4a79-b1cb-f87e56cf7e8a',
+          },
         });
 
         return result;
