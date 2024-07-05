@@ -2,11 +2,7 @@ import { Service, Inject } from 'typedi';
 
 import { PrismaService } from '@/service/prisma';
 
-import {
-  CreateStatisticsInput,
-  StatisticsQueryArgs,
-  UpdateStatisticsInput,
-} from './statistics.type';
+import { StatisticsQueryArgs, UpdateStatisticsInput } from './statistics.type';
 import { Prisma } from '@prisma/client';
 
 @Service()
@@ -64,6 +60,15 @@ export class StatisticsService {
     return this.prisma.statistics.update({
       where: {
         id: data.id,
+      },
+      data,
+    });
+  }
+
+  async updateStatisticsWholeById(id: string, data: Prisma.StatisticsUpdateInput) {
+    return this.prisma.statistics.update({
+      where: {
+        id,
       },
       data,
     });
