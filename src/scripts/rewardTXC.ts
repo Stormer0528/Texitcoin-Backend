@@ -4,6 +4,7 @@ import { processStatistics } from '../utils/processData';
 import dayjs from 'dayjs';
 import { getMembers, getSales } from '@/utils/connectMlm';
 import Bluebird from 'bluebird';
+import { PAYOUTS } from '@/consts';
 
 const prisma = new PrismaClient();
 
@@ -116,11 +117,11 @@ const syncMembers = async () => {
           where: { userId: member.userId },
           create: {
             ...member,
-            payoutId: '6f7681f0-9ccf-4a79-b1cb-f87e56cf7e8a',
+            payoutId: PAYOUTS[0],
           },
           update: {
             ...member,
-            payoutId: '6f7681f0-9ccf-4a79-b1cb-f87e56cf7e8a',
+            payoutId: PAYOUTS[0],
           },
         });
 
