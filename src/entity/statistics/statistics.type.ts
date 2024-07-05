@@ -20,6 +20,9 @@ export class StatisticsResponse extends PaginatedResponse {
 // Create Statistics Input and Response
 @InputType()
 export class CreateStatisticsInput {
+  @Field(() => ID, { nullable: true })
+  id?: string;
+
   @Field()
   totalHashPower: number;
 

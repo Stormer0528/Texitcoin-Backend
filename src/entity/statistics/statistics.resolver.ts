@@ -30,6 +30,7 @@ import { formatDate, today } from '@/utils/common';
 import { Context } from '@/context';
 import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
 import { BlockService } from '../block/block.service';
+import dayjs from 'dayjs';
 
 @Service()
 @Resolver(() => Statistics)
@@ -70,38 +71,39 @@ export class StatisticsResolver {
   @Authorized([UserRole.Admin])
   @Mutation(() => Statistics)
   async createStatistics(@Arg('data') data: CreateStatisticsInput): Promise<Statistics> {
-    const lastStatistics = await this.statisticsService.getLastStatistic();
-    const to = new Date();
-    const isExist = formatDate(lastStatistics.to) === formatDate(to);
-    const from = isExist ? lastStatistics.from : lastStatistics.to;
-    const issuedAt = new Date(formatDate(to));
-    const newBlocks = await this.blockService.getBlocksCount({
-      where: {
-        issuedAt: {
-          gt: from,
-          lte: to,
-        },
-      },
+    if (data.id) {
+      return this.statisticsService.updateStatisticsWholeById(data.id, data);
+    }
+
+    const statistic = await this.statisticsService.getLastStatistic();
+    const lastDate = statistic ? statistic.to : '2024-04-01';
+    const { from, to, count } = await this.blockService.getBlockDataRange({
+      createdAt: { gt: lastDate },
     });
 
-    const totalBlocks = await this.blockService.getBlocksCount({ where: {} });
+    const now = new Date();
+    const issuedAt = dayjs(to || now)
+      .startOf('day')
+      .toDate();
+
+    const totalBlocks = (statistic?.totalBlocks || 0) + count;
     const status = false;
-    const txcShared = newBlocks * 254;
+    const txcShared = count * 254;
 
     const payload = {
-      newBlocks,
+      newBlocks: count,
       totalBlocks,
       status,
       txcShared,
       issuedAt,
-      from,
-      to,
+      from: from || dayjs(now).startOf('day').toDate(),
+      to: to || now,
       ...data,
     };
 
-    return isExist
-      ? this.statisticsService.updateStatisticsWholeById(lastStatistics.id, payload)
-      : this.statisticsService.createStatistics(payload);
+    console.log(payload);
+
+    return this.statisticsService.createStatistics(payload);
   }
 
   @Query(() => PendingStatisticsResponse)

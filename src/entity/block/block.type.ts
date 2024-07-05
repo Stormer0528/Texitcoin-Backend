@@ -1,4 +1,4 @@
-import type { Prisma } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { ObjectType, InputType, Field, ArgsType, ID, Authorized, Int } from 'type-graphql';
 
 import { PaginatedResponse } from '@/graphql/paginatedResponse';
