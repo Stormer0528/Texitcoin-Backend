@@ -5,6 +5,7 @@ import { PrismaService } from '@/service/prisma';
 import {
   CreateManyMemberStatisticsInput,
   CreateMemberStatisticsInput,
+  MemberStatisticsIDsInput,
   MemberStatisticsQueryArgs,
 } from './memberStatistics.type';
 import { Prisma } from '@prisma/client';
@@ -45,6 +46,16 @@ export class MemberStatisticsService {
   async createManyMemberStatistics(data: CreateManyMemberStatisticsInput) {
     return this.prisma.memberStatistics.createMany({
       data: data.memberStatistics,
+    });
+  }
+
+  async removeManyMemberStatistics(data: MemberStatisticsIDsInput) {
+    return this.prisma.memberStatistics.deleteMany({
+      where: {
+        id: {
+          in: data.ids,
+        },
+      },
     });
   }
 

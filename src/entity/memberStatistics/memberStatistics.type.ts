@@ -67,5 +67,11 @@ export class CreateManyMemberStatisticsInput {
 @ObjectType()
 export class ManySuccessResponse {
   @Field()
-  createdCount: number;
+  count: number;
+}
+
+@InputType()
+export class MemberStatisticsIDsInput {
+  @Field(() => [ID])
+  ids: string[];
 }
