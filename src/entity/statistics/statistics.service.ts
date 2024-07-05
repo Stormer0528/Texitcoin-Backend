@@ -7,6 +7,7 @@ import {
   StatisticsQueryArgs,
   UpdateStatisticsInput,
 } from './statistics.type';
+import { Prisma } from '@prisma/client';
 
 @Service()
 export class StatisticsService {
@@ -55,7 +56,7 @@ export class StatisticsService {
     return this.prisma.statistics.findUnique({ where: { id } });
   }
 
-  async createStatistics(data: CreateStatisticsInput) {
+  async createStatistics(data: Prisma.StatisticsCreateInput) {
     return this.prisma.statistics.create({ data });
   }
 
@@ -65,6 +66,14 @@ export class StatisticsService {
         id: data.id,
       },
       data,
+    });
+  }
+
+  async getLastStatistic() {
+    return this.prisma.statistics.findFirst({
+      orderBy: {
+        issuedAt: 'desc',
+      },
     });
   }
 }

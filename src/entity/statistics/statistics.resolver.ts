@@ -26,14 +26,18 @@ import {
   UpdateStatisticsInput,
 } from './statistics.type';
 import { StatisticsService } from './statistics.service';
-import { today } from '@/utils/common';
+import { formatDate, today } from '@/utils/common';
 import { Context } from '@/context';
 import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
+import { BlockService } from '../block/block.service';
 
 @Service()
 @Resolver(() => Statistics)
 export class StatisticsResolver {
-  constructor(private readonly service: StatisticsService) {}
+  constructor(
+    private readonly statisticsService: StatisticsService,
+    private readonly blockService: BlockService
+  ) {}
 
   @Query(() => StatisticsResponse)
   async statistics(
@@ -45,11 +49,11 @@ export class StatisticsResolver {
     let promises: { total?: Promise<number>; statistics?: Promise<Statistics[]> } = {};
 
     if ('total' in fields) {
-      promises.total = this.service.getStatisticsCount(query);
+      promises.total = this.statisticsService.getStatisticsCount(query);
     }
 
     if ('statistics' in fields) {
-      promises.statistics = this.service.getStatistics(query);
+      promises.statistics = this.statisticsService.getStatistics(query);
     }
 
     const result = await Promise.all(Object.entries(promises));
@@ -66,7 +70,32 @@ export class StatisticsResolver {
   @Authorized([UserRole.Admin])
   @Mutation(() => Statistics)
   async createStatistics(@Arg('data') data: CreateStatisticsInput): Promise<Statistics> {
-    return this.service.createStatistics(data);
+    const lastStatistics = await this.statisticsService.getLastStatistic();
+    const from = lastStatistics.to;
+    const to = new Date();
+    const newBlocks = await this.blockService.getBlocksCount({
+      where: {
+        issuedAt: {
+          gt: from,
+          lte: to,
+        },
+      },
+    });
+    const totalBlocks = await this.blockService.getBlocksCount({ where: {} });
+    const status = false;
+    const txcShared = 0;
+    const issuedAt = new Date(formatDate(to));
+
+    return this.statisticsService.createStatistics({
+      newBlocks,
+      totalBlocks,
+      status,
+      txcShared,
+      issuedAt,
+      from,
+      to,
+      ...data,
+    });
   }
 
   @Query(() => PendingStatisticsResponse)
@@ -74,7 +103,10 @@ export class StatisticsResolver {
     @Args() query: StatisticsQueryArgs,
     @Info() info: GraphQLResolveInfo
   ): Promise<PendingStatisticsResponse> {
-    const pendingStatistics: Statistics = await this.service.getPendingStatistics(query, today());
+    const pendingStatistics: Statistics = await this.statisticsService.getPendingStatistics(
+      query,
+      today()
+    );
 
     const results: PendingStatistics[] = pendingStatistics.memberStatistics.map(
       ({ member: { wallet }, txcShared }) => {
@@ -91,7 +123,7 @@ export class StatisticsResolver {
   @Authorized([UserRole.Admin])
   @Mutation(() => Statistics)
   async updateStatistics(@Arg('data') data: UpdateStatisticsInput): Promise<Statistics> {
-    return await this.service.updateStatistics(data);
+    return await this.statisticsService.updateStatistics(data);
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })
