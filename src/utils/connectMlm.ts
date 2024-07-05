@@ -1,7 +1,6 @@
 import { SaleReportInput } from '@/type';
 import { createConnection, Connection } from 'mysql2/promise';
-import { Member, PrismaClient } from '@prisma/client';
-import { CreateMemberInput } from '@/entity/member/member.type';
+import { Member, Prisma, PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -81,5 +80,5 @@ export const getMembers = async () => {
   await connection.end();
   console.log(`Close connection to affiliate database successfully...`);
 
-  return rows as CreateMemberInput[];
+  return rows as Prisma.MemberCreateInput[];
 };
