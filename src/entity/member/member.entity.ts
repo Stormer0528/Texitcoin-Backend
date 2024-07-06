@@ -27,8 +27,6 @@ export class Member extends BaseEntity {
 
   userId: number;
 
-  password?: string;
-
   @Field()
   mobile: string;
 

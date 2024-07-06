@@ -34,8 +34,6 @@ export const getSales = async (members: Member[]) => {
       ml.user_id AS userId,    
       mp.package AS packageName,
       mph.payment_method AS paymentMethod,
-      mph.order_amount AS amount,
-      mph.hashpower AS hashPower,
       mph.order_date AS orderedAt
     FROM 
       mlm_purchase_history as mph
@@ -49,11 +47,15 @@ export const getSales = async (members: Member[]) => {
 
   const memberIds = members.reduce((prev, { id, userId }) => ({ ...prev, [userId]: id }), {});
 
-  const sales = data.map(({ userId, packageName, ...row }) => ({
-    ...row,
-    memberId: memberIds[userId],
-    packageId: packageData.find((pkgData) => pkgData.productName === packageName).id,
-  }));
+  const sales = data.map(({ userId, packageName, ...row }) => {
+    const trimedPkgName = packageName.trim();
+    const pkg = packageData.find((pkgData) => pkgData.productName === trimedPkgName);
+    return {
+      ...row,
+      memberId: memberIds[userId],
+      packageId: pkg.id,
+    };
+  });
 
   await connection.end();
   console.log(`Close connection to affiliate database successfully...`);
@@ -73,7 +75,6 @@ export const getMembers = async () => {
       user_id AS userId,
       CONCAT("+", phone_code, " ", phone) AS mobile,
       email,
-      password,
       primary_address AS address,
       asset_id AS assetId,
       blockio AS wallet,

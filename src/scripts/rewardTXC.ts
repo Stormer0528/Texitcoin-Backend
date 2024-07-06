@@ -9,7 +9,7 @@ import { SaleSearchResult } from '@/type';
 
 const prisma = new PrismaClient();
 
-const createStatistic = async (startDate: Date, endDate: Date, sales: SaleSearchResult[]) => {
+const createStatistic = async (startDate: string, endDate: string, sales: SaleSearchResult[]) => {
   const newBlocks: number = await prisma.block.count({
     where: {
       issuedAt: {
@@ -33,12 +33,13 @@ const createStatistic = async (startDate: Date, endDate: Date, sales: SaleSearch
   sales.map((sale) => {
     if (!membersWithHashPower[sale.memberId]) {
       membersWithHashPower[sale.memberId] = 0;
+      memberIds.push(sale.memberId);
     }
     membersWithHashPower[sale.memberId] = membersWithHashPower[sale.memberId] + sale.package.token;
   });
   const totalMembers: number = memberIds.length;
   const txcShared: number = newBlocks * 254;
-  const issuedAt: Date = startDate;
+  const issuedAt: string = startDate;
   const statistic: Statistics = await prisma.statistics.create({
     data: {
       newBlocks,
@@ -63,10 +64,11 @@ const createMemberStatistics = async (
   statistic: Statistics,
   memberIds: string[],
   membersWithHashPower: Record<string, number>,
-  issuedAt: Date
+  issuedAt: string
 ) => {
   const totalHashPower: number = statistic.totalHashPower;
   const totalTxcShared: number = statistic.txcShared;
+
   await prisma.memberStatistics.createMany({
     data: memberIds.map((memberId: string) => {
       const txcShared: number = (totalTxcShared * membersWithHashPower[memberId]) / totalHashPower;
@@ -86,10 +88,17 @@ const createMemberStatistics = async (
 };
 
 const createStatisticsAndMemberStatistics = async () => {
+  console.log('Creating statistics & memberStatistics...');
+  console.log('Removing memberStatistics');
+  await prisma.memberStatistics.deleteMany({});
+  console.log('Removing statistics');
+  await prisma.statistics.deleteMany({});
+
   const now = dayjs();
-  for (const iDate = dayjs('2024-04-01'); iDate.isBefore(now); iDate.add(1, 'day')) {
-    const startDate = iDate.startOf('day').toDate();
-    const endDate = iDate.endOf('day').toDate();
+  for (let iDate = dayjs('2024-01-01'); iDate.isBefore(now); iDate = iDate.add(1, 'day')) {
+    const startDate = iDate.startOf('day').toISOString();
+    const endDate = iDate.endOf('day').toISOString();
+    console.log(`Creating ${iDate.format('YYYY-MM-DD')}...`);
     const sales: SaleSearchResult[] = await prisma.sale.findMany({
       where: {
         orderedAt: {
@@ -108,7 +117,9 @@ const createStatisticsAndMemberStatistics = async () => {
       sales
     );
     await createMemberStatistics(statistic, memberIds, membersWithHashPower, startDate);
+    console.log(`Finished ${iDate.format('YYYY-MM-DD')}`);
   }
+  console.log('Finished creating statistics & memberStatistics');
 };
 
 const syncMembers = async () => {
