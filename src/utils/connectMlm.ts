@@ -37,7 +37,9 @@ export const getSales = async (members: Member[]) => {
     FROM 
       mlm_purchase_history as mph
       LEFT JOIN mlm_login as ml ON mph.order_user_id = ml.user_id
-      LEFT JOIN mlm_package as mp ON mph.order_product_id = mp.package_id;`
+      LEFT JOIN mlm_package as mp ON mph.order_product_id = mp.package_id
+    WHERE
+      mph.approve_status = "approved";`
   );
 
   console.log(`Fetched ${(rows as []).length} users info from affiliate`);
