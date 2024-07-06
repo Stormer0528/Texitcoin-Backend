@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 
-import { PAYOUTS } from '@/consts';
+import { PAYOUTS } from '../../src/consts';
 
 export const payoutData: Prisma.PayoutCreateManyInput[] = [
   {

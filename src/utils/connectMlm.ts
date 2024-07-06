@@ -1,7 +1,6 @@
 import { SaleReportInput } from '@/type';
 import { createConnection, Connection } from 'mysql2/promise';
 import { Member, Prisma, PrismaClient } from '@prisma/client';
-import { PACKAGES } from '@/consts';
 import { packageData } from 'prisma/seed/package';
 
 const prisma = new PrismaClient();
