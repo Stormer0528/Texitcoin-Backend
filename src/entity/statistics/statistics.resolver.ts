@@ -76,15 +76,13 @@ export class StatisticsResolver {
     }
 
     const statistic = await this.statisticsService.getLastStatistic();
-    const lastDate = statistic ? statistic.to : '2024-01-01T00:00:00.000Z';
+    const lastDate = statistic ? statistic.to : new Date('2024-04-01');
     const { from, to, count } = await this.blockService.getBlockDataRange({
       createdAt: { gt: lastDate },
     });
 
     const now = new Date();
-    const issuedAt = dayjs(to || now)
-      .startOf('day')
-      .toDate();
+    const issuedAt = new Date(formatDate(to || now));
 
     const totalBlocks = (statistic?.totalBlocks || 0) + count;
     const status = false;
@@ -96,12 +94,10 @@ export class StatisticsResolver {
       status,
       txcShared,
       issuedAt,
-      from: from || dayjs(now).startOf('day').toDate(),
+      from: from || new Date(formatDate(now)),
       to: to || now,
       ...data,
     };
-
-    console.log(payload);
 
     return this.statisticsService.createStatistics(payload);
   }

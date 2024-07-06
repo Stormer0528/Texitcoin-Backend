@@ -6,23 +6,33 @@ import { getMembers, getSales } from '@/utils/connectMlm';
 import Bluebird from 'bluebird';
 import { PAYOUTS } from '@/consts';
 import { SaleSearchResult } from '@/type';
+import { formatDate } from '@/utils/common';
 
 const prisma = new PrismaClient();
 
-const createStatistic = async (startDate: string, endDate: string, sales: SaleSearchResult[]) => {
-  const newBlocks: number = await prisma.block.count({
-    where: {
-      issuedAt: {
-        gte: startDate,
-        lte: endDate,
-      },
-    },
-  });
+const createStatistic = async (date: Date, sales: SaleSearchResult[]) => {
   const totalBlocks: number = await prisma.block.count({
     where: {
       issuedAt: {
-        lte: endDate,
+        lte: date,
       },
+    },
+  });
+
+  const {
+    _min: { createdAt: from },
+    _max: { createdAt: to },
+    _count: newBlocks,
+  } = await prisma.block.aggregate({
+    _min: {
+      createdAt: true,
+    },
+    _max: {
+      createdAt: true,
+    },
+    _count: true,
+    where: {
+      issuedAt: date,
     },
   });
   const totalHashPower: number = sales.reduce((prev: number, sale: SaleSearchResult) => {
@@ -39,7 +49,7 @@ const createStatistic = async (startDate: string, endDate: string, sales: SaleSe
   });
   const totalMembers: number = memberIds.length;
   const txcShared: number = newBlocks * 254;
-  const issuedAt: string = startDate;
+  const issuedAt: Date = date;
   const statistic: Statistics = await prisma.statistics.create({
     data: {
       newBlocks,
@@ -49,8 +59,8 @@ const createStatistic = async (startDate: string, endDate: string, sales: SaleSe
       status: true,
       txcShared,
       issuedAt,
-      from: startDate,
-      to: endDate,
+      from: from || date,
+      to: to || date,
     },
   });
   return {
@@ -64,7 +74,7 @@ const createMemberStatistics = async (
   statistic: Statistics,
   memberIds: string[],
   membersWithHashPower: Record<string, number>,
-  issuedAt: string
+  issuedAt: Date
 ) => {
   const totalHashPower: number = statistic.totalHashPower;
   const totalTxcShared: number = statistic.txcShared;
@@ -95,14 +105,13 @@ const createStatisticsAndMemberStatistics = async () => {
   await prisma.statistics.deleteMany({});
 
   const now = dayjs();
-  for (let iDate = dayjs('2024-01-01'); iDate.isBefore(now); iDate = iDate.add(1, 'day')) {
-    const startDate = iDate.format('YYYY-MM-DDT00:00:00.000Z');
-    const endDate = iDate.format('YYYY-MM-DDT23:59:59.999Z');
+  for (let iDate = dayjs('2024-04-01'); iDate.isBefore(now); iDate = iDate.add(1, 'day')) {
+    const date = new Date(formatDate(iDate.toDate()));
     console.log(`Creating ${iDate.format('YYYY-MM-DD')}...`);
     const sales: SaleSearchResult[] = await prisma.sale.findMany({
       where: {
         orderedAt: {
-          lte: endDate,
+          lt: new Date(iDate.add(1, 'day').format('YYYY-MM-DD 00:00:00')),
         },
       },
       select: {
@@ -110,12 +119,8 @@ const createStatisticsAndMemberStatistics = async () => {
         package: true,
       },
     });
-    const { statistic, memberIds, membersWithHashPower } = await createStatistic(
-      startDate,
-      endDate,
-      sales
-    );
-    await createMemberStatistics(statistic, memberIds, membersWithHashPower, startDate);
+    const { statistic, memberIds, membersWithHashPower } = await createStatistic(date, sales);
+    await createMemberStatistics(statistic, memberIds, membersWithHashPower, date);
     console.log(`Finished ${iDate.format('YYYY-MM-DD')}`);
   }
   console.log('Finished creating statistics & memberStatistics');

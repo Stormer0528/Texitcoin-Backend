@@ -39,17 +39,6 @@ export class SaleResolver {
 
     let promises: { total?: Promise<number>; sales?: any } = {};
 
-    if (query.where?.orderedAt) {
-      query.filter.orderedAt = {
-        gte: dayjs(query.where.orderedAt as string)
-          .startOf('day')
-          .toDate(),
-        lte: dayjs(query.where.orderedAt as string)
-          .endOf('day')
-          .toDate(),
-      };
-    }
-
     if ('total' in fields) {
       promises.total = this.service.getSalesCount(query);
     }

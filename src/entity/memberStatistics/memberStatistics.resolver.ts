@@ -53,17 +53,6 @@ export class MemberStatisticsResolver {
 
     let promises: { total?: Promise<number>; memberStatistics?: any } = {};
 
-    if (query.where?.issuedAt) {
-      query.filter.issuedAt = {
-        gte: dayjs(query.where.issuedAt as string)
-          .startOf('day')
-          .toDate(),
-        lte: dayjs(query.where.issuedAt as string)
-          .endOf('day')
-          .toDate(),
-      };
-    }
-
     if ('total' in fields) {
       promises.total = this.service.getMemberStatisticsCount(query);
     }
