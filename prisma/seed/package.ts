@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 export const packageData: Prisma.PackageCreateManyInput[] = [
   {
     id: PACKAGES[0],
-    productName: '10mh/s Dedicated',
+    productName: '100mh/s Dedicated',
     amount: 995,
     status: false,
     date: '2024-06-25 12:18:46.365',
@@ -20,7 +20,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
   },
   {
     id: PACKAGES[2],
-    productName: '300mh/s Dedicated',
+    productName: '900mh/s Dedicated',
     amount: 8955,
     status: false,
     date: '2024-06-25 12:18:46.365',
@@ -76,7 +76,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
   },
   {
     id: PACKAGES[9],
-    productName: '(2) Share - 1000mh/s Power',
+    productName: '(2) Shares - 1000mh/s Power',
     amount: 1990,
     status: false,
     date: '2024-06-25 12:18:46.365',
@@ -84,7 +84,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
   },
   {
     id: PACKAGES[10],
-    productName: '(3) Share - 1500mh/s Power',
+    productName: '(3) Shares - 1500mh/s Power',
     amount: 2985,
     status: false,
     date: '2024-06-25 12:18:46.365',
@@ -92,7 +92,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
   },
   {
     id: PACKAGES[11],
-    productName: '(5) Share - 2500mh/s Power',
+    productName: '(5) Shares - 2500mh/s Power',
     amount: 4975,
     status: false,
     date: '2024-06-25 12:18:46.365',
@@ -100,7 +100,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
   },
   {
     id: PACKAGES[12],
-    productName: '(7) Share - 3500mh/s Power',
+    productName: '(7) Shares - 3500mh/s Power',
     amount: 6965,
     status: false,
     date: '2024-06-25 12:18:46.365',
@@ -132,7 +132,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
   },
   {
     id: PACKAGES[16],
-    productName: '(3) Share - 300mh/s Power',
+    productName: '(3) Shares - 300mh/s Power',
     amount: 2985,
     status: true,
     date: '2024-06-25 12:18:46.365',
@@ -140,7 +140,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
   },
   {
     id: PACKAGES[17],
-    productName: '(9) Share - 900mh/s Power',
+    productName: '(9) Shares - 900mh/s Power',
     amount: 8955,
     status: true,
     date: '2024-06-25 12:18:46.365',

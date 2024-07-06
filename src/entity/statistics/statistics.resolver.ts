@@ -76,7 +76,7 @@ export class StatisticsResolver {
     }
 
     const statistic = await this.statisticsService.getLastStatistic();
-    const lastDate = statistic ? statistic.to : '2024-04-01';
+    const lastDate = statistic ? statistic.to : '2024-01-01T00:00:00.000Z';
     const { from, to, count } = await this.blockService.getBlockDataRange({
       createdAt: { gt: lastDate },
     });
