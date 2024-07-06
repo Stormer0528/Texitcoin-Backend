@@ -96,8 +96,8 @@ const createStatisticsAndMemberStatistics = async () => {
 
   const now = dayjs();
   for (let iDate = dayjs('2024-01-01'); iDate.isBefore(now); iDate = iDate.add(1, 'day')) {
-    const startDate = iDate.startOf('day').toISOString();
-    const endDate = iDate.endOf('day').toISOString();
+    const startDate = iDate.format('YYYY-MM-DDT00:00:00.000Z');
+    const endDate = iDate.format('YYYY-MM-DDT23:59:59.999Z');
     console.log(`Creating ${iDate.format('YYYY-MM-DD')}...`);
     const sales: SaleSearchResult[] = await prisma.sale.findMany({
       where: {

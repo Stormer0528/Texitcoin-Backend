@@ -21,10 +21,8 @@ export interface SaleReportInput {
   memberId: string;
   userId: string;
   packageName: string;
-  issuedAt: Date;
+  orderedAt: Date;
   paymentMethod: string;
-  amount: number;
-  hashPower: number;
 }
 
 export interface GroupedByCreatedAt {
