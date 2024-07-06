@@ -41,6 +41,7 @@ export const PACKAGES = [
   '949e51a5-a05e-4377-9c09-69338ed832ca',
   'eb7a23db-ef66-4775-ab9c-3d7c341361b3',
   'aa4043ca-a950-415a-9497-be8d6687194e',
+  '5553932b-b87d-45b0-b459-dad44582348e',
 ];
 
 export const rpc_url = process.env.RPC_URL;

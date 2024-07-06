@@ -1,4 +1,4 @@
-import { PACKAGES } from '@/consts';
+import { PACKAGES } from '../../src/consts';
 import { Prisma } from '@prisma/client';
 
 export const packageData: Prisma.PackageCreateManyInput[] = [
@@ -7,7 +7,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
     productName: '100mh/s Dedicated',
     amount: 995,
     status: false,
-    date: '2024-06-25 12:18:46.365',
+    date: '2024-06-25T12:18:46.365Z',
     token: 100,
   },
   {
@@ -15,7 +15,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
     productName: '300mh/s Dedicated',
     amount: 2985,
     status: false,
-    date: '2024-06-25 12:18:46.365',
+    date: '2024-06-25T12:18:46.365Z',
     token: 300,
   },
   {
@@ -23,7 +23,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
     productName: '900mh/s Dedicated',
     amount: 8955,
     status: false,
-    date: '2024-06-25 12:18:46.365',
+    date: '2024-06-25T12:18:46.365Z',
     token: 900,
   },
   {
@@ -31,7 +31,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
     productName: '500mh/s Dedicated',
     amount: 995,
     status: false,
-    date: '2024-06-25 12:18:46.365',
+    date: '2024-06-25T12:18:46.365Z',
     token: 500,
   },
   {
@@ -39,7 +39,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
     productName: '3500mh/s Dedicated',
     amount: 6965,
     status: false,
-    date: '2024-06-25 12:18:46.365',
+    date: '2024-06-25T12:18:46.365Z',
     token: 3500,
   },
   {
@@ -47,7 +47,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
     productName: '2500mh/s Dedicated',
     amount: 4975,
     status: false,
-    date: '2024-06-25 12:18:46.365',
+    date: '2024-06-25T12:18:46.365Z',
     token: 2500,
   },
   {
@@ -55,7 +55,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
     productName: '1500mh/s Dedicated',
     amount: 2985,
     status: false,
-    date: '2024-06-25 12:18:46.365',
+    date: '2024-06-25T12:18:46.365Z',
     token: 1500,
   },
   {
@@ -63,7 +63,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
     productName: '1000mh/s Dedicated',
     amount: 1990,
     status: false,
-    date: '2024-06-25 12:18:46.365',
+    date: '2024-06-25T12:18:46.365Z',
     token: 1000,
   },
   {
@@ -71,7 +71,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
     productName: '(1) Share - 500mh/s Power',
     amount: 995,
     status: false,
-    date: '2024-06-25 12:18:46.365',
+    date: '2024-06-25T12:18:46.365Z',
     token: 500,
   },
   {
@@ -79,7 +79,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
     productName: '(2) Shares - 1000mh/s Power',
     amount: 1990,
     status: false,
-    date: '2024-06-25 12:18:46.365',
+    date: '2024-06-25T12:18:46.365Z',
     token: 1000,
   },
   {
@@ -87,7 +87,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
     productName: '(3) Shares - 1500mh/s Power',
     amount: 2985,
     status: false,
-    date: '2024-06-25 12:18:46.365',
+    date: '2024-06-25T12:18:46.365Z',
     token: 1500,
   },
   {
@@ -95,7 +95,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
     productName: '(5) Shares - 2500mh/s Power',
     amount: 4975,
     status: false,
-    date: '2024-06-25 12:18:46.365',
+    date: '2024-06-25T12:18:46.365Z',
     token: 2500,
   },
   {
@@ -103,7 +103,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
     productName: '(7) Shares - 3500mh/s Power',
     amount: 6965,
     status: false,
-    date: '2024-06-25 12:18:46.365',
+    date: '2024-06-25T12:18:46.365Z',
     token: 3500,
   },
   {
@@ -111,7 +111,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
     productName: 'Free Share - 500mh/s Power',
     amount: 0,
     status: false,
-    date: '2024-06-25 12:18:46.365',
+    date: '2024-06-25T12:18:46.365Z',
     token: 500,
   },
   {
@@ -119,7 +119,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
     productName: 'Free Share - 100mh/s Power',
     amount: 0,
     status: true,
-    date: '2024-06-25 12:18:46.365',
+    date: '2024-06-25T12:18:46.365Z',
     token: 100,
   },
   {
@@ -127,7 +127,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
     productName: '(1) Share - 100mh/s Power',
     amount: 995,
     status: true,
-    date: '2024-06-25 12:18:46.365',
+    date: '2024-06-25T12:18:46.365Z',
     token: 100,
   },
   {
@@ -135,7 +135,7 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
     productName: '(3) Shares - 300mh/s Power',
     amount: 2985,
     status: true,
-    date: '2024-06-25 12:18:46.365',
+    date: '2024-06-25T12:18:46.365Z',
     token: 300,
   },
   {
@@ -143,7 +143,15 @@ export const packageData: Prisma.PackageCreateManyInput[] = [
     productName: '(9) Shares - 900mh/s Power',
     amount: 8955,
     status: true,
-    date: '2024-06-25 12:18:46.365',
+    date: '2024-06-25T12:18:46.365Z',
     token: 900,
+  },
+  {
+    id: PACKAGES[18],
+    productName: '(2) Shares - 200mh/s Power',
+    amount: 1990,
+    status: true,
+    date: '2024-06-22T17:08:24.023Z',
+    token: 200,
   },
 ];
