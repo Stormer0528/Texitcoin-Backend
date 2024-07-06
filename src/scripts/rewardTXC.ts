@@ -102,7 +102,6 @@ const createStatisticsAndMemberStatistics = async () => {
     const sales: SaleSearchResult[] = await prisma.sale.findMany({
       where: {
         orderedAt: {
-          gte: startDate,
           lte: endDate,
         },
       },
