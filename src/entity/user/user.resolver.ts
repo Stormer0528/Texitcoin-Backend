@@ -6,9 +6,7 @@ import {
   Query,
   Mutation,
   Authorized,
-  FieldResolver,
   Ctx,
-  Root,
   UseMiddleware,
   Info,
 } from 'type-graphql';
@@ -18,17 +16,18 @@ import { GraphQLResolveInfo } from 'graphql';
 import { type Context } from '@/context';
 import { UserRole } from '@/type';
 import { createAccessToken, verifyPassword, hashPassword } from '@/utils/auth';
-import { Sale } from '@/entity/sale/sale.entity';
 
 import { User } from './user.entity';
 import {
+  LoginInput,
+  UserIDsInput,
+  LoginResponse,
   UsersResponse,
   UserQueryArgs,
   CreateUserInput,
-  LoginInput,
-  LoginResponse,
   UpdateUserInput,
   UpdatePasswordInput,
+  RemoveSuccessResponse,
 } from './user.type';
 import { UserService } from './user.service';
 import { userPermission } from './user.permission';
@@ -108,6 +107,18 @@ export class UserResolver {
     }
 
     return this.service.updatePassword({ id: data.id, password: data.newPassword });
+  }
+
+  @Authorized()
+  @Mutation(() => RemoveSuccessResponse)
+  async removeUsers(@Arg('data') data: UserIDsInput): Promise<RemoveSuccessResponse> {
+    try {
+      const { count } = await this.service.removeUsers(data);
+
+      return { count };
+    } catch (err) {
+      return { count: 0 };
+    }
   }
 
   @Mutation(() => LoginResponse)
