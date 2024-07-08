@@ -56,6 +56,16 @@ export class UpdateMemberInput {
   id: string;
 
   @Field({ nullable: true })
+  username: string;
+
+  @Field({ nullable: true })
+  fullName: string;
+
+  @Field({ nullable: true })
+  @IsEmail()
+  email: string;
+
+  @Field({ nullable: true })
   mobile: string;
 
   @Field({ nullable: true })
