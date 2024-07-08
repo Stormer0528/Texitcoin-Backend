@@ -71,6 +71,18 @@ export class UpdatePasswordInput {
   newPassword: string;
 }
 
+@InputType()
+export class RemoveSuccessResponse {
+  @Field()
+  count: number;
+}
+
+@InputType()
+export class UserIDsInput {
+  @Field(() => ID)
+  ids: string[];
+}
+
 // Login Input and Response
 
 @InputType()

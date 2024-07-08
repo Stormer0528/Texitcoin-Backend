@@ -66,4 +66,12 @@ export class UserService {
       data: { password },
     });
   }
+
+  async removeUsers({ ids }: { ids: string[] }) {
+    return this.prisma.user.deleteMany({
+      where: {
+        id: { in: ids },
+      },
+    });
+  }
 }
