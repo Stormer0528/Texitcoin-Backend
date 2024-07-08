@@ -71,7 +71,7 @@ export class UpdatePasswordInput {
   newPassword: string;
 }
 
-@InputType()
+@ObjectType()
 export class RemoveSuccessResponse {
   @Field()
   count: number;
@@ -79,7 +79,7 @@ export class RemoveSuccessResponse {
 
 @InputType()
 export class UserIDsInput {
-  @Field(() => ID)
+  @Field(() => [ID])
   ids: string[];
 }
 

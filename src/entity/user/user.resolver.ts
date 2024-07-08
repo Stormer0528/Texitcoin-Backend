@@ -109,7 +109,7 @@ export class UserResolver {
     return this.service.updatePassword({ id: data.id, password: data.newPassword });
   }
 
-  @Authorized()
+  @Authorized([UserRole.Admin])
   @Mutation(() => RemoveSuccessResponse)
   async removeUsers(@Arg('data') data: UserIDsInput): Promise<RemoveSuccessResponse> {
     try {
