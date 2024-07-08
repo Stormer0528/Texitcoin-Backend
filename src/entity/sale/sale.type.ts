@@ -47,6 +47,9 @@ export class UpdateSaleInput {
   @Field(() => ID, { nullable: true })
   packageId?: string;
 
+  @Field({ nullable: true })
+  invoiceNo?: number;
+
   @Field(() => ID, { nullable: true })
   memberId?: string;
 
