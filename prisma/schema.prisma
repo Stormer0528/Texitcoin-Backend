@@ -10,7 +10,7 @@ generator json {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgres://texitcoin:123456789@localhost/texitcoin"
 }
 
 model User {
