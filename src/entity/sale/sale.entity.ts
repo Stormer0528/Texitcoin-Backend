@@ -3,6 +3,7 @@ import { ObjectType, Field, ID } from 'type-graphql';
 import { BaseEntity } from '@/graphql/baseEntity';
 import { Member } from '../member/member.entity';
 import { Package } from '../package/package.entity';
+import { StatisticsSale } from '../statisticsSale/statisticsSale.entity';
 
 @ObjectType()
 export class Sale extends BaseEntity {
@@ -32,4 +33,7 @@ export class Sale extends BaseEntity {
 
   @Field()
   orderedAt: Date;
+
+  @Field(() => [StatisticsSale], { nullable: 'itemsAndList' })
+  statisticsSales?: StatisticsSale[];
 }
