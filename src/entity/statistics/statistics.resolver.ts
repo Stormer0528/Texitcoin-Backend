@@ -94,7 +94,12 @@ export class StatisticsResolver {
       issuedAt: data.issuedAt,
     });
 
-    const totalBlocks = (statistic?.totalBlocks || 0) + count;
+    const { count: totalBlocks } = await this.blockService.getBlockDataRange({
+      issuedAt: {
+        lte: data.issuedAt,
+      },
+    });
+
     const status = data.status;
 
     const payload = {
