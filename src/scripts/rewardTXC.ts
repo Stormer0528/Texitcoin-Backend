@@ -56,7 +56,7 @@ const createStatistic = async (date: Date, sales: SaleSearchResult[]) => {
       totalBlocks,
       totalHashPower,
       totalMembers,
-      status: true,
+      status: false,
       txcShared,
       issuedAt,
       from: from || date,
