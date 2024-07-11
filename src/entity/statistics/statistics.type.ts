@@ -48,6 +48,9 @@ export class CreateStatisticsInput {
   @Field()
   txcShared: number;
 
+  @Field()
+  totalMembers: number;
+
   @Field(() => [CreateStatisticsMemberStatisticsInput])
   memberStatistics: CreateStatisticsMemberStatisticsInput[];
 
