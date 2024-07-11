@@ -116,8 +116,6 @@ const createStatisticsAndMemberStatistics = async () => {
   console.log('Creating statistics & memberStatistics...');
   console.log('Removing memberStatistics');
   await prisma.memberStatistics.deleteMany({});
-  console.log('Removing statisticsSale');
-  await prisma.statisticsSale.deleteMany({});
   console.log('Removing statistics');
   await prisma.statistics.deleteMany({});
 
@@ -182,6 +180,9 @@ const syncMembers = async () => {
 const syncSales = async (members: Member[]) => {
   try {
     console.log('Syncing sales...');
+
+    console.log('Removing statisticsSale');
+    await prisma.statisticsSale.deleteMany({});
 
     await prisma.sale.deleteMany();
     console.log('Successfully deleted current sales.');
