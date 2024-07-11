@@ -100,6 +100,7 @@ export class StatisticsResolver {
     const payload = {
       newBlocks: count,
       totalBlocks,
+      totalMembers: data.totalMembers,
       status,
       totalHashPower: data.totalHashPower,
       txcShared: data.txcShared,
