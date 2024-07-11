@@ -96,11 +96,28 @@ const createMemberStatistics = async (
     }),
   });
 };
+const createStatisticSales = async (
+  statistic: Statistics,
+  sales: SaleSearchResult[],
+  issuedAt: Date
+) => {
+  await prisma.statisticsSale.createMany({
+    data: sales.map((sale: SaleSearchResult) => {
+      return {
+        saleId: sale.id,
+        statisticsId: statistic.id,
+        issuedAt,
+      };
+    }),
+  });
+};
 
 const createStatisticsAndMemberStatistics = async () => {
   console.log('Creating statistics & memberStatistics...');
   console.log('Removing memberStatistics');
   await prisma.memberStatistics.deleteMany({});
+  console.log('Removing statisticsSale');
+  await prisma.statisticsSale.deleteMany({});
   console.log('Removing statistics');
   await prisma.statistics.deleteMany({});
 
@@ -115,12 +132,14 @@ const createStatisticsAndMemberStatistics = async () => {
         },
       },
       select: {
+        id: true,
         memberId: true,
         package: true,
       },
     });
     const { statistic, memberIds, membersWithHashPower } = await createStatistic(date, sales);
     await createMemberStatistics(statistic, memberIds, membersWithHashPower, date);
+    await createStatisticSales(statistic, sales, date);
     console.log(`Finished ${iDate.format('YYYY-MM-DD')}`);
   }
   console.log('Finished creating statistics & memberStatistics');
