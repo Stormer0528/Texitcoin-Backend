@@ -16,9 +16,6 @@ export class StatisticsSale extends BaseEntity {
   saleId: string;
 
   @Field()
-  selected: boolean;
-
-  @Field()
   issuedAt: Date;
 
   @Field(() => Statistics, { nullable: true })

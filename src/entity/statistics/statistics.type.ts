@@ -5,6 +5,7 @@ import { PaginatedResponse } from '@/graphql/paginatedResponse';
 import { QueryArgsBase } from '@/graphql/queryArgs';
 
 import { Statistics } from '@/entity/statistics/statistics.entity';
+import { CreateMemberStatisticsInput } from '../memberStatistics/memberStatistics.type';
 
 // Statistics Query Args
 @ArgsType()
@@ -17,17 +18,44 @@ export class StatisticsResponse extends PaginatedResponse {
   statistics?: Statistics[];
 }
 
+@InputType()
+export class CreateStatisticsMemberStatisticsInput {
+  @Field(() => ID)
+  memberId: string;
+
+  @Field()
+  txcShared: number;
+
+  @Field()
+  hashPower: number;
+
+  @Field()
+  percent: number;
+}
+
 // Create Statistics Input and Response
 @InputType()
 export class CreateStatisticsInput {
   @Field(() => ID, { nullable: true })
   id?: string;
 
+  @Field(() => [ID])
+  saleIds: string[];
+
   @Field()
   totalHashPower: number;
 
   @Field()
-  totalMembers: number;
+  txcShared: number;
+
+  @Field(() => [CreateStatisticsMemberStatisticsInput])
+  memberStatistics: CreateStatisticsMemberStatisticsInput[];
+
+  @Field()
+  issuedAt: Date;
+
+  @Field({ nullable: true })
+  status: boolean = false;
 }
 
 @InputType()

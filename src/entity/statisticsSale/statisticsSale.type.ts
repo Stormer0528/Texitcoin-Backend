@@ -26,9 +26,6 @@ export class CreateStatisticsSaleInput {
   saleId: string;
 
   @Field()
-  selected: boolean;
-
-  @Field()
   issuedAt: Date;
 }
 

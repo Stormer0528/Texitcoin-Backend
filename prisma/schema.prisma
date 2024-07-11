@@ -126,7 +126,6 @@ model StatisticsSale {
   id           String  @id @default(uuid())
   statisticsId String
   saleId       String
-  selected     Boolean
 
   issuedAt DateTime @default(now())
 

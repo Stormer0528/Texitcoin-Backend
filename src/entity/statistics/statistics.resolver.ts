@@ -24,6 +24,7 @@ import {
   PendingStatisticsResponse,
   PendingStatistics,
   UpdateStatisticsInput,
+  CreateStatisticsMemberStatisticsInput,
 } from './statistics.type';
 import { StatisticsService } from './statistics.service';
 import { formatDate, today } from '@/utils/common';
@@ -32,12 +33,18 @@ import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
 import { BlockService } from '../block/block.service';
 import dayjs from 'dayjs';
 import { StatisticsSale } from '../statisticsSale/statisticsSale.entity';
+import { MemberStatisticsService } from '../memberStatistics/memberStatistics.service';
+import { StatisticsSaleService } from '../statisticsSale/statisticsSale.service';
+import { SaleService } from '../sale/sale.service';
 
 @Service()
 @Resolver(() => Statistics)
 export class StatisticsResolver {
   constructor(
     private readonly statisticsService: StatisticsService,
+    private readonly memberStatisticsService: MemberStatisticsService,
+    private readonly statisticsSaleService: StatisticsSaleService,
+    private readonly saleService: SaleService,
     private readonly blockService: BlockService
   ) {}
 
@@ -73,34 +80,64 @@ export class StatisticsResolver {
   @Mutation(() => Statistics)
   async createStatistics(@Arg('data') data: CreateStatisticsInput): Promise<Statistics> {
     if (data.id) {
-      return this.statisticsService.updateStatisticsWholeById(data.id, data);
+      this.memberStatisticsService.removeMemberStatisticsByStatisticId({
+        id: data.id,
+      });
+      this.statisticsSaleService.removeStatisticsSalesByStatisticId({
+        id: data.id,
+      });
     }
-
-    const statistic = await this.statisticsService.getLastStatistic();
-    const lastDate = statistic ? statistic.to : new Date('2024-04-01');
-    const { from, to, count } = await this.blockService.getBlockDataRange({
-      createdAt: { gt: lastDate },
+    let statistic = data.id
+      ? await this.statisticsService.getStatisticsById(data.id)
+      : await this.statisticsService.getLastStatistic();
+    let { from, to, count } = await this.blockService.getBlockDataRange({
+      issuedAt: data.issuedAt,
     });
 
-    const now = new Date();
-    const issuedAt = new Date(formatDate(to || now));
-
     const totalBlocks = (statistic?.totalBlocks || 0) + count;
-    const status = false;
-    const txcShared = count * 254;
+    const status = data.status;
 
     const payload = {
       newBlocks: count,
       totalBlocks,
       status,
-      txcShared,
-      issuedAt,
-      from: from || new Date(formatDate(now)),
-      to: to || now,
-      ...data,
+      totalHashPower: data.totalHashPower,
+      txcShared: data.txcShared,
+      issuedAt: data.issuedAt,
+      from: from || data.issuedAt,
+      to: to || data.issuedAt,
     };
 
-    return this.statisticsService.createStatistics(payload);
+    statistic = data.id
+      ? await this.statisticsService.updateStatisticsWholeById(data.id, payload)
+      : await this.statisticsService.createStatistics(payload);
+
+    await this.statisticsSaleService.createManyStatisticsSales({
+      statisticsSales: data.saleIds.map((saleId: string) => {
+        return {
+          statisticsId: statistic.id,
+          issuedAt: data.issuedAt,
+          saleId,
+        };
+      }),
+    });
+
+    await this.memberStatisticsService.createManyMemberStatistics({
+      memberStatistics: data.memberStatistics.map(
+        (memberStatistic: CreateStatisticsMemberStatisticsInput) => {
+          return {
+            hashPower: memberStatistic.hashPower,
+            issuedAt: data.issuedAt,
+            memberId: memberStatistic.memberId,
+            percent: memberStatistic.percent,
+            statisticsId: statistic.id,
+            txcShared: memberStatistic.txcShared,
+          };
+        }
+      ),
+    });
+
+    return statistic;
   }
 
   @Query(() => PendingStatisticsResponse)
