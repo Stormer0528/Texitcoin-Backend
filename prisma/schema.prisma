@@ -19,7 +19,7 @@ model User {
   email    String  @unique(map: "index_users_on_email") @db.VarChar
   password String  @db.VarChar
   isAdmin  Boolean @default(false) @db.Boolean
-  avatar   String?  @default("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcrrCHjN9kChJVJtWxXCHoUcgEhxWwTclnURuK20T8EDX_rVt0NMik5tYpLhKzqPBnvP0&usqp=CAU")
+  avatar   String? @default("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcrrCHjN9kChJVJtWxXCHoUcgEhxWwTclnURuK20T8EDX_rVt0NMik5tYpLhKzqPBnvP0&usqp=CAU")
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -66,6 +66,8 @@ model Sale {
   member  Member?  @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   package Package? @relation(fields: [packageId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
+  statisticsSale StatisticsSale[]
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
@@ -94,6 +96,7 @@ model Statistics {
 
   //Relations
   memberStatistics MemberStatistics[]
+  statisticsSale   StatisticsSale[]
 
   @@map("statistics")
 }
@@ -115,7 +118,30 @@ model MemberStatistics {
   deletedAt DateTime?
 
   @@index([memberId], map: "index_memberStatistics_on_memberId")
+  @@index([statisticsId], map: "index_memberStatistics_on_statisticsId")
   @@map("member_statistics")
+}
+
+model StatisticsSale {
+  id           String @id @default(uuid())
+  statisticsId String
+  saleId       String
+
+  issuedAt DateTime @default(now())
+  from     DateTime
+  to       DateTime
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  //Relations
+  statistics Statistics @relation(fields: [statisticsId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sale       Sale       @relation(fields: [saleId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([statisticsId], map: "index_statisticssale_on_statisticsId")
+  @@index([saleId], map: "index_statisticssale_on_saleId")
+  @@map("statistics_sale")
 }
 
 model Block {
