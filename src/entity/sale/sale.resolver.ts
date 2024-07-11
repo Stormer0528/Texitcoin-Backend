@@ -23,6 +23,7 @@ import { Context } from '@/context';
 import { Member } from '../member/member.entity';
 import { Package } from '../package/package.entity';
 import dayjs from 'dayjs';
+import { StatisticsSale } from '../statisticsSale/statisticsSale.entity';
 
 @Service()
 @Resolver(() => Sale)
@@ -78,5 +79,10 @@ export class SaleResolver {
   @FieldResolver({ nullable: 'itemsAndList' })
   async package(@Root() sale: Sale, @Ctx() ctx: Context): Promise<Package> {
     return ctx.dataLoader.get('packageForSaleLoader').load(sale.id);
+  }
+
+  @FieldResolver({ nullable: 'itemsAndList' })
+  async statisticsSales(@Root() sale: Sale, @Ctx() ctx: Context): Promise<StatisticsSale[]> {
+    return ctx.dataLoader.get('statisticsSalesForSaleLoader').load(sale.id);
   }
 }

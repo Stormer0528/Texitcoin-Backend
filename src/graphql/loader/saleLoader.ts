@@ -3,6 +3,7 @@ import DataLoader from 'dataloader';
 import RootDataLoader from '.';
 import { Member } from '@/entity/member/member.entity';
 import { Package } from '@/entity/package/package.entity';
+import { StatisticsSale } from '@/entity/statisticsSale/statisticsSale.entity';
 
 export const memberForSaleLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, Member>(
@@ -45,6 +46,30 @@ export const packageForSaleLoader = (parent: RootDataLoader) => {
       });
 
       return salesIds.map((id) => packagesWithMembersMap[id]);
+    },
+    {
+      ...parent.dataLoaderOptions,
+    }
+  );
+};
+
+export const statisticsSalesForSaleLoader = (parent: RootDataLoader) => {
+  return new DataLoader<string, StatisticsSale[]>(
+    async (saleIds: string[]) => {
+      const salesWithStatisticsSales = await parent.prisma.sale.findMany({
+        select: {
+          id: true,
+          statisticsSales: true,
+        },
+        where: { id: { in: saleIds } },
+      });
+
+      const salesWithStatisticsSalesMap: Record<string, StatisticsSale[]> = {};
+      salesWithStatisticsSales.forEach(({ id, statisticsSales }) => {
+        salesWithStatisticsSalesMap[id] = statisticsSales.map((memberStatistic) => memberStatistic);
+      });
+
+      return saleIds.map((id) => salesWithStatisticsSalesMap[id]);
     },
     {
       ...parent.dataLoaderOptions,

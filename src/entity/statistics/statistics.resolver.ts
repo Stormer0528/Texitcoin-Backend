@@ -31,6 +31,7 @@ import { Context } from '@/context';
 import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
 import { BlockService } from '../block/block.service';
 import dayjs from 'dayjs';
+import { StatisticsSale } from '../statisticsSale/statisticsSale.entity';
 
 @Service()
 @Resolver(() => Statistics)
@@ -136,5 +137,13 @@ export class StatisticsResolver {
     @Ctx() ctx: Context
   ): Promise<MemberStatistics[]> {
     return ctx.dataLoader.get('memberStatisticsForStatisticsLoader').load(statistics.id);
+  }
+
+  @FieldResolver({ nullable: 'itemsAndList' })
+  async statisticsSales(
+    @Root() statistics: Statistics,
+    @Ctx() ctx: Context
+  ): Promise<StatisticsSale[]> {
+    return ctx.dataLoader.get('statisticsSalesForStatisticsLoader').load(statistics.id);
   }
 }
