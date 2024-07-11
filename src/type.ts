@@ -64,6 +64,7 @@ declare global {
 }
 
 export interface SaleSearchResult {
+  id: string;
   memberId: string;
   package: Package;
 }
