@@ -63,21 +63,3 @@ export class CreateManyMemberStatisticsInput {
   @Field(() => [CreateMemberStatisticsInput])
   memberStatistics: CreateMemberStatisticsInput[];
 }
-
-@ObjectType()
-export class ManySuccessResponse {
-  @Field()
-  count: number;
-}
-
-@InputType()
-export class MemberStatisticsIDsInput {
-  @Field(() => [ID])
-  ids: string[];
-}
-
-@InputType()
-export class StatisticIDInput {
-  @Field(() => ID)
-  id: string;
-}

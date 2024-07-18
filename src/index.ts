@@ -21,6 +21,7 @@ import { BlockResolver } from './entity/block/block.resolver';
 import { GeneralResolver } from './entity/general/general.resolver';
 import { PackageResolver } from './entity/package/package.resolver';
 import { PayoutResolver } from './entity/payout/payout.resolver';
+import { StatisticsSaleResolver } from './entity/statisticsSale/statisticsSale.resolver';
 
 // import "./env";
 
@@ -31,6 +32,7 @@ const app = async () => {
       MemberResolver,
       SaleResolver,
       StatisticsResolver,
+      StatisticsSaleResolver,
       MemberStatisticsResolver,
       BlockResolver,
       GeneralResolver,

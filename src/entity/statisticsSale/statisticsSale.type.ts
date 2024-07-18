@@ -35,21 +35,3 @@ export class CreateManyStatisticsSaleInput {
   @Field(() => [CreateStatisticsSaleInput])
   statisticsSales: CreateStatisticsSaleInput[];
 }
-
-@ObjectType()
-export class ManySuccessResponse {
-  @Field()
-  count: number;
-}
-
-@InputType()
-export class StatisticsSaleIDsInput {
-  @Field(() => [ID])
-  ids: string[];
-}
-
-@InputType()
-export class StatisticIDInput {
-  @Field(() => ID)
-  id: string;
-}

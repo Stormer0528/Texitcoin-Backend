@@ -18,18 +18,16 @@ import { UserRole } from '@/type';
 
 import { StatisticsSale } from './statisticsSale.entity';
 import {
-  StatisticIDInput,
   StatisticsSaleResponse,
   StatisticsSaleQueryArgs,
   CreateStatisticsSaleInput,
-  StatisticsSaleIDsInput,
-  ManySuccessResponse,
   CreateManyStatisticsSaleInput,
 } from './statisticsSale.type';
 import { StatisticsSaleService } from './statisticsSale.service';
 import { Context } from '@/context';
 import { Statistics } from '../statistics/statistics.entity';
 import { Sale } from '../sale/sale.entity';
+import { IDInput, IDsInput, ManySuccessResponse } from '../common/common.type';
 
 @Service()
 @Resolver(() => StatisticsSale)
@@ -88,9 +86,7 @@ export class StatisticsSaleResolver {
 
   @Authorized([UserRole.Admin])
   @Mutation(() => ManySuccessResponse)
-  async removeManyStatisticsSales(
-    @Arg('data') data: StatisticsSaleIDsInput
-  ): Promise<ManySuccessResponse> {
+  async removeManyStatisticsSales(@Arg('data') data: IDsInput): Promise<ManySuccessResponse> {
     try {
       const { count } = await this.service.removeManyStatisticsSales(data);
       return { count };
@@ -101,9 +97,7 @@ export class StatisticsSaleResolver {
 
   @Authorized([UserRole.Admin])
   @Mutation(() => ManySuccessResponse)
-  async removeStatisticsSalesByStaitisId(
-    @Arg('data') data: StatisticIDInput
-  ): Promise<ManySuccessResponse> {
+  async removeStatisticsSalesByStaitisId(@Arg('data') data: IDInput): Promise<ManySuccessResponse> {
     try {
       const { count } = await this.service.removeStatisticsSalesByStatisticId(data);
       return { count };

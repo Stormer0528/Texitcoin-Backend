@@ -24,16 +24,13 @@ import {
   MemberOverview,
   MemberOverviewInput,
   CreateManyMemberStatisticsInput,
-  ManySuccessResponse,
-  MemberStatisticsIDsInput,
-  StatisticIDInput,
 } from './memberStatistics.type';
 import { MemberStatisticsService } from './memberStatistics.service';
 import { Member } from '../member/member.entity';
 import { Context } from '@/context';
 import { Statistics } from '../statistics/statistics.entity';
 import { MemberService } from '../member/member.service';
-import dayjs from 'dayjs';
+import { IDInput, IDsInput, ManySuccessResponse } from '../common/common.type';
 
 @Service()
 @Resolver(() => MemberStatistics)
@@ -95,9 +92,7 @@ export class MemberStatisticsResolver {
 
   @Authorized([UserRole.Admin])
   @Mutation(() => ManySuccessResponse)
-  async removeManyMemberStatistics(
-    @Arg('data') data: MemberStatisticsIDsInput
-  ): Promise<ManySuccessResponse> {
+  async removeManyMemberStatistics(@Arg('data') data: IDsInput): Promise<ManySuccessResponse> {
     try {
       const { count } = await this.service.removeManyMemberStatistics(data);
       return { count };
@@ -109,7 +104,7 @@ export class MemberStatisticsResolver {
   @Authorized([UserRole.Admin])
   @Mutation(() => ManySuccessResponse)
   async removeMemberStatisticsByStaitisId(
-    @Arg('data') data: StatisticIDInput
+    @Arg('data') data: IDInput
   ): Promise<ManySuccessResponse> {
     try {
       const { count } = await this.service.removeMemberStatisticsByStatisticId(data);
