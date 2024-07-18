@@ -5,11 +5,10 @@ import { PrismaService } from '@/service/prisma';
 import {
   CreateManyStatisticsSaleInput,
   CreateStatisticsSaleInput,
-  StatisticIDInput,
-  StatisticsSaleIDsInput,
   StatisticsSaleQueryArgs,
 } from './statisticsSale.type';
 import { Prisma } from '@prisma/client';
+import { IDInput, IDsInput } from '../common/common.type';
 
 @Service()
 export class StatisticsSaleService {
@@ -50,7 +49,7 @@ export class StatisticsSaleService {
     });
   }
 
-  async removeManyStatisticsSales(data: StatisticsSaleIDsInput) {
+  async removeManyStatisticsSales(data: IDsInput) {
     return this.prisma.statisticsSale.deleteMany({
       where: {
         id: {
@@ -60,7 +59,7 @@ export class StatisticsSaleService {
     });
   }
 
-  async removeStatisticsSalesByStatisticId(data: StatisticIDInput) {
+  async removeStatisticsSalesByStatisticId(data: IDInput) {
     return this.prisma.statisticsSale.deleteMany({
       where: {
         statisticsId: data.id,
