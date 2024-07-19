@@ -36,6 +36,7 @@ import { StatisticsSale } from '../statisticsSale/statisticsSale.entity';
 import { MemberStatisticsService } from '../memberStatistics/memberStatistics.service';
 import { StatisticsSaleService } from '../statisticsSale/statisticsSale.service';
 import { SaleService } from '../sale/sale.service';
+import { IDInput } from '../common/common.type';
 
 @Service()
 @Resolver(() => Statistics)
@@ -172,6 +173,14 @@ export class StatisticsResolver {
   @Mutation(() => Statistics)
   async updateStatistics(@Arg('data') data: UpdateStatisticsInput): Promise<Statistics> {
     return await this.statisticsService.updateStatistics(data);
+  }
+
+  @Authorized([UserRole.Admin])
+  @Mutation(() => Statistics)
+  async removeStatistics(@Arg('data') data: IDInput): Promise<Statistics> {
+    await this.memberStatisticsService.removeMemberStatisticsByStatisticId(data);
+    await this.statisticsSaleService.removeStatisticsSalesByStatisticId(data);
+    return await this.statisticsService.removeStatisticById(data.id);
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })
