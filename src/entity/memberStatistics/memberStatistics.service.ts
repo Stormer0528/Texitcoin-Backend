@@ -67,6 +67,16 @@ export class MemberStatisticsService {
     });
   }
 
+  async removeMemberStatisticsByStatisticIds(data: IDsInput) {
+    return this.prisma.memberStatistics.deleteMany({
+      where: {
+        statisticsId: {
+          in: data.ids,
+        },
+      },
+    });
+  }
+
   async getTotalTXCShared(memberId: string) {
     const { _sum: data } = await this.prisma.memberStatistics.aggregate({
       _sum: {
