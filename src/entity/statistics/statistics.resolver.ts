@@ -36,7 +36,7 @@ import { StatisticsSale } from '../statisticsSale/statisticsSale.entity';
 import { MemberStatisticsService } from '../memberStatistics/memberStatistics.service';
 import { StatisticsSaleService } from '../statisticsSale/statisticsSale.service';
 import { SaleService } from '../sale/sale.service';
-import { IDInput } from '../common/common.type';
+import { IDInput, IDsInput, ManySuccessResponse } from '../common/common.type';
 
 @Service()
 @Resolver(() => Statistics)
@@ -181,6 +181,20 @@ export class StatisticsResolver {
     await this.memberStatisticsService.removeMemberStatisticsByStatisticId(data);
     await this.statisticsSaleService.removeStatisticsSalesByStatisticId(data);
     return await this.statisticsService.removeStatisticById(data.id);
+  }
+
+  @Authorized([UserRole.Admin])
+  @Mutation(() => ManySuccessResponse)
+  async removeManyStatistics(@Arg('data') data: IDsInput): Promise<ManySuccessResponse> {
+    try {
+      await this.memberStatisticsService.removeMemberStatisticsByStatisticIds(data);
+      await this.statisticsSaleService.removeStatisticsSalesByStatisticIds(data);
+      return await this.statisticsService.removeStatisticByIds(data.ids);
+    } catch (err) {
+      return {
+        count: 0,
+      };
+    }
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })

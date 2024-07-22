@@ -89,4 +89,14 @@ export class StatisticsService {
       },
     });
   }
+
+  async removeStatisticByIds(ids: string[]) {
+    return this.prisma.statistics.deleteMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
+    });
+  }
 }
