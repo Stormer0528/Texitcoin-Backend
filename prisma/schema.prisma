@@ -73,17 +73,17 @@ model Payment {
 }
 
 model Sale {
-  id              String   @id @default(uuid())
-  memberId        String
-  invoiceNo       Int      @unique(map: "index_sales_on_invoiceNo") @default(0)
-  packageId       String
-  paymentMethodId String
-  orderedAt       DateTime @default(now()) @db.Timestamptz(6)
-  status          Boolean  @default(true)
+  id        String   @id @default(uuid())
+  memberId  String
+  invoiceNo Int      @unique(map: "index_sales_on_invoiceNo") @default(0)
+  packageId String
+  paymentId String
+  orderedAt DateTime @default(now()) @db.Timestamptz(6)
+  status    Boolean  @default(true)
 
   member  Member?  @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   package Package? @relation(fields: [packageId], references: [id], onDelete: Cascade, onUpdate: NoAction)
-  payment Payment? @relation(fields: [paymentMethodId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  payment Payment? @relation(fields: [paymentId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   statisticsSales StatisticsSale[]
 

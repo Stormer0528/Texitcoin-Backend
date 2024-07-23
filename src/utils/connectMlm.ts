@@ -52,13 +52,13 @@ export const getSales = async (members: Member[]) => {
   const sales = data.map(({ userId, packageName, paymentMethod, ...row }) => {
     const trimedPkgName = packageName.trim();
     const pkg = packageData.find((pkgData) => pkgData.productName === trimedPkgName);
-    const paymentMethodId = paymentData.find((pymnData) => pymnData.name === paymentMethod).id;
+    const paymentId = paymentData.find((pymnData) => pymnData.name === paymentMethod).id;
 
     return {
       ...row,
       memberId: memberIds[userId],
       packageId: pkg.id,
-      paymentMethodId,
+      paymentId,
     };
   });
 
