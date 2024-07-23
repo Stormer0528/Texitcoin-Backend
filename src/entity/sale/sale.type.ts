@@ -29,7 +29,7 @@ export class CreateSaleInput {
   packageId: string;
 
   @Field(() => ID)
-  paymentId: string;
+  paymentMethod: string;
 
   @Field()
   status: boolean;
@@ -54,7 +54,7 @@ export class UpdateSaleInput {
   memberId?: string;
 
   @Field({ nullable: true })
-  paymentId?: string;
+  paymentMethod?: string;
 
   @Field({ nullable: true })
   orderedAt?: Date;

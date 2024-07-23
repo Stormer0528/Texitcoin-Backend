@@ -22,7 +22,6 @@ import { PackageResolver } from './entity/package/package.resolver';
 import { PayoutResolver } from './entity/payout/payout.resolver';
 import { StatisticsSaleResolver } from './entity/statisticsSale/statisticsSale.resolver';
 import { AdminResolver } from './entity/admin/admin.resolver';
-import { PaymentResolver } from './entity/payment/payment.resolver';
 
 // import "./env";
 
@@ -39,7 +38,6 @@ const app = async () => {
       GeneralResolver,
       PackageResolver,
       PayoutResolver,
-      PaymentResolver,
     ],
     authChecker,
     scalarsMap: [
