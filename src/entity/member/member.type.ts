@@ -28,7 +28,19 @@ export class CreateMemberInput {
   fullName: string;
 
   @Field()
-  address: string;
+  primaryAddress: string;
+
+  @Field({ nullable: true })
+  secondaryAddress?: string;
+
+  @Field({ nullable: true })
+  city?: string;
+
+  @Field({ nullable: true })
+  state?: string;
+
+  @Field({ nullable: true })
+  zipCode?: string;
 
   @Field()
   @IsEmail()
@@ -52,21 +64,21 @@ export class CreateMemberInput {
 
 @InputType()
 export class UpdateMemberInput {
-  @Field(() => ID)
-  id: string;
+  @Field(() => ID, { nullable: true })
+  id?: string;
 
   @Field({ nullable: true })
-  username: string;
+  username?: string;
 
   @Field({ nullable: true })
-  fullName: string;
+  fullName?: string;
 
   @Field({ nullable: true })
   @IsEmail()
-  email: string;
+  email?: string;
 
   @Field({ nullable: true })
-  mobile: string;
+  mobile?: string;
 
   @Field({ nullable: true })
   assetId?: string;
@@ -78,5 +90,52 @@ export class UpdateMemberInput {
   wallet?: string;
 
   @Field({ nullable: true })
-  address?: string;
+  primaryAddress?: string;
+
+  @Field({ nullable: true })
+  secondaryAddress?: string;
+
+  @Field({ nullable: true })
+  city?: string;
+
+  @Field({ nullable: true })
+  state?: string;
+
+  @Field({ nullable: true })
+  zipCode?: string;
+}
+
+@InputType()
+export class UpdateMemberPasswordInputById {
+  @Field(() => ID)
+  id: string;
+
+  @Field()
+  newPassword: string;
+}
+
+@InputType()
+export class UpdateMemberPasswordInput {
+  @Field()
+  oldPassword?: string;
+
+  @Field()
+  newPassword: string;
+}
+
+// Login Input and Response
+
+@InputType()
+export class MemberLoginInput {
+  @Field()
+  email: string;
+
+  @Field()
+  password: string;
+}
+
+@ObjectType()
+export class MemberLoginResponse {
+  @Field()
+  accessToken: string;
 }

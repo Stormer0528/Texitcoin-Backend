@@ -3,7 +3,7 @@ import { type Context } from './context';
 import { UserRole } from './type';
 
 // Auth checker function
-export const authChecker: AuthChecker<Context> = async ({ context: { user } }, roles) => {
+export const authChecker: AuthChecker<Context> = async ({ context: { user, isAdmin } }, roles) => {
   try {
     // Check user
     if (!user) {
@@ -19,7 +19,7 @@ export const authChecker: AuthChecker<Context> = async ({ context: { user } }, r
 
     // Check '@Authorized(...)' roles overlap
     if (roles.includes(UserRole.Admin)) {
-      return user.isAdmin;
+      return isAdmin;
     }
 
     return true;

@@ -8,7 +8,7 @@ import {
   StatisticsSaleQueryArgs,
 } from './statisticsSale.type';
 import { Prisma } from '@prisma/client';
-import { IDInput, IDsInput } from '../common/common.type';
+import { IDInput, IDsInput } from '../../graphql/common.type';
 
 @Service()
 export class StatisticsSaleService {

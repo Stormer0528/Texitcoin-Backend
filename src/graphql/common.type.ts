@@ -17,3 +17,14 @@ export class IDsInput {
   @Field(() => [ID])
   ids: string[];
 }
+
+export enum SuccessResult {
+  success = 'success',
+  failed = 'failed',
+}
+
+@ObjectType()
+export class SuccessResponse {
+  @Field()
+  result: SuccessResult;
+}

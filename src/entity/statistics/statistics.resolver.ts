@@ -36,7 +36,7 @@ import { StatisticsSale } from '../statisticsSale/statisticsSale.entity';
 import { MemberStatisticsService } from '../memberStatistics/memberStatistics.service';
 import { StatisticsSaleService } from '../statisticsSale/statisticsSale.service';
 import { SaleService } from '../sale/sale.service';
-import { IDInput, IDsInput, ManySuccessResponse } from '../common/common.type';
+import { IDInput, IDsInput, ManySuccessResponse } from '../../graphql/common.type';
 
 @Service()
 @Resolver(() => Statistics)

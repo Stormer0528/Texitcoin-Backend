@@ -13,19 +13,18 @@ datasource db {
   url      = "postgres://texitcoin:123456789@localhost/texitcoin"
 }
 
-model User {
+model Admin {
   id       String  @id @default(uuid())
-  username String  @unique(map: "index_users_on_username") @db.VarChar
-  email    String  @unique(map: "index_users_on_email") @db.VarChar
+  username String  @unique(map: "index_admins_on_username") @db.VarChar
+  email    String  @unique(map: "index_admins_on_email") @db.VarChar
   password String  @db.VarChar
-  isAdmin  Boolean @default(false) @db.Boolean
   avatar   String? @default("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRcrrCHjN9kChJVJtWxXCHoUcgEhxWwTclnURuK20T8EDX_rVt0NMik5tYpLhKzqPBnvP0&usqp=CAU")
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  @@map("users")
+  @@map("admins")
 }
 
 model Member {
@@ -34,13 +33,18 @@ model Member {
   fullName           String  @db.VarChar
   sponsorName        String? @db.VarChar
   introducerFullName String? @db.VarChar
-  userId             Int     @unique(map: "index_users_on_userId") @db.Integer
+  userId             Int     @unique(map: "index_members_on_userId") @db.Integer
   email              String  @db.VarChar
   mobile             String  @db.VarChar
   assetId            String  @db.VarChar
   wallet             String  @db.VarChar
-  address            String  @db.VarChar
+  primaryAddress     String  @db.VarChar
+  secondaryAddress   String? @db.VarChar
+  city               String? @db.VarChar
+  state              String? @db.VarChar
+  zipCode            String? @db.VarChar
   payoutId           String?
+  password           String  @db.VarChar
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -54,17 +58,32 @@ model Member {
   @@map("members")
 }
 
+model Payment {
+  id     String  @id @default(uuid())
+  name   String  @db.VarChar
+  status Boolean @default(true) @db.Boolean
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  sales Sale[]
+
+  @@map("payments")
+}
+
 model Sale {
-  id            String   @id @default(uuid())
-  memberId      String
-  invoiceNo     Int      @unique(map: "index_sales_on_invoiceNo") @default(0)
-  packageId     String
-  paymentMethod String   @db.VarChar
-  orderedAt     DateTime @default(now()) @db.Timestamptz(6)
-  status        Boolean  @default(true)
+  id              String   @id @default(uuid())
+  memberId        String
+  invoiceNo       Int      @unique(map: "index_sales_on_invoiceNo") @default(0)
+  packageId       String
+  paymentMethodId String
+  orderedAt       DateTime @default(now()) @db.Timestamptz(6)
+  status          Boolean  @default(true)
 
   member  Member?  @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   package Package? @relation(fields: [packageId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  payment Payment? @relation(fields: [paymentMethodId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   statisticsSales StatisticsSale[]
 
@@ -96,7 +115,7 @@ model Statistics {
 
   //Relations
   memberStatistics MemberStatistics[]
-  statisticsSales   StatisticsSale[]
+  statisticsSales  StatisticsSale[]
 
   @@map("statistics")
 }
@@ -123,7 +142,7 @@ model MemberStatistics {
 }
 
 model StatisticsSale {
-  id           String  @id @default(uuid())
+  id           String @id @default(uuid())
   statisticsId String
   saleId       String
 

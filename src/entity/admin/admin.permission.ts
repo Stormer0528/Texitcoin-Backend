@@ -5,7 +5,8 @@ export const userPermission: MiddlewareFn<Context> = async (
   {
     args,
     context: {
-      user: { id, isAdmin },
+      user: { id },
+      isAdmin,
     },
   },
   next
