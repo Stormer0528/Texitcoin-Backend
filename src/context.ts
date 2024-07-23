@@ -23,7 +23,7 @@ export const context: ContextFunction<[StandaloneServerContextFunctionArgument],
   let user: Member | Admin;
   let isAdmin: boolean;
   if (token) {
-    const { id, admin } = verifyToken(token) as any;
+    const { id, isAdmin: admin } = verifyToken(token) as any;
     isAdmin = admin;
 
     if (admin) {
