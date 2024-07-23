@@ -8,7 +8,7 @@ import {
   MemberStatisticsQueryArgs,
 } from './memberStatistics.type';
 import { Prisma } from '@prisma/client';
-import { IDInput, IDsInput } from '../common/common.type';
+import { IDInput, IDsInput } from '../../graphql/common.type';
 
 @Service()
 export class MemberStatisticsService {
@@ -63,6 +63,16 @@ export class MemberStatisticsService {
     return this.prisma.memberStatistics.deleteMany({
       where: {
         statisticsId: data.id,
+      },
+    });
+  }
+
+  async removeMemberStatisticsByStatisticIds(data: IDsInput) {
+    return this.prisma.memberStatistics.deleteMany({
+      where: {
+        statisticsId: {
+          in: data.ids,
+        },
       },
     });
   }

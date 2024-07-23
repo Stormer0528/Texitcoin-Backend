@@ -40,7 +40,19 @@ export class Member extends BaseEntity {
   wallet: string;
 
   @Field()
-  address: string;
+  primaryAddress: string;
+
+  @Field({ nullable: true })
+  secondaryAddress?: string;
+
+  @Field({ nullable: true })
+  city?: string;
+
+  @Field({ nullable: true })
+  state?: string;
+
+  @Field({ nullable: true })
+  zipCode?: string;
 
   @Field(() => [Sale], { nullable: 'itemsAndList' })
   sales?: Sale[];

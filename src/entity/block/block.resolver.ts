@@ -45,7 +45,6 @@ export class BlockResolver {
   @Authorized([UserRole.Admin])
   @Mutation(() => Block)
   async createBlock(@Arg('data') data: CreateBlockInput): Promise<Block> {
-    // Hash the password
     return this.service.createBlock(data);
   }
 }

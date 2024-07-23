@@ -24,6 +24,7 @@ import { Member } from '../member/member.entity';
 import { Package } from '../package/package.entity';
 import dayjs from 'dayjs';
 import { StatisticsSale } from '../statisticsSale/statisticsSale.entity';
+import { Payment } from '../payment/payment.entity';
 
 @Service()
 @Resolver(() => Sale)
@@ -84,5 +85,10 @@ export class SaleResolver {
   @FieldResolver({ nullable: 'itemsAndList' })
   async statisticsSales(@Root() sale: Sale, @Ctx() ctx: Context): Promise<StatisticsSale[]> {
     return ctx.dataLoader.get('statisticsSalesForSaleLoader').load(sale.id);
+  }
+
+  @FieldResolver({ nullable: 'itemsAndList' })
+  async payments(@Root() sale: Sale, @Ctx() ctx: Context): Promise<Payment> {
+    return ctx.dataLoader.get('paymentMethodForSaleLoader').load(sale.id);
   }
 }

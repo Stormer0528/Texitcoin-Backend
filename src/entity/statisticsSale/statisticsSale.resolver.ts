@@ -27,7 +27,7 @@ import { StatisticsSaleService } from './statisticsSale.service';
 import { Context } from '@/context';
 import { Statistics } from '../statistics/statistics.entity';
 import { Sale } from '../sale/sale.entity';
-import { IDInput, IDsInput, ManySuccessResponse } from '../common/common.type';
+import { IDInput, IDsInput, ManySuccessResponse } from '../../graphql/common.type';
 
 @Service()
 @Resolver(() => StatisticsSale)

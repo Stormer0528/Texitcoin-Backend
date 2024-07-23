@@ -7,6 +7,7 @@ import Bluebird from 'bluebird';
 import { PAYOUTS } from '@/consts';
 import { SaleSearchResult } from '@/type';
 import { formatDate } from '@/utils/common';
+import { hashPassword } from '@/utils/auth';
 
 const prisma = new PrismaClient();
 
@@ -148,6 +149,7 @@ const syncMembers = async () => {
     console.log('Syncing members...');
 
     const mlmMembers = await getMembers();
+    const hashedPassword = await hashPassword('123456789');
 
     const members = await Bluebird.map(
       mlmMembers,
@@ -157,6 +159,7 @@ const syncMembers = async () => {
           create: {
             ...member,
             payoutId: PAYOUTS[0],
+            password: hashedPassword,
           },
           update: {
             ...member,

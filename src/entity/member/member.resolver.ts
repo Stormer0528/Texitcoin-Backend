@@ -10,6 +10,7 @@ import {
   FieldResolver,
   Ctx,
   Root,
+  UseMiddleware,
 } from 'type-graphql';
 import graphqlFields from 'graphql-fields';
 import { GraphQLResolveInfo } from 'graphql';
@@ -22,12 +23,21 @@ import {
   MemberQueryArgs,
   CreateMemberInput,
   UpdateMemberInput,
+  MemberLoginResponse,
+  MemberLoginInput,
+  UpdateMemberPasswordInput,
+  UpdateMemberPasswordInputById,
 } from './member.type';
 import { MemberService } from './member.service';
 import { Context } from '@/context';
 import { Sale } from '../sale/sale.entity';
 import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
 import { Payout } from '../payout/payout.entity';
+import { createAccessToken, hashPassword, verifyPassword } from '@/utils/auth';
+import { SuccessResponse, SuccessResult } from '../../graphql/common.type';
+import { userPermission } from '../admin/admin.permission';
+
+const DEFAULT_PASSWORD = '123456789';
 
 @Service()
 @Resolver(() => Member)
@@ -65,13 +75,18 @@ export class MemberResolver {
   @Authorized([UserRole.Admin])
   @Mutation(() => Member)
   async createMember(@Arg('data') data: CreateMemberInput): Promise<Member> {
-    return this.service.createMember(data);
+    const hashedPassword = await hashPassword(DEFAULT_PASSWORD);
+    return this.service.createMember({ ...data, password: hashedPassword });
   }
 
-  @Authorized([UserRole.Admin])
+  @Authorized()
+  @UseMiddleware(userPermission)
   @Mutation(() => Member)
-  async updateMember(@Arg('data') data: UpdateMemberInput): Promise<Member> {
-    return this.service.updateMember(data);
+  async updateMember(@Ctx() ctx: Context, @Arg('data') data: UpdateMemberInput): Promise<Member> {
+    return this.service.updateMember({
+      id: ctx.user.id,
+      ...data,
+    });
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })
@@ -87,5 +102,64 @@ export class MemberResolver {
   @FieldResolver({ nullable: 'itemsAndList' })
   async payout(@Root() member: Member, @Ctx() ctx: Context): Promise<Payout> {
     return ctx.dataLoader.get('payoutForMemberLoader').load(member.id);
+  }
+
+  @Authorized()
+  @Query(() => Member)
+  async memberMe(@Ctx() ctx: Context): Promise<Member> {
+    return ctx.user! as Member;
+  }
+
+  @Authorized([UserRole.Admin])
+  @Mutation(() => Member)
+  async updatePasswordById(@Arg('data') data: UpdateMemberPasswordInputById): Promise<Member> {
+    const hashedPassword = await hashPassword(data.newPassword);
+
+    return await this.service.updateMember({ id: data.id, password: hashedPassword });
+  }
+
+  @Authorized()
+  @Mutation(() => SuccessResponse)
+  async updatePassword(
+    @Ctx() ctx: Context,
+    @Arg('data') data: UpdateMemberPasswordInput
+  ): Promise<SuccessResponse> {
+    const { password } = await this.service.getMemberById(ctx.user.id);
+    const hashedPassword = await hashPassword(data.newPassword);
+
+    const isValid = await verifyPassword(data.oldPassword, password);
+
+    if (isValid) {
+      await this.service.updateMember({ id: ctx.user.id, password: hashedPassword });
+      return {
+        result: SuccessResult.success,
+      };
+    } else {
+      return {
+        result: SuccessResult.failed,
+      };
+    }
+  }
+
+  @Mutation(() => MemberLoginResponse)
+  async memberLogin(@Arg('data') data: MemberLoginInput): Promise<MemberLoginResponse> {
+    const member = await this.service.getMemberByEmail(data.email);
+
+    if (!member) {
+      throw new Error('Invalid credentials are provided');
+    }
+
+    const isValidPassword = await verifyPassword(data.password, member.password);
+
+    if (!isValidPassword) {
+      throw new Error('Invalid credentials are provided');
+    }
+
+    return {
+      accessToken: createAccessToken({
+        id: member.id,
+        isAdmin: false,
+      }),
+    };
   }
 }
