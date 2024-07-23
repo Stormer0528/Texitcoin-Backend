@@ -15,7 +15,7 @@ export class Sale extends BaseEntity {
   invoiceNo: number;
 
   @Field()
-  paymentMethodId: string;
+  paymentId: string;
 
   @Field()
   status: boolean;
@@ -39,5 +39,5 @@ export class Sale extends BaseEntity {
   statisticsSales?: StatisticsSale[];
 
   @Field(() => Payment, { nullable: true })
-  payments?: Payment[];
+  payment?: Payment[];
 }

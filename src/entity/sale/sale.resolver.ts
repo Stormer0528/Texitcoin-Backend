@@ -88,7 +88,7 @@ export class SaleResolver {
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })
-  async payments(@Root() sale: Sale, @Ctx() ctx: Context): Promise<Payment> {
+  async payment(@Root() sale: Sale, @Ctx() ctx: Context): Promise<Payment> {
     return ctx.dataLoader.get('paymentMethodForSaleLoader').load(sale.id);
   }
 }
