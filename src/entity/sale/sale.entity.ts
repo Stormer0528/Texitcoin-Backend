@@ -4,7 +4,6 @@ import { BaseEntity } from '@/graphql/baseEntity';
 import { Member } from '../member/member.entity';
 import { Package } from '../package/package.entity';
 import { StatisticsSale } from '../statisticsSale/statisticsSale.entity';
-import { Payment } from '../payment/payment.entity';
 
 @ObjectType()
 export class Sale extends BaseEntity {
@@ -15,7 +14,7 @@ export class Sale extends BaseEntity {
   invoiceNo: number;
 
   @Field()
-  paymentId: string;
+  paymentMethod: string;
 
   @Field()
   status: boolean;
@@ -37,7 +36,4 @@ export class Sale extends BaseEntity {
 
   @Field(() => [StatisticsSale], { nullable: 'itemsAndList' })
   statisticsSales?: StatisticsSale[];
-
-  @Field(() => Payment, { nullable: true })
-  payment?: Payment[];
 }
