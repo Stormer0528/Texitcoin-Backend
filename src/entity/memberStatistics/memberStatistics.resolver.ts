@@ -30,7 +30,7 @@ import { Member } from '../member/member.entity';
 import { Context } from '@/context';
 import { Statistics } from '../statistics/statistics.entity';
 import { MemberService } from '../member/member.service';
-import { IDInput, IDsInput, ManySuccessResponse } from '../common/common.type';
+import { IDInput, IDsInput, ManySuccessResponse } from '../../graphql/common.type';
 
 @Service()
 @Resolver(() => MemberStatistics)

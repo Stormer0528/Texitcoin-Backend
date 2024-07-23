@@ -2,6 +2,7 @@ import { SaleReportInput } from '@/type';
 import { createConnection, Connection } from 'mysql2/promise';
 import { Member, Prisma, PrismaClient } from '@prisma/client';
 import { packageData } from 'prisma/seed/package';
+import { paymentData } from 'prisma/seed/payment';
 
 const prisma = new PrismaClient();
 
@@ -48,13 +49,16 @@ export const getSales = async (members: Member[]) => {
 
   const memberIds = members.reduce((prev, { id, userId }) => ({ ...prev, [userId]: id }), {});
 
-  const sales = data.map(({ userId, packageName, ...row }) => {
+  const sales = data.map(({ userId, packageName, paymentMethod, ...row }) => {
     const trimedPkgName = packageName.trim();
     const pkg = packageData.find((pkgData) => pkgData.productName === trimedPkgName);
+    const paymentMethodId = paymentData.find((pymnData) => pymnData.name === paymentMethod).id;
+
     return {
       ...row,
       memberId: memberIds[userId],
       packageId: pkg.id,
+      paymentMethodId,
     };
   });
 
@@ -76,7 +80,11 @@ export const getMembers = async () => {
       user_id AS userId,
       CONCAT("+", phone_code, " ", phone) AS mobile,
       email,
-      primary_address AS address,
+      primary_address AS primaryAddress,
+      secondary_address AS secondaryAddress,
+      city AS city,
+      state,
+      zip_code AS zipCode,
       asset_id AS assetId,
       blockio AS wallet,
       join_date AS createdAt 
@@ -87,5 +95,8 @@ export const getMembers = async () => {
   await connection.end();
   console.log(`Close connection to affiliate database successfully...`);
 
-  return rows as Prisma.MemberUncheckedCreateInput[];
+  return (rows as []).map((row: any) => ({
+    ...row,
+    state: `${row.state}`,
+  })) as Prisma.MemberUncheckedCreateInput[];
 };

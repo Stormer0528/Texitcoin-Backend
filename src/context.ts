@@ -1,7 +1,7 @@
 import type { IncomingMessage } from 'http';
 import { StandaloneServerContextFunctionArgument } from '@apollo/server/dist/esm/standalone';
 import { ContextFunction } from '@apollo/server';
-import { PrismaClient, User } from '@prisma/client';
+import { Admin, Member, PrismaClient } from '@prisma/client';
 
 import { verifyToken } from '@/utils/auth';
 import RootDataLoader from './graphql/loader';
@@ -9,7 +9,8 @@ import RootDataLoader from './graphql/loader';
 const prisma = new PrismaClient({ log: ['query'] });
 
 export interface Context {
-  user?: User;
+  user?: Member | Admin;
+  isAdmin?: boolean;
   prisma: PrismaClient;
   req: IncomingMessage;
   dataLoader: RootDataLoader;
@@ -19,15 +20,22 @@ export const context: ContextFunction<[StandaloneServerContextFunctionArgument],
   req,
 }): Promise<Context> => {
   const token = req.headers.authorization?.split(' ')[1];
-  let user: User;
+  let user: Member | Admin;
+  let isAdmin: boolean;
   if (token) {
-    const payload = verifyToken(token) as any;
+    const { id, admin } = verifyToken(token) as any;
+    isAdmin = admin;
 
-    user = await prisma.user.findUnique({ where: { id: payload.id } });
+    if (admin) {
+      user = await prisma.admin.findUnique({ where: { id } });
+    } else {
+      user = await prisma.member.findUnique({ where: { id } });
+    }
   }
 
   return {
     user,
+    isAdmin,
     req,
     prisma,
     dataLoader: new RootDataLoader(prisma, {}),

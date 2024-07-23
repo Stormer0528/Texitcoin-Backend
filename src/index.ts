@@ -11,7 +11,6 @@ import { authChecker } from './authChecker';
 import { Context, context } from './context';
 import { formatError } from './formatError';
 
-import { UserResolver } from './entity/user/user.resolver';
 import { MemberResolver } from './entity/member/member.resolver';
 import { SaleResolver } from './entity/sale/sale.resolver';
 import { BigIntScalar } from './graphql/scalar/bigInt';
@@ -22,13 +21,15 @@ import { GeneralResolver } from './entity/general/general.resolver';
 import { PackageResolver } from './entity/package/package.resolver';
 import { PayoutResolver } from './entity/payout/payout.resolver';
 import { StatisticsSaleResolver } from './entity/statisticsSale/statisticsSale.resolver';
+import { AdminResolver } from './entity/admin/admin.resolver';
+import { PaymentResolver } from './entity/payment/payment.resolver';
 
 // import "./env";
 
 const app = async () => {
   const schema = await tq.buildSchema({
     resolvers: [
-      UserResolver,
+      AdminResolver,
       MemberResolver,
       SaleResolver,
       StatisticsResolver,
@@ -38,6 +39,7 @@ const app = async () => {
       GeneralResolver,
       PackageResolver,
       PayoutResolver,
+      PaymentResolver,
     ],
     authChecker,
     scalarsMap: [

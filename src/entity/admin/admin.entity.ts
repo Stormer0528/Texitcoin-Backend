@@ -4,7 +4,7 @@ import { IsEmail, IsUrl } from 'class-validator';
 import { BaseEntity } from '@/graphql/baseEntity';
 
 @ObjectType()
-export class User extends BaseEntity {
+export class Admin extends BaseEntity {
   @Field(() => ID)
   id: string;
 
@@ -16,9 +16,6 @@ export class User extends BaseEntity {
   email: string;
 
   password?: string;
-
-  @Field()
-  isAdmin: boolean = false;
 
   @Field()
   @IsUrl()
