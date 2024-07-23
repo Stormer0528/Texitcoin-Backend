@@ -51,12 +51,20 @@ export class StatisticsResolver {
 
   @Query(() => StatisticsResponse)
   async statistics(
+    @Ctx() ctx: Context,
     @Args() query: StatisticsQueryArgs,
     @Info() info: GraphQLResolveInfo
   ): Promise<StatisticsResponse> {
     const fields = graphqlFields(info);
 
     let promises: { total?: Promise<number>; statistics?: Promise<Statistics[]> } = {};
+
+    if (!ctx.isAdmin) {
+      query.filter = {
+        ...query.filter,
+        status: true,
+      };
+    }
 
     if ('total' in fields) {
       promises.total = this.statisticsService.getStatisticsCount(query);
