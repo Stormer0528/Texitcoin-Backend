@@ -176,14 +176,6 @@ export class StatisticsResolver {
   }
 
   @Authorized([UserRole.Admin])
-  @Mutation(() => Statistics)
-  async removeStatistics(@Arg('data') data: IDInput): Promise<Statistics> {
-    await this.memberStatisticsService.removeMemberStatisticsByStatisticId(data);
-    await this.statisticsSaleService.removeStatisticsSalesByStatisticId(data);
-    return await this.statisticsService.removeStatisticById(data.id);
-  }
-
-  @Authorized([UserRole.Admin])
   @Mutation(() => ManySuccessResponse)
   async removeManyStatistics(@Arg('data') data: IDsInput): Promise<ManySuccessResponse> {
     try {
