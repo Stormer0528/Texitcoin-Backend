@@ -33,6 +33,7 @@ export class SaleResolver {
 
   @Query(() => SalesResponse)
   async sales(
+    @Ctx() ctx: Context,
     @Args() query: SaleQueryArgs,
     @Info() info: GraphQLResolveInfo
   ): Promise<SalesResponse> {
@@ -40,6 +41,13 @@ export class SaleResolver {
     const fields = graphqlFields(info);
 
     let promises: { total?: Promise<number>; sales?: any } = {};
+
+    if (!ctx.isAdmin) {
+      query.filter = {
+        ...query.filter,
+        memberId: ctx.user.id,
+      };
+    }
 
     if ('total' in fields) {
       promises.total = this.service.getSalesCount(query);
