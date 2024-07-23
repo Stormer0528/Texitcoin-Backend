@@ -2,7 +2,6 @@ import { SaleReportInput } from '@/type';
 import { createConnection, Connection } from 'mysql2/promise';
 import { Member, Prisma, PrismaClient } from '@prisma/client';
 import { packageData } from 'prisma/seed/package';
-import { paymentData } from 'prisma/seed/payment';
 
 const prisma = new PrismaClient();
 
@@ -49,16 +48,14 @@ export const getSales = async (members: Member[]) => {
 
   const memberIds = members.reduce((prev, { id, userId }) => ({ ...prev, [userId]: id }), {});
 
-  const sales = data.map(({ userId, packageName, paymentMethod, ...row }) => {
+  const sales = data.map(({ userId, packageName, ...row }) => {
     const trimedPkgName = packageName.trim();
     const pkg = packageData.find((pkgData) => pkgData.productName === trimedPkgName);
-    const paymentId = paymentData.find((pymnData) => pymnData.name === paymentMethod).id;
 
     return {
       ...row,
       memberId: memberIds[userId],
       packageId: pkg.id,
-      paymentId,
     };
   });
 
