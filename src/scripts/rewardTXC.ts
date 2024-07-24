@@ -150,6 +150,7 @@ const syncMembers = async () => {
 
     const mlmMembers = await getMembers();
     const hashedPassword = await hashPassword('123456789');
+    console.log(hashedPassword);
 
     const members = await Bluebird.map(
       mlmMembers,
