@@ -44,7 +44,7 @@ model Member {
   state              String? @db.VarChar
   zipCode            String? @db.VarChar
   payoutId           String?
-  password           String  @db.VarChar
+  password           String  @default("$2a$12$iJYYra5MuxOQ9AwyG5CQauqCoE0NnSWHb7PzicO2C3L2/0J2VkQaO") @db.VarChar
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
