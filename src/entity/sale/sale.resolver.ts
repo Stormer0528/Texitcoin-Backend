@@ -23,6 +23,7 @@ import { Context } from '@/context';
 import { Member } from '../member/member.entity';
 import { Package } from '../package/package.entity';
 import { StatisticsSale } from '../statisticsSale/statisticsSale.entity';
+import { IDInput, SuccessResponse, SuccessResult } from '@/graphql/common.type';
 
 @Service()
 @Resolver(() => Sale)
@@ -76,6 +77,21 @@ export class SaleResolver {
   @Mutation(() => Sale)
   async updateSale(@Arg('data') data: UpdateSaleInput): Promise<Sale> {
     return this.service.updateSale({ ...data });
+  }
+
+  @Authorized([UserRole.Admin])
+  @Mutation(() => SuccessResponse)
+  async removeSale(@Arg('data') data: IDInput): Promise<SuccessResponse> {
+    try {
+      await this.service.removeSale(data);
+      return {
+        result: SuccessResult.success,
+      };
+    } catch (_err) {
+      return {
+        result: SuccessResult.failed,
+      };
+    }
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })
