@@ -3,6 +3,7 @@ import { Service, Inject } from 'typedi';
 import { PrismaService } from '@/service/prisma';
 
 import { CreateSaleInput, SaleQueryArgs, UpdateSaleInput } from './sale.type';
+import { IDInput } from '@/graphql/common.type';
 
 @Service()
 export class SaleService {
@@ -39,6 +40,14 @@ export class SaleService {
   async updateSale(data: UpdateSaleInput) {
     return this.prisma.sale.update({
       data,
+      where: {
+        id: data.id,
+      },
+    });
+  }
+
+  async removeSale(data: IDInput) {
+    return this.prisma.sale.delete({
       where: {
         id: data.id,
       },
