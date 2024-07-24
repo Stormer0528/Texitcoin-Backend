@@ -53,11 +53,17 @@ export class UpdateAdminInput {
 
 @InputType()
 export class UpdateAdminPasswordInput {
-  @Field(() => ID, { nullable: true })
-  id?: string;
+  @Field()
+  oldPassword: string;
 
-  @Field({ nullable: true })
-  oldPassword?: string;
+  @Field()
+  newPassword: string;
+}
+
+@InputType()
+export class UpdateAdminPasswordByIdInput {
+  @Field(() => ID)
+  id?: string;
 
   @Field()
   newPassword: string;
