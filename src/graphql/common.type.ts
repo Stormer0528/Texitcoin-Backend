@@ -27,4 +27,7 @@ export enum SuccessResult {
 export class SuccessResponse {
   @Field()
   result: SuccessResult;
+
+  @Field({ nullable: true })
+  message?: string;
 }

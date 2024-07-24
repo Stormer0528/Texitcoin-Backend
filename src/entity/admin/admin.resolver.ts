@@ -16,9 +16,15 @@ import {
   AdminsResponse,
   CreateAdminInput,
   UpdateAdminInput,
+  UpdateAdminPasswordByIdInput,
   UpdateAdminPasswordInput,
 } from './admin.type';
-import { IDsInput, ManySuccessResponse } from '@/graphql/common.type';
+import {
+  IDsInput,
+  ManySuccessResponse,
+  SuccessResponse,
+  SuccessResult,
+} from '@/graphql/common.type';
 
 const DEFAULT_PASSWORD = '123456789';
 
@@ -80,21 +86,40 @@ export class AdminResolver {
   }
 
   @Authorized([UserRole.Admin])
-  @Mutation(() => Admin)
-  async updatePassword(
+  @Mutation(() => SuccessResponse)
+  async updatePasswordAdmin(
     @Ctx() ctx: Context,
     @Arg('data') data: UpdateAdminPasswordInput
-  ): Promise<Admin> {
-    if (!data.id && !data.oldPassword) return null;
-
-    const user = await this.service.getAdminById(data.id ?? ctx.user.id);
+  ): Promise<SuccessResponse> {
+    const user = await this.service.getAdminById(ctx.user.id);
 
     const isValidPassword = await verifyPassword(data.oldPassword, user.password);
 
     if (!isValidPassword) {
-      throw new Error('Old password does not match');
+      return {
+        result: SuccessResult.failed,
+        message: 'password doesn not match',
+      };
     }
 
+    const hashedPassword = await hashPassword(data.newPassword);
+    try {
+      await this.service.updatePassword({ id: user.id, password: hashedPassword });
+
+      return {
+        result: SuccessResult.success,
+      };
+    } catch (_err) {
+      return {
+        result: SuccessResult.failed,
+        message: 'updating error',
+      };
+    }
+  }
+
+  @Authorized([UserRole.Admin])
+  @Mutation(() => Admin)
+  async updatePasswordAdminById(@Arg('data') data: UpdateAdminPasswordByIdInput): Promise<Admin> {
     const hashedPassword = await hashPassword(data.newPassword);
     return this.service.updatePassword({ id: data.id, password: hashedPassword });
   }

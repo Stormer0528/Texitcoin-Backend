@@ -113,7 +113,9 @@ export class MemberResolver {
 
   @Authorized([UserRole.Admin])
   @Mutation(() => Member)
-  async updatePasswordById(@Arg('data') data: UpdateMemberPasswordInputById): Promise<Member> {
+  async updatePasswordMemberById(
+    @Arg('data') data: UpdateMemberPasswordInputById
+  ): Promise<Member> {
     const hashedPassword = await hashPassword(data.newPassword);
 
     return await this.service.updateMember({ id: data.id, password: hashedPassword });
@@ -121,7 +123,7 @@ export class MemberResolver {
 
   @Authorized()
   @Mutation(() => SuccessResponse)
-  async updatePassword(
+  async updatePasswordMember(
     @Ctx() ctx: Context,
     @Arg('data') data: UpdateMemberPasswordInput
   ): Promise<SuccessResponse> {
