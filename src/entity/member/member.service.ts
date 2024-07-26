@@ -82,4 +82,12 @@ export class MemberService {
       },
     });
   }
+
+  async removeMember(id: string) {
+    return this.prisma.member.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }
