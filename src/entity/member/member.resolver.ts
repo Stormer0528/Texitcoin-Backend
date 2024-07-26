@@ -34,7 +34,7 @@ import { Sale } from '../sale/sale.entity';
 import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
 import { Payout } from '../payout/payout.entity';
 import { createAccessToken, hashPassword, verifyPassword } from '@/utils/auth';
-import { SuccessResponse, SuccessResult } from '../../graphql/common.type';
+import { IDInput, IDsInput, SuccessResponse, SuccessResult } from '../../graphql/common.type';
 import { userPermission } from '../admin/admin.permission';
 
 const DEFAULT_PASSWORD = '123456789';
@@ -88,6 +88,12 @@ export class MemberResolver {
       id: ctx.user.id,
       ...data,
     });
+  }
+
+  @Authorized([UserRole.Admin])
+  @Mutation(() => Member)
+  async removeMember(@Arg('data') data: IDInput): Promise<Member> {
+    return await this.service.removeMember(data.id);
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })
