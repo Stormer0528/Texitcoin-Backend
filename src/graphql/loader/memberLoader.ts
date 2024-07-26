@@ -3,7 +3,7 @@ import DataLoader from 'dataloader';
 import RootDataLoader from '.';
 import { Sale } from '@/entity/sale/sale.entity';
 import { MemberStatistics } from '@/entity/memberStatistics/memberStatistics.entity';
-import { Payout } from '@prisma/client';
+import { Member, Payout } from '@prisma/client';
 
 export const salesForMemberLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, Sale[]>(
@@ -70,6 +70,54 @@ export const payoutForMemberLoader = (parent: RootDataLoader) => {
       });
 
       return memberIds.map((id) => membersWithPayoutMap[id]);
+    },
+    {
+      ...parent.dataLoaderOptions,
+    }
+  );
+};
+
+export const sponsorForMemberLoader = (parent: RootDataLoader) => {
+  return new DataLoader<string, Member>(
+    async (memberIds: string[]) => {
+      const membersWithSponsor = await parent.prisma.member.findMany({
+        select: {
+          id: true,
+          sponsor: true,
+        },
+        where: { id: { in: memberIds } },
+      });
+
+      const membersWithSponsorMap: Record<string, Member> = {};
+      membersWithSponsor.forEach(({ id, sponsor }) => {
+        membersWithSponsorMap[id] = sponsor;
+      });
+
+      return memberIds.map((id) => membersWithSponsorMap[id]);
+    },
+    {
+      ...parent.dataLoaderOptions,
+    }
+  );
+};
+
+export const introduceMembersForMemberLoader = (parent: RootDataLoader) => {
+  return new DataLoader<string, Member[]>(
+    async (memberIds: string[]) => {
+      const membersWithIntroduceMembers = await parent.prisma.member.findMany({
+        select: {
+          id: true,
+          introduceMembers: true,
+        },
+        where: { id: { in: memberIds } },
+      });
+
+      const membersWithIntroduceMembersMap: Record<string, Member[]> = {};
+      membersWithIntroduceMembers.forEach(({ id, introduceMembers }) => {
+        membersWithIntroduceMembersMap[id] = introduceMembers;
+      });
+
+      return memberIds.map((id) => membersWithIntroduceMembersMap[id]);
     },
     {
       ...parent.dataLoaderOptions,
