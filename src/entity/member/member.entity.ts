@@ -17,7 +17,7 @@ export class Member extends BaseEntity {
   @Field()
   fullName: string;
 
-  @Field({ nullable: true })
+  @Field(() => ID, { nullable: true })
   sponsorid: string;
 
   introducerFullName?: string;
