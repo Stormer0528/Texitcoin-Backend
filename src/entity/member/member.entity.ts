@@ -17,7 +17,8 @@ export class Member extends BaseEntity {
   @Field()
   fullName: string;
 
-  sponsorName?: string;
+  @Field({ nullable: true })
+  sponsorid: string;
 
   introducerFullName?: string;
 
@@ -62,4 +63,10 @@ export class Member extends BaseEntity {
 
   @Field(() => Payout)
   payout?: Payout;
+
+  @Field(() => Member)
+  sponsor?: Member;
+
+  @Field(() => [Member], { nullable: 'itemsAndList' })
+  introduceMembers?: Member[];
 }
