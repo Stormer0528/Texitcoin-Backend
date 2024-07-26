@@ -52,12 +52,6 @@ export class CreateMemberInput {
   @Field()
   assetId: string;
 
-  @Field()
-  payoutId: string;
-
-  @Field()
-  wallet: string;
-
   @Field(() => ID, { nullable: true })
   sponsorId?: string;
 
@@ -88,12 +82,6 @@ export class UpdateMemberInput {
 
   @Field(() => ID, { nullable: true })
   sponsorId?: string;
-
-  @Field({ nullable: true })
-  payoutId?: string;
-
-  @Field({ nullable: true })
-  wallet?: string;
 
   @Field({ nullable: true })
   primaryAddress?: string;

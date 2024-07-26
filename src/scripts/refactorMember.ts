@@ -21,13 +21,9 @@ const syncMembers = async () => {
           where: { userId: member.userId },
           create: {
             ...member,
-            payoutId: PAYOUTS[0],
             password: hashedPassword,
           },
-          update: {
-            ...member,
-            payoutId: PAYOUTS[0],
-          },
+          update: member,
         });
 
         return result;

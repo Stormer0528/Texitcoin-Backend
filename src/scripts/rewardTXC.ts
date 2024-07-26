@@ -4,10 +4,10 @@ import { processStatistics } from '../utils/processData';
 import dayjs from 'dayjs';
 import { getMembers, getSales } from '@/utils/connectMlm';
 import Bluebird from 'bluebird';
-import { PAYOUTS } from '@/consts';
 import { SaleSearchResult } from '@/type';
 import { formatDate } from '@/utils/common';
 import { hashPassword } from '@/utils/auth';
+import { payoutData } from 'prisma/seed/payout';
 
 const prisma = new PrismaClient();
 
@@ -115,10 +115,6 @@ const createStatisticSales = async (
 
 const createStatisticsAndMemberStatistics = async () => {
   console.log('Creating statistics & memberStatistics...');
-  console.log('Removing memberStatistics');
-  await prisma.memberStatistics.deleteMany({});
-  console.log('Removing statistics');
-  await prisma.statistics.deleteMany({});
 
   const now = dayjs();
   for (let iDate = dayjs('2024-04-01'); iDate.isBefore(now); iDate = iDate.add(1, 'day')) {
@@ -144,28 +140,56 @@ const createStatisticsAndMemberStatistics = async () => {
   console.log('Finished creating statistics & memberStatistics');
 };
 
+const toMember = (
+  complexMember: any,
+  hashedPassword: string
+): Prisma.MemberUncheckedCreateInput => {
+  return {
+    assetId: complexMember.assetId,
+    email: complexMember.email,
+    fullName: complexMember.fullName,
+    mobile: complexMember.mobile,
+    primaryAddress: complexMember.primaryAddress,
+    secondaryAddress: complexMember.secondaryAddress,
+    userId: complexMember.userId,
+    username: complexMember.username,
+    city: complexMember.city,
+    password: hashedPassword,
+    state: complexMember.state,
+    zipCode: complexMember.zipCode,
+  };
+};
+
 const syncMembers = async () => {
   try {
     console.log('Syncing members...');
 
     const mlmMembers = await getMembers();
     const hashedPassword = await hashPassword('123456789');
-    console.log(hashedPassword);
-
     const members = await Bluebird.map(
       mlmMembers,
       async (member) => {
-        const result = await prisma.member.upsert({
-          where: { userId: member.userId },
-          create: {
-            ...member,
-            payoutId: PAYOUTS[0],
-            password: hashedPassword,
-          },
-          update: {
-            ...member,
-            payoutId: PAYOUTS[0],
-          },
+        const result = await prisma.member.create({
+          data: toMember(member, hashedPassword),
+        });
+
+        const wallets: Prisma.MemberWalletUncheckedCreateInput[] = [];
+        for (const [column, value] of Object.entries(member)) {
+          const payout = payoutData.find((pyData) => pyData.name === column);
+          if (payout && value && value !== 'NA') {
+            wallets.push({
+              address: value as string,
+              memberId: result.id,
+              payoutId: payout.id,
+            });
+          }
+        }
+
+        await prisma.memberWallet.createMany({
+          data: wallets.map((wallet) => ({
+            ...wallet,
+            percent: 100 / wallets.length,
+          })),
         });
 
         return result;
@@ -185,12 +209,6 @@ const syncSales = async (members: Member[]) => {
   try {
     console.log('Syncing sales...');
 
-    console.log('Removing statisticsSale');
-    await prisma.statisticsSale.deleteMany({});
-
-    await prisma.sale.deleteMany();
-    console.log('Successfully deleted current sales.');
-
     const mlmSales = await getSales(members);
 
     const sales = await prisma.sale.createManyAndReturn({ data: mlmSales });
@@ -205,6 +223,24 @@ const syncSales = async (members: Member[]) => {
 
 async function rewardTXC() {
   console.log('Started rewarding operation');
+
+  console.log('Removing statisticsSale');
+  await prisma.statisticsSale.deleteMany({});
+  console.log('Removing sales');
+  await prisma.sale.deleteMany();
+
+  console.log('Removing memberStatisticsWallet');
+  await prisma.memberStatisticsWallet.deleteMany({});
+  console.log('Removing memberWallet');
+  await prisma.memberWallet.deleteMany({});
+  console.log('Removing memberStatistics');
+  await prisma.memberStatistics.deleteMany({});
+  console.log('Removing member');
+  await prisma.member.deleteMany({});
+
+  console.log('Removing statistics');
+  await prisma.statistics.deleteMany({});
+  console.log('Successfully deleted current database.');
 
   const members = await syncMembers();
   const _sales = await syncSales(members);

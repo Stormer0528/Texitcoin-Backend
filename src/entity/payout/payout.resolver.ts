@@ -59,9 +59,4 @@ export class PayoutResolver {
   async createPayout(@Arg('data') data: CreatePayoutInput): Promise<Payout> {
     return this.service.createPayout(data);
   }
-
-  @FieldResolver({ nullable: 'itemsAndList' })
-  async members(@Root() payout: Payout, @Ctx() ctx: Context): Promise<Member[]> {
-    return ctx.dataLoader.get('membersForPayoutLoader').load(payout.id);
-  }
 }

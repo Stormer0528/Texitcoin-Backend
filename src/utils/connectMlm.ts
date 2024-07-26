@@ -83,8 +83,14 @@ export const getMembers = async () => {
       state,
       zip_code AS zipCode,
       asset_id AS assetId,
-      blockio AS wallet,
-      join_date AS createdAt 
+      join_date AS createdAt ,
+      blockio,
+      bitgo,
+      coin_payments,
+      advcache,
+      paypal,
+      authorizenet,
+      TXCpayout
     FROM mlm_login;`);
 
   console.log(`Fetched ${(rows as []).length} members from affiliate`);
@@ -95,5 +101,5 @@ export const getMembers = async () => {
   return (rows as []).map((row: any) => ({
     ...row,
     state: `${row.state}`,
-  })) as Prisma.MemberUncheckedCreateInput[];
+  }));
 };

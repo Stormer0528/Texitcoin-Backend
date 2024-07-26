@@ -115,11 +115,6 @@ export class MemberResolver {
     return ctx.dataLoader.get('memberStatisticsForMemberLoader').load(member.id);
   }
 
-  @FieldResolver({ nullable: 'itemsAndList' })
-  async payout(@Root() member: Member, @Ctx() ctx: Context): Promise<Payout> {
-    return ctx.dataLoader.get('payoutForMemberLoader').load(member.id);
-  }
-
   @FieldResolver({ nullable: true })
   async sponsor(@Root() member: Member, @Ctx() ctx: Context): Promise<Member> {
     return ctx.dataLoader.get('sponsorForMemberLoader').load(member.id);

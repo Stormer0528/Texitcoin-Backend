@@ -34,12 +34,6 @@ export class Member extends BaseEntity {
   @Field()
   assetId: string;
 
-  @Field(() => ID)
-  payoutId: string;
-
-  @Field()
-  wallet: string;
-
   @Field()
   primaryAddress: string;
 
@@ -60,9 +54,6 @@ export class Member extends BaseEntity {
 
   @Field(() => [MemberStatistics], { nullable: 'itemsAndList' })
   statistics?: MemberStatistics[];
-
-  @Field(() => Payout, { nullable: true })
-  payout?: Payout;
 
   @Field(() => Member, { nullable: true })
   sponsor?: Member;

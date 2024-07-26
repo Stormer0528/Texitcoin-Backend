@@ -19,7 +19,4 @@ export class Payout extends BaseEntity {
 
   @Field()
   display: string;
-
-  @Field(() => [Member], { nullable: 'itemsAndList' })
-  members?: Member[];
 }
