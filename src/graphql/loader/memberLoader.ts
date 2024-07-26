@@ -53,29 +53,29 @@ export const memberStatisticsForMemberLoader = (parent: RootDataLoader) => {
   );
 };
 
-export const payoutForMemberLoader = (parent: RootDataLoader) => {
-  return new DataLoader<string, Payout>(
-    async (memberIds: string[]) => {
-      const membersWithPayout = await parent.prisma.member.findMany({
-        select: {
-          id: true,
-          payout: true,
-        },
-        where: { id: { in: memberIds } },
-      });
+// export const payoutForMemberLoader = (parent: RootDataLoader) => {
+//   return new DataLoader<string, Payout>(
+//     async (memberIds: string[]) => {
+//       const membersWithPayout = await parent.prisma.member.findMany({
+//         select: {
+//           id: true,
+//           payout: true,
+//         },
+//         where: { id: { in: memberIds } },
+//       });
 
-      const membersWithPayoutMap: Record<string, Payout> = {};
-      membersWithPayout.forEach(({ id, payout }) => {
-        membersWithPayoutMap[id] = payout;
-      });
+//       const membersWithPayoutMap: Record<string, Payout> = {};
+//       membersWithPayout.forEach(({ id, payout }) => {
+//         membersWithPayoutMap[id] = payout;
+//       });
 
-      return memberIds.map((id) => membersWithPayoutMap[id]);
-    },
-    {
-      ...parent.dataLoaderOptions,
-    }
-  );
-};
+//       return memberIds.map((id) => membersWithPayoutMap[id]);
+//     },
+//     {
+//       ...parent.dataLoaderOptions,
+//     }
+//   );
+// };
 
 export const sponsorForMemberLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, Member>(
