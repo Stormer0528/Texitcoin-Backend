@@ -31,7 +31,7 @@ model Member {
   id                 String  @id @default(uuid())
   username           String  @unique(map: "index_members_on_username") @db.VarChar
   fullName           String  @db.VarChar
-  sponsorid          String? @db.VarChar
+  sponsorId          String? @db.VarChar
   introducerFullName String? @db.VarChar
   userId             Int     @unique(map: "index_members_on_userId") @db.Integer
   email              String  @db.VarChar
@@ -46,7 +46,7 @@ model Member {
   payoutId           String?
   password           String  @default("$2a$12$iJYYra5MuxOQ9AwyG5CQauqCoE0NnSWHb7PzicO2C3L2/0J2VkQaO") @db.VarChar
 
-  sponsor Member? @relation("MemberSponsor", fields: [sponsorid], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  sponsor Member? @relation("MemberSponsor", fields: [sponsorId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
