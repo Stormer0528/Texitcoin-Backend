@@ -44,7 +44,7 @@ const DEFAULT_PASSWORD = '123456789';
 export class MemberResolver {
   constructor(private readonly service: MemberService) {}
 
-  @Authorized([UserRole.Admin])
+  // @Authorized([UserRole.Admin])
   @Query(() => MembersResponse)
   async members(
     @Args() query: MemberQueryArgs,
