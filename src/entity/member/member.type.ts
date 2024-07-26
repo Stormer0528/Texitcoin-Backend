@@ -58,6 +58,9 @@ export class CreateMemberInput {
   @Field()
   wallet: string;
 
+  @Field(() => ID, { nullable: true })
+  sponsorId?: string;
+
   // @Field(() => [Sale], { nullable: 'itemsAndList' })
   // sales?: Sale[];
 }
@@ -82,6 +85,9 @@ export class UpdateMemberInput {
 
   @Field({ nullable: true })
   assetId?: string;
+
+  @Field(() => ID, { nullable: true })
+  sponsorId?: string;
 
   @Field({ nullable: true })
   payoutId?: string;
