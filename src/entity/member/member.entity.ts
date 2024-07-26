@@ -61,10 +61,10 @@ export class Member extends BaseEntity {
   @Field(() => [MemberStatistics], { nullable: 'itemsAndList' })
   statistics?: MemberStatistics[];
 
-  @Field(() => Payout)
+  @Field(() => Payout, { nullable: true })
   payout?: Payout;
 
-  @Field(() => Member)
+  @Field(() => Member, { nullable: true })
   sponsor?: Member;
 
   @Field(() => [Member], { nullable: 'itemsAndList' })
