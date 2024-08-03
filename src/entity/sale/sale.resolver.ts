@@ -82,16 +82,10 @@ export class SaleResolver {
   @Authorized([UserRole.Admin])
   @Mutation(() => SuccessResponse)
   async removeSale(@Arg('data') data: IDInput): Promise<SuccessResponse> {
-    try {
-      await this.service.removeSale(data);
-      return {
-        result: SuccessResult.success,
-      };
-    } catch (_err) {
-      return {
-        result: SuccessResult.failed,
-      };
-    }
+    await this.service.removeSale(data);
+    return {
+      result: SuccessResult.success,
+    };
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })

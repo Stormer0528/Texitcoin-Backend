@@ -76,34 +76,19 @@ export class StatisticsSaleResolver {
   async createManyStatisticsSales(
     @Arg('data') data: CreateManyStatisticsSaleInput
   ): Promise<ManySuccessResponse> {
-    try {
-      const { count } = await this.service.createManyStatisticsSales(data);
-      return { count };
-    } catch (err) {
-      return { count: 0 };
-    }
+    return await this.service.createManyStatisticsSales(data);
   }
 
   @Authorized([UserRole.Admin])
   @Mutation(() => ManySuccessResponse)
   async removeManyStatisticsSales(@Arg('data') data: IDsInput): Promise<ManySuccessResponse> {
-    try {
-      const { count } = await this.service.removeManyStatisticsSales(data);
-      return { count };
-    } catch (err) {
-      return { count: 0 };
-    }
+    return await this.service.removeManyStatisticsSales(data);
   }
 
   @Authorized([UserRole.Admin])
   @Mutation(() => ManySuccessResponse)
   async removeStatisticsSalesByStaitisId(@Arg('data') data: IDInput): Promise<ManySuccessResponse> {
-    try {
-      const { count } = await this.service.removeStatisticsSalesByStatisticId(data);
-      return { count };
-    } catch (err) {
-      return { count: 0 };
-    }
+    return await this.service.removeStatisticsSalesByStatisticId(data);
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })

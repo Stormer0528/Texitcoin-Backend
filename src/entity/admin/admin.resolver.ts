@@ -103,18 +103,11 @@ export class AdminResolver {
     }
 
     const hashedPassword = await hashPassword(data.newPassword);
-    try {
-      await this.service.updatePassword({ id: user.id, password: hashedPassword });
+    await this.service.updatePassword({ id: user.id, password: hashedPassword });
 
-      return {
-        result: SuccessResult.success,
-      };
-    } catch (_err) {
-      return {
-        result: SuccessResult.failed,
-        message: 'updating error',
-      };
-    }
+    return {
+      result: SuccessResult.success,
+    };
   }
 
   @Authorized([UserRole.Admin])
@@ -127,13 +120,9 @@ export class AdminResolver {
   @Authorized([UserRole.Admin])
   @Mutation(() => ManySuccessResponse)
   async removeAdmins(@Arg('data') data: IDsInput): Promise<ManySuccessResponse> {
-    try {
-      const { count } = await this.service.removeAdmins(data);
+    const { count } = await this.service.removeAdmins(data);
 
-      return { count };
-    } catch (err) {
-      return { count: 0 };
-    }
+    return { count };
   }
 
   @Mutation(() => AdminLoginResponse)

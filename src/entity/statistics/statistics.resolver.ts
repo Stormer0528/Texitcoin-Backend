@@ -164,15 +164,9 @@ export class StatisticsResolver {
   @Authorized([UserRole.Admin])
   @Mutation(() => ManySuccessResponse)
   async removeManyStatistics(@Arg('data') data: IDsInput): Promise<ManySuccessResponse> {
-    try {
-      await this.memberStatisticsService.removeMemberStatisticsByStatisticIds(data);
-      await this.statisticsSaleService.removeStatisticsSalesByStatisticIds(data);
-      return await this.statisticsService.removeStatisticByIds(data.ids);
-    } catch (err) {
-      return {
-        count: 0,
-      };
-    }
+    await this.memberStatisticsService.removeMemberStatisticsByStatisticIds(data);
+    await this.statisticsSaleService.removeStatisticsSalesByStatisticIds(data);
+    return await this.statisticsService.removeStatisticByIds(data.ids);
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })
