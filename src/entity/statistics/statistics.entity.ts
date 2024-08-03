@@ -38,10 +38,6 @@ export class Statistics extends BaseEntity {
   @Field()
   to: Date;
 
-  // TODO: Syncing with sales
-  // @Field(() => [Sale], { nullable: 'itemsAndList' })
-  // sales?: Sale[];
-
   @Field(() => [MemberStatistics], { nullable: 'itemsAndList' })
   memberStatistics?: MemberStatistics[];
 

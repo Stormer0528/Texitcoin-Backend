@@ -155,28 +155,6 @@ export class StatisticsResolver {
     return statistic;
   }
 
-  // @Query(() => PendingStatisticsResponse)
-  // async pendingStatistics(
-  //   @Args() query: StatisticsQueryArgs,
-  //   @Info() info: GraphQLResolveInfo
-  // ): Promise<PendingStatisticsResponse> {
-  //   const pendingStatistics: Statistics = await this.statisticsService.getPendingStatistics(
-  //     query,
-  //     today()
-  //   );
-
-  //   const results: PendingStatistics[] = pendingStatistics.memberStatistics.map(
-  //     ({ member: { wallet }, txcShared }) => {
-  //       return {
-  //         wallet,
-  //         txcShared,
-  //       };
-  //     }
-  //   );
-
-  //   return { results };
-  // }
-
   @Authorized([UserRole.Admin])
   @Mutation(() => Statistics)
   async updateStatistics(@Arg('data') data: UpdateStatisticsInput): Promise<Statistics> {
