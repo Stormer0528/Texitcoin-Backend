@@ -33,7 +33,7 @@ export class MemberWalletResolver {
   constructor(private readonly service: MemberWalletService) {}
 
   @Query(() => MemberWalletResponse)
-  async payouts(
+  async memberWallets(
     @Args() query: MemberWalletQueryArgs,
     @Info() info: GraphQLResolveInfo
   ): Promise<MemberWalletResponse> {
