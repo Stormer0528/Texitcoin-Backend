@@ -3,7 +3,8 @@ import DataLoader from 'dataloader';
 import RootDataLoader from '.';
 import { Sale } from '@/entity/sale/sale.entity';
 import { MemberStatistics } from '@/entity/memberStatistics/memberStatistics.entity';
-import { Member, MemberWallet, Payout } from '@prisma/client';
+import { MemberWallet } from '@/entity/memberWallet/memberWallet.entity';
+import { Member } from '@/entity/member/member.entity';
 
 export const salesForMemberLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, Sale[]>(

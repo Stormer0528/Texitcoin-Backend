@@ -1,5 +1,16 @@
 import { Service } from 'typedi';
-import { Arg, Args, Resolver, Query, Mutation, Info, Authorized } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Resolver,
+  Query,
+  Mutation,
+  Info,
+  Authorized,
+  FieldResolver,
+  Root,
+  Ctx,
+} from 'type-graphql';
 import graphqlFields from 'graphql-fields';
 import { GraphQLResolveInfo } from 'graphql';
 
@@ -11,6 +22,9 @@ import {
   MemberStatisticsWalletQueryArgs,
   MemberStatisticsWalletResponse,
 } from './memberStatisticsWallet.type';
+import { Context } from '@/context';
+import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
+import { MemberWallet } from '../memberWallet/memberWallet.entity';
 
 @Service()
 @Resolver(() => MemberStatisticsWallet)
@@ -51,5 +65,21 @@ export class MemberWalletResolver {
     @Arg('data') data: CreateMemberStatisticsWalletInput
   ): Promise<MemberStatisticsWallet> {
     return this.service.createMemberStatisticsWallet(data);
+  }
+
+  @FieldResolver({ nullable: true })
+  async memberStatistic(
+    @Root() member: MemberStatisticsWallet,
+    @Ctx() ctx: Context
+  ): Promise<MemberStatistics> {
+    return ctx.dataLoader.get('memberStatisticForMemberStatisticsWalletLoader').load(member.id);
+  }
+
+  @FieldResolver({ nullable: true })
+  async memberWallet(
+    @Root() member: MemberStatisticsWallet,
+    @Ctx() ctx: Context
+  ): Promise<MemberWallet> {
+    return ctx.dataLoader.get('memberWalletForMemberStatisticsWalletLoader').load(member.id);
   }
 }

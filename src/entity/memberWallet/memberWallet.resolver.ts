@@ -1,5 +1,16 @@
 import { Service } from 'typedi';
-import { Arg, Args, Resolver, Query, Mutation, Info, Authorized } from 'type-graphql';
+import {
+  Arg,
+  Args,
+  Resolver,
+  Query,
+  Mutation,
+  Info,
+  Authorized,
+  Root,
+  Ctx,
+  FieldResolver,
+} from 'type-graphql';
 import graphqlFields from 'graphql-fields';
 import { GraphQLResolveInfo } from 'graphql';
 
@@ -11,6 +22,10 @@ import {
   MemberWalletResponse,
 } from './memberWallet.type';
 import { MemberWalletService } from './memberWallet.service';
+import { Context } from '@/context';
+import { Member } from '../member/member.entity';
+import { Payout } from '../payout/payout.entity';
+import { MemberStatisticsWallet } from '../memberStatisticsWallet/memberStatisticsWallet.entity';
 
 @Service()
 @Resolver(() => MemberWallet)
@@ -49,5 +64,23 @@ export class MemberWalletResolver {
   @Mutation(() => MemberWallet)
   async createMemberWallet(@Arg('data') data: CreateMemberWalletInput): Promise<MemberWallet> {
     return this.service.createMemberWallet(data);
+  }
+
+  @FieldResolver({ nullable: true })
+  async member(@Root() member: MemberWallet, @Ctx() ctx: Context): Promise<Member> {
+    return ctx.dataLoader.get('memberForMemberWalletLoader').load(member.id);
+  }
+
+  @FieldResolver({ nullable: true })
+  async payout(@Root() member: MemberWallet, @Ctx() ctx: Context): Promise<Payout> {
+    return ctx.dataLoader.get('payoutForMemberWalletLoader').load(member.id);
+  }
+
+  @FieldResolver({ nullable: 'itemsAndList' })
+  async memberStatisticsWallets(
+    @Root() member: MemberWallet,
+    @Ctx() ctx: Context
+  ): Promise<MemberStatisticsWallet[]> {
+    return ctx.dataLoader.get('memberStatisticsWalletsForMemberWalletLoader').load(member.id);
   }
 }

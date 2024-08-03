@@ -36,7 +36,7 @@ import { Payout } from '../payout/payout.entity';
 import { createAccessToken, hashPassword, verifyPassword } from '@/utils/auth';
 import { IDInput, IDsInput, SuccessResponse, SuccessResult } from '../../graphql/common.type';
 import { userPermission } from '../admin/admin.permission';
-import { MemberWallet } from '@prisma/client';
+import { MemberWallet } from '../memberWallet/memberWallet.entity';
 
 const DEFAULT_PASSWORD = '123456789';
 
