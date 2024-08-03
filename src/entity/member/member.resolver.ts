@@ -32,18 +32,22 @@ import { MemberService } from './member.service';
 import { Context } from '@/context';
 import { Sale } from '../sale/sale.entity';
 import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
-import { Payout } from '../payout/payout.entity';
 import { createAccessToken, hashPassword, verifyPassword } from '@/utils/auth';
-import { IDInput, IDsInput, SuccessResponse, SuccessResult } from '../../graphql/common.type';
+import { IDInput, SuccessResponse, SuccessResult } from '../../graphql/common.type';
 import { userPermission } from '../admin/admin.permission';
 import { MemberWallet } from '../memberWallet/memberWallet.entity';
+import { MemberWalletService } from '../memberWallet/memberWallet.service';
+import _ from 'lodash';
 
 const DEFAULT_PASSWORD = '123456789';
 
 @Service()
 @Resolver(() => Member)
 export class MemberResolver {
-  constructor(private readonly service: MemberService) {}
+  constructor(
+    private readonly service: MemberService,
+    private readonly memberWalletService: MemberWalletService
+  ) {}
 
   // @Authorized([UserRole.Admin])
   @Query(() => MembersResponse)
@@ -78,7 +82,14 @@ export class MemberResolver {
   @Mutation(() => Member)
   async createMember(@Arg('data') data: CreateMemberInput): Promise<Member> {
     const hashedPassword = await hashPassword(DEFAULT_PASSWORD);
-    return this.service.createMember({ ...data, password: hashedPassword });
+    const member = await this.service.createMember({
+      ..._.omit(data, 'wallets'),
+      password: hashedPassword,
+    });
+    await this.memberWalletService.createManyMemberWallets(
+      data.wallets.map((wallet) => ({ ...wallet, memberId: member.id }))
+    );
+    return member;
   }
 
   @Authorized()
@@ -91,7 +102,7 @@ export class MemberResolver {
     });
   }
 
-  // @Authorized([UserRole.Admin])
+  @Authorized([UserRole.Admin])
   @Mutation(() => SuccessResponse)
   async removeMember(@Arg('data') data: IDInput): Promise<SuccessResponse> {
     await this.service.removeMember(data.id);

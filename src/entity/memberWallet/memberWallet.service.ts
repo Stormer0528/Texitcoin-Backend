@@ -34,4 +34,10 @@ export class MemberWalletService {
       data,
     });
   }
+
+  async createManyMemberWallets(data: CreateMemberWalletInput[]) {
+    return this.prisma.memberWallet.createMany({
+      data,
+    });
+  }
 }

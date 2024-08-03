@@ -31,3 +31,15 @@ export class CreateMemberWalletInput {
   @Field()
   percent: number;
 }
+
+@InputType()
+export class MemberWalletDataInput {
+  @Field()
+  payoutId: string;
+
+  @Field()
+  address: string;
+
+  @Field()
+  percent: number;
+}

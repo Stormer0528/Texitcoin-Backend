@@ -3,6 +3,7 @@ import { Service, Inject } from 'typedi';
 import { PrismaService } from '@/service/prisma';
 
 import { CreateMemberInput, UpdateMemberInput, MemberQueryArgs } from './member.type';
+import { Prisma } from '@prisma/client';
 
 @Service()
 export class MemberService {
