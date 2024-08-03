@@ -3,7 +3,7 @@ import DataLoader from 'dataloader';
 import RootDataLoader from '.';
 import { Sale } from '@/entity/sale/sale.entity';
 import { MemberStatistics } from '@/entity/memberStatistics/memberStatistics.entity';
-import { Member, Payout } from '@prisma/client';
+import { Member, MemberWallet, Payout } from '@prisma/client';
 
 export const salesForMemberLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, Sale[]>(
@@ -53,29 +53,29 @@ export const memberStatisticsForMemberLoader = (parent: RootDataLoader) => {
   );
 };
 
-// export const payoutForMemberLoader = (parent: RootDataLoader) => {
-//   return new DataLoader<string, Payout>(
-//     async (memberIds: string[]) => {
-//       const membersWithPayout = await parent.prisma.member.findMany({
-//         select: {
-//           id: true,
-//           payout: true,
-//         },
-//         where: { id: { in: memberIds } },
-//       });
+export const memberWalletsForMemberLoader = (parent: RootDataLoader) => {
+  return new DataLoader<string, MemberWallet[]>(
+    async (memberIds: string[]) => {
+      const membersWithMemberWallets = await parent.prisma.member.findMany({
+        select: {
+          id: true,
+          memberWallets: true,
+        },
+        where: { id: { in: memberIds } },
+      });
 
-//       const membersWithPayoutMap: Record<string, Payout> = {};
-//       membersWithPayout.forEach(({ id, payout }) => {
-//         membersWithPayoutMap[id] = payout;
-//       });
+      const membersWithMemberWalletsMap: Record<string, MemberWallet[]> = {};
+      membersWithMemberWallets.forEach(({ id, memberWallets }) => {
+        membersWithMemberWalletsMap[id] = memberWallets;
+      });
 
-//       return memberIds.map((id) => membersWithPayoutMap[id]);
-//     },
-//     {
-//       ...parent.dataLoaderOptions,
-//     }
-//   );
-// };
+      return memberIds.map((id) => membersWithMemberWalletsMap[id]);
+    },
+    {
+      ...parent.dataLoaderOptions,
+    }
+  );
+};
 
 export const sponsorForMemberLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, Member>(

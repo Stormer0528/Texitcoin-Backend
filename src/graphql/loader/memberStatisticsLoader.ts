@@ -3,6 +3,7 @@ import DataLoader from 'dataloader';
 import RootDataLoader from '.';
 import { Member } from '@/entity/member/member.entity';
 import { Statistics } from '@/entity/statistics/statistics.entity';
+import { MemberStatisticsWallet } from '@/entity/memberStatisticsWallet/memberStatisticsWallet.entity';
 
 export const memberForMemberStatisticsLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, Member>(
@@ -31,7 +32,7 @@ export const memberForMemberStatisticsLoader = (parent: RootDataLoader) => {
 export const statisticsForMemberStatisticsLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, Statistics>(
     async (memberStatisticsIds: string[]) => {
-      const membersWithMemberStatistics = await parent.prisma.memberStatistics.findMany({
+      const memberStatisticsWithStatistics = await parent.prisma.memberStatistics.findMany({
         select: {
           id: true,
           statistics: true,
@@ -40,11 +41,35 @@ export const statisticsForMemberStatisticsLoader = (parent: RootDataLoader) => {
       });
 
       const memberStatisticssWithStatisticsMap: Record<string, Statistics> = {};
-      membersWithMemberStatistics.forEach(({ id, statistics }) => {
+      memberStatisticsWithStatistics.forEach(({ id, statistics }) => {
         memberStatisticssWithStatisticsMap[id] = statistics;
       });
 
       return memberStatisticsIds.map((id) => memberStatisticssWithStatisticsMap[id]);
+    },
+    {
+      ...parent.dataLoaderOptions,
+    }
+  );
+};
+
+export const walletsForMemberStatisticsLoader = (parent: RootDataLoader) => {
+  return new DataLoader<string, MemberStatisticsWallet[]>(
+    async (memberStatisticsIds: string[]) => {
+      const memberStatisticsWithWallets = await parent.prisma.memberStatistics.findMany({
+        select: {
+          id: true,
+          memberStatisticsWallets: true,
+        },
+        where: { id: { in: memberStatisticsIds } },
+      });
+
+      const memberStatisticssWithWallets: Record<string, MemberStatisticsWallet[]> = {};
+      memberStatisticsWithWallets.forEach(({ id, memberStatisticsWallets }) => {
+        memberStatisticssWithWallets[id] = memberStatisticsWallets;
+      });
+
+      return memberStatisticsIds.map((id) => memberStatisticssWithWallets[id]);
     },
     {
       ...parent.dataLoaderOptions,

@@ -5,6 +5,7 @@ import { BaseEntity } from '@/graphql/baseEntity';
 import { Sale } from '@/entity/sale/sale.entity';
 import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
 import { Payout } from '../payout/payout.entity';
+import { MemberWallet } from '../memberWallet/memberWallet.entity';
 
 @ObjectType()
 export class Member extends BaseEntity {
@@ -60,4 +61,7 @@ export class Member extends BaseEntity {
 
   @Field(() => [Member], { nullable: 'itemsAndList' })
   introduceMembers?: Member[];
+
+  @Field(() => [MemberWallet], { nullable: 'itemsAndList' })
+  memberWallets?: MemberWallet[];
 }
