@@ -83,23 +83,13 @@ export class MemberStatisticsResolver {
   async createManyMemberStatistics(
     @Arg('data') data: CreateManyMemberStatisticsInput
   ): Promise<ManySuccessResponse> {
-    try {
-      const { count } = await this.service.createManyMemberStatistics(data);
-      return { count };
-    } catch (err) {
-      return { count: 0 };
-    }
+    return await this.service.createManyMemberStatistics(data);
   }
 
   @Authorized([UserRole.Admin])
   @Mutation(() => ManySuccessResponse)
   async removeManyMemberStatistics(@Arg('data') data: IDsInput): Promise<ManySuccessResponse> {
-    try {
-      const { count } = await this.service.removeManyMemberStatistics(data);
-      return { count };
-    } catch (err) {
-      return { count: 0 };
-    }
+    return await this.service.removeManyMemberStatistics(data);
   }
 
   @Authorized([UserRole.Admin])
@@ -107,12 +97,7 @@ export class MemberStatisticsResolver {
   async removeMemberStatisticsByStaitisId(
     @Arg('data') data: IDInput
   ): Promise<ManySuccessResponse> {
-    try {
-      const { count } = await this.service.removeMemberStatisticsByStatisticId(data);
-      return { count };
-    } catch (err) {
-      return { count: 0 };
-    }
+    return await this.service.removeMemberStatisticsByStatisticId(data);
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })

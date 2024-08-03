@@ -91,19 +91,13 @@ export class MemberResolver {
     });
   }
 
-  @Authorized([UserRole.Admin])
+  // @Authorized([UserRole.Admin])
   @Mutation(() => SuccessResponse)
   async removeMember(@Arg('data') data: IDInput): Promise<SuccessResponse> {
-    try {
-      await this.service.removeMember(data.id);
-      return {
-        result: SuccessResult.success,
-      };
-    } catch (_err) {
-      return {
-        result: SuccessResult.failed,
-      };
-    }
+    await this.service.removeMember(data.id);
+    return {
+      result: SuccessResult.success,
+    };
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })
