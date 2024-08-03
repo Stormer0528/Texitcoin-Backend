@@ -9,17 +9,17 @@ import { Member } from '@/entity/member/member.entity';
 export const salesForMemberLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, Sale[]>(
     async (memberIds: string[]) => {
-      const membersWithSales = await parent.prisma.member.findMany({
-        select: {
-          id: true,
-          sales: true,
+      const sales = await parent.prisma.sale.findMany({
+        where: {
+          memberId: {
+            in: memberIds,
+          },
         },
-        where: { id: { in: memberIds } },
       });
-
       const membersWithSalesMap: Record<string, Sale[]> = {};
-      membersWithSales.forEach(({ id, sales }) => {
-        membersWithSalesMap[id] = sales;
+      sales.forEach((sale) => {
+        if (!membersWithSalesMap[sale.memberId]) membersWithSalesMap[sale.memberId] = [];
+        membersWithSalesMap[sale.memberId].push(sale);
       });
 
       return memberIds.map((id) => membersWithSalesMap[id]);
@@ -33,17 +33,15 @@ export const salesForMemberLoader = (parent: RootDataLoader) => {
 export const memberStatisticsForMemberLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, MemberStatistics[]>(
     async (memberIds: string[]) => {
-      const membersWithMemberStatistics = await parent.prisma.member.findMany({
-        select: {
-          id: true,
-          statistics: true,
-        },
-        where: { id: { in: memberIds } },
+      const memberStatistics = await parent.prisma.memberStatistics.findMany({
+        where: { memberId: { in: memberIds } },
       });
 
       const membersWithMemberStatisticsMap: Record<string, MemberStatistics[]> = {};
-      membersWithMemberStatistics.forEach(({ id, statistics }) => {
-        membersWithMemberStatisticsMap[id] = statistics;
+      memberStatistics.forEach((memberStatistics) => {
+        if (!membersWithMemberStatisticsMap[memberStatistics.memberId])
+          membersWithMemberStatisticsMap[memberStatistics.memberId] = [];
+        membersWithMemberStatisticsMap[memberStatistics.memberId].push(memberStatistics);
       });
 
       return memberIds.map((id) => membersWithMemberStatisticsMap[id]);
@@ -57,17 +55,15 @@ export const memberStatisticsForMemberLoader = (parent: RootDataLoader) => {
 export const memberWalletsForMemberLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, MemberWallet[]>(
     async (memberIds: string[]) => {
-      const membersWithMemberWallets = await parent.prisma.member.findMany({
-        select: {
-          id: true,
-          memberWallets: true,
-        },
-        where: { id: { in: memberIds } },
+      const memberWallets = await parent.prisma.memberWallet.findMany({
+        where: { memberId: { in: memberIds } },
       });
 
       const membersWithMemberWalletsMap: Record<string, MemberWallet[]> = {};
-      membersWithMemberWallets.forEach(({ id, memberWallets }) => {
-        membersWithMemberWalletsMap[id] = memberWallets;
+      memberWallets.forEach((memberWallets) => {
+        if (!membersWithMemberWalletsMap[memberWallets.memberId])
+          membersWithMemberWalletsMap[memberWallets.memberId] = [];
+        membersWithMemberWalletsMap[memberWallets.memberId].push(memberWallets);
       });
 
       return memberIds.map((id) => membersWithMemberWalletsMap[id]);
@@ -80,21 +76,18 @@ export const memberWalletsForMemberLoader = (parent: RootDataLoader) => {
 
 export const sponsorForMemberLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, Member>(
-    async (memberIds: string[]) => {
-      const membersWithSponsor = await parent.prisma.member.findMany({
-        select: {
-          id: true,
-          sponsor: true,
-        },
-        where: { id: { in: memberIds } },
+    async (sponsorIds: string[]) => {
+      const uniqueSponsorIds = [...new Set(sponsorIds)];
+      const sponsors = await parent.prisma.member.findMany({
+        where: { id: { in: uniqueSponsorIds } },
       });
 
-      const membersWithSponsorMap: Record<string, Member> = {};
-      membersWithSponsor.forEach(({ id, sponsor }) => {
-        membersWithSponsorMap[id] = sponsor;
+      const sponsorMap: Record<string, Member> = {};
+      sponsors.forEach((sponsor) => {
+        sponsorMap[sponsor.id] = sponsor;
       });
 
-      return memberIds.map((id) => membersWithSponsorMap[id]);
+      return uniqueSponsorIds.map((id) => sponsorMap[id]);
     },
     {
       ...parent.dataLoaderOptions,
@@ -105,20 +98,19 @@ export const sponsorForMemberLoader = (parent: RootDataLoader) => {
 export const introduceMembersForMemberLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, Member[]>(
     async (memberIds: string[]) => {
-      const membersWithIntroduceMembers = await parent.prisma.member.findMany({
-        select: {
-          id: true,
-          introduceMembers: true,
-        },
-        where: { id: { in: memberIds } },
+      const introduceMembers = await parent.prisma.member.findMany({
+        where: { sponsorId: { in: memberIds } },
       });
 
-      const membersWithIntroduceMembersMap: Record<string, Member[]> = {};
-      membersWithIntroduceMembers.forEach(({ id, introduceMembers }) => {
-        membersWithIntroduceMembersMap[id] = introduceMembers;
+      const introduceMembersMap: Record<string, Member[]> = {};
+
+      introduceMembers.forEach((introducer) => {
+        if (!introduceMembersMap[introducer.sponsorId])
+          introduceMembersMap[introducer.sponsorId] = [];
+        introduceMembersMap[introducer.sponsorId].push(introducer);
       });
 
-      return memberIds.map((id) => membersWithIntroduceMembersMap[id]);
+      return memberIds.map((id) => introduceMembersMap[id]);
     },
     {
       ...parent.dataLoaderOptions,

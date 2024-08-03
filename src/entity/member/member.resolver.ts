@@ -45,7 +45,7 @@ const DEFAULT_PASSWORD = '123456789';
 export class MemberResolver {
   constructor(private readonly service: MemberService) {}
 
-  @Authorized([UserRole.Admin])
+  // @Authorized([UserRole.Admin])
   @Query(() => MembersResponse)
   async members(
     @Args() query: MemberQueryArgs,
@@ -112,7 +112,9 @@ export class MemberResolver {
 
   @FieldResolver({ nullable: true })
   async sponsor(@Root() member: Member, @Ctx() ctx: Context): Promise<Member> {
-    return ctx.dataLoader.get('sponsorForMemberLoader').load(member.id);
+    return member.sponsorId
+      ? ctx.dataLoader.get('sponsorForMemberLoader').load(member.sponsorId)
+      : null;
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })
