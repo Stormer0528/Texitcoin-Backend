@@ -9,7 +9,7 @@ import * as saleLoader from './saleLoader';
 import * as statisticsLoader from './statisticsLoader';
 import * as packageLoader from './packageLoader';
 import * as payoutLoader from './payoutLoader';
-import * as statisticsSaleLoader from './StatisticsSaleLoader';
+import * as statisticsSaleLoader from './statisticsSaleLoader';
 
 interface LoaderDict {
   [loaderName: string]: DataLoader<any, any>;

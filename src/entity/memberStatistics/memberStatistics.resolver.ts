@@ -31,6 +31,7 @@ import { Context } from '@/context';
 import { Statistics } from '../statistics/statistics.entity';
 import { MemberService } from '../member/member.service';
 import { IDInput, IDsInput, ManySuccessResponse } from '../../graphql/common.type';
+import { MemberStatisticsWallet } from '../memberStatisticsWallet/memberStatisticsWallet.entity';
 
 @Service()
 @Resolver(() => MemberStatistics)
@@ -125,6 +126,14 @@ export class MemberStatisticsResolver {
     @Ctx() ctx: Context
   ): Promise<Statistics> {
     return ctx.dataLoader.get('statisticsForMemberStatisticsLoader').load(memberStatistics.id);
+  }
+
+  @FieldResolver({ nullable: 'itemsAndList' })
+  async memberStatisticsWallets(
+    @Root() memberStatistics: MemberStatistics,
+    @Ctx() ctx: Context
+  ): Promise<MemberStatisticsWallet[]> {
+    return ctx.dataLoader.get('walletsForMemberStatisticsLoader').load(memberStatistics.id);
   }
 
   @Authorized([UserRole.Admin])

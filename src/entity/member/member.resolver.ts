@@ -36,6 +36,7 @@ import { Payout } from '../payout/payout.entity';
 import { createAccessToken, hashPassword, verifyPassword } from '@/utils/auth';
 import { IDInput, IDsInput, SuccessResponse, SuccessResult } from '../../graphql/common.type';
 import { userPermission } from '../admin/admin.permission';
+import { MemberWallet } from '@prisma/client';
 
 const DEFAULT_PASSWORD = '123456789';
 
@@ -123,6 +124,11 @@ export class MemberResolver {
   @FieldResolver({ nullable: 'itemsAndList' })
   async introduceMembers(@Root() member: Member, @Ctx() ctx: Context): Promise<Member[]> {
     return ctx.dataLoader.get('introduceMembersForMemberLoader').load(member.id);
+  }
+
+  @FieldResolver({ nullable: 'itemsAndList' })
+  async memberWallets(@Root() member: Member, @Ctx() ctx: Context): Promise<MemberWallet[]> {
+    return ctx.dataLoader.get('memberWalletsForMemberLoader').load(member.id);
   }
 
   @Authorized()

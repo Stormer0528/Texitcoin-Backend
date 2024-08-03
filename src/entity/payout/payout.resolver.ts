@@ -20,6 +20,7 @@ import { CreatePayoutInput, PayoutQueryArgs, PayoutResponse } from './payout.typ
 import { Payout } from './payout.entity';
 import { Context } from '@/context';
 import { Member } from '../member/member.entity';
+import { MemberWallet } from '../memberWallet/memberWallet.entity';
 
 @Service()
 @Resolver(() => Payout)
@@ -58,5 +59,10 @@ export class PayoutResolver {
   @Mutation(() => Payout)
   async createPayout(@Arg('data') data: CreatePayoutInput): Promise<Payout> {
     return this.service.createPayout(data);
+  }
+
+  @FieldResolver({ nullable: 'itemsAndList' })
+  async memberWallets(@Root() payout: Payout, @Ctx() ctx: Context): Promise<MemberWallet[]> {
+    return ctx.dataLoader.get('memberWalletsForPayoutLoader').load(payout.id);
   }
 }

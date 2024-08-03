@@ -1,7 +1,6 @@
 import DataLoader from 'dataloader';
 
 import RootDataLoader from '.';
-import { Member } from '@/entity/member/member.entity';
 import { Statistics } from '@/entity/statistics/statistics.entity';
 import { Sale } from '@/entity/sale/sale.entity';
 
