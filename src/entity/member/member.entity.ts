@@ -21,8 +21,6 @@ export class Member extends BaseEntity {
   @Field(() => ID, { nullable: true })
   sponsorId: string;
 
-  introducerFullName?: string;
-
   @Field()
   @IsEmail()
   email: string;

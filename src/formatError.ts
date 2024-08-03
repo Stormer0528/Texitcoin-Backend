@@ -31,7 +31,6 @@ const checkForeignKeyError = (meta: Record<string, unknown>): GraphQLFormattedEr
 };
 
 export const formatError = (formattedError: GraphQLFormattedError, error: unknown) => {
-  console.log('--------', formattedError);
   const originalError = unwrapResolverError(error);
   if (originalError instanceof Prisma.PrismaClientKnownRequestError) {
     if (originalError.code === 'P2002') {
