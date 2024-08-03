@@ -216,6 +216,7 @@ model MemberWallet {
 
   memberStatisticsWallets MemberStatisticsWallet[]
 
+  @@unique([memberId, payoutId, address, deletedAt], map: "unique_index_on_memberwallets")
   @@map("memberwallets")
 }
 
