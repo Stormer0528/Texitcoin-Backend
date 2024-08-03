@@ -54,9 +54,6 @@ export class CreateMemberInput {
 
   @Field(() => ID, { nullable: true })
   sponsorId?: string;
-
-  // @Field(() => [Sale], { nullable: 'itemsAndList' })
-  // sales?: Sale[];
 }
 
 @InputType()
