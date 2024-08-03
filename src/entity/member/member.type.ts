@@ -6,6 +6,7 @@ import { PaginatedResponse } from '@/graphql/paginatedResponse';
 import { QueryArgsBase } from '@/graphql/queryArgs';
 
 import { Member } from '@/entity/member/member.entity';
+import { MemberWalletDataInput } from '../memberWallet/memberWallet.type';
 
 // Member Query Args
 @ArgsType()
@@ -54,6 +55,9 @@ export class CreateMemberInput {
 
   @Field(() => ID, { nullable: true })
   sponsorId?: string;
+
+  @Field(() => [MemberWalletDataInput])
+  wallets: MemberWalletDataInput[];
 }
 
 @InputType()
