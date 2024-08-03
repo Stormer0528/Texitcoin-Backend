@@ -1,6 +1,8 @@
 import { ObjectType, Field, ID } from 'type-graphql';
 
 import { BaseEntity } from '@/graphql/baseEntity';
+import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
+import { MemberWallet } from '../memberWallet/memberWallet.entity';
 
 @ObjectType()
 export class MemberStatisticsWallet extends BaseEntity {
@@ -15,4 +17,10 @@ export class MemberStatisticsWallet extends BaseEntity {
 
   @Field()
   txc: number;
+
+  @Field(() => MemberStatistics, { nullable: true })
+  memberStatistic?: MemberStatistics;
+
+  @Field(() => MemberWallet, { nullable: true })
+  memberWallet?: MemberWallet;
 }

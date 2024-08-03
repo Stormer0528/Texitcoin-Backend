@@ -10,6 +10,8 @@ import * as statisticsLoader from './statisticsLoader';
 import * as packageLoader from './packageLoader';
 import * as payoutLoader from './payoutLoader';
 import * as statisticsSaleLoader from './statisticsSaleLoader';
+import * as memberStatisticsWalletLoader from './memberStatisticsWalletLoader';
+import * as memberWalletLoader from './memberWalletLoader';
 
 interface LoaderDict {
   [loaderName: string]: DataLoader<any, any>;
@@ -24,6 +26,8 @@ const loaderMakers = {
   ...packageLoader,
   ...payoutLoader,
   ...statisticsSaleLoader,
+  ...memberStatisticsWalletLoader,
+  ...memberWalletLoader,
 } as const;
 
 type LoaderMakers = typeof loaderMakers;
