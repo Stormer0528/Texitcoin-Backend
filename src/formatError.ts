@@ -1,24 +1,43 @@
 import { Prisma } from '@prisma/client';
 import { unwrapResolverError } from '@apollo/server/errors';
 import type { GraphQLFormattedError } from 'graphql';
+import { foreignKeyErrors, uniqueErrors } from './consts/errors';
 
-export const formatError = (
-  formattedError: GraphQLFormattedError,
-  error: unknown
-): GraphQLFormattedError => {
+const checkUniqueError = (meta: Record<string, unknown>): GraphQLFormattedError => {
+  const { modelName, target } = meta;
+  const sortedTarget = (target as string[]).sort();
+  const error = uniqueErrors.find((err) => {
+    return (
+      err.modelName === modelName &&
+      JSON.stringify(err.path.sort()) === JSON.stringify(sortedTarget)
+    );
+  });
+  return {
+    message: error.message,
+    path: error.path,
+  };
+};
+
+const checkForeignKeyError = (meta: Record<string, unknown>): GraphQLFormattedError => {
+  const { field_name: fieldName } = meta;
+  const slicedFieldName = (fieldName as string).slice(0, -8);
+  const error = foreignKeyErrors.find((err) => {
+    return err.constraintName === slicedFieldName;
+  });
+  return {
+    message: error.message,
+    path: error.path,
+  };
+};
+
+export const formatError = (formattedError: GraphQLFormattedError, error: unknown) => {
+  console.log('--------', formattedError);
   const originalError = unwrapResolverError(error);
   if (originalError instanceof Prisma.PrismaClientKnownRequestError) {
     if (originalError.code === 'P2002') {
-      const { modelName, target } = originalError.meta;
-
-      if (modelName === 'User' && (target as string[]).includes('email')) {
-        return {
-          message: 'Email already exists',
-          // Important as frontend will use this field to display error stats on form field
-          // Original path concept is to show path for graphql query, but we can use it for form field path
-          path: ['email'],
-        };
-      }
+      return checkUniqueError(originalError.meta);
+    } else if (originalError.code === 'P2003') {
+      return checkForeignKeyError(originalError.meta);
     }
   }
   return formattedError;
