@@ -13,7 +13,7 @@ export class MemberWallet extends BaseEntity {
   @Field()
   memberId: string;
 
-  @Field()
+  @Field(() => ID)
   payoutId: string;
 
   @Field()

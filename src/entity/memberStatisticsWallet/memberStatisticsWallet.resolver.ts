@@ -28,11 +28,11 @@ import { MemberWallet } from '../memberWallet/memberWallet.entity';
 
 @Service()
 @Resolver(() => MemberStatisticsWallet)
-export class MemberWalletResolver {
+export class MemberStatisticsWalletResolver {
   constructor(private readonly service: MemberStatisticsWalletService) {}
 
   @Query(() => MemberStatisticsWalletResponse)
-  async payouts(
+  async memberStatisticsWallets(
     @Args() query: MemberStatisticsWalletQueryArgs,
     @Info() info: GraphQLResolveInfo
   ): Promise<MemberStatisticsWalletResponse> {
