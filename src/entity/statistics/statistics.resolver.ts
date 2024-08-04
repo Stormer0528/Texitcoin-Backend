@@ -21,22 +21,18 @@ import {
   StatisticsResponse,
   StatisticsQueryArgs,
   CreateStatisticsInput,
-  PendingStatisticsResponse,
-  PendingStatistics,
   UpdateStatisticsInput,
   CreateStatisticsMemberStatisticsInput,
 } from './statistics.type';
 import { StatisticsService } from './statistics.service';
-import { formatDate, today } from '@/utils/common';
 import { Context } from '@/context';
 import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
 import { BlockService } from '../block/block.service';
-import dayjs from 'dayjs';
 import { StatisticsSale } from '../statisticsSale/statisticsSale.entity';
 import { MemberStatisticsService } from '../memberStatistics/memberStatistics.service';
 import { StatisticsSaleService } from '../statisticsSale/statisticsSale.service';
-import { SaleService } from '../sale/sale.service';
 import { IDInput, IDsInput, ManySuccessResponse } from '../../graphql/common.type';
+import { MemberStatisticsWalletService } from '../memberStatisticsWallet/memberStatisticsWallet.service';
 
 @Service()
 @Resolver(() => Statistics)
@@ -45,7 +41,7 @@ export class StatisticsResolver {
     private readonly statisticsService: StatisticsService,
     private readonly memberStatisticsService: MemberStatisticsService,
     private readonly statisticsSaleService: StatisticsSaleService,
-    private readonly saleService: SaleService,
+    private readonly memberStatisticsWalletService: MemberStatisticsWalletService,
     private readonly blockService: BlockService
   ) {}
 
@@ -159,6 +155,17 @@ export class StatisticsResolver {
   @Mutation(() => Statistics)
   async updateStatistics(@Arg('data') data: UpdateStatisticsInput): Promise<Statistics> {
     return await this.statisticsService.updateStatistics(data);
+  }
+
+  @Authorized([UserRole.Admin])
+  @Mutation(() => Statistics)
+  async confirmStatistics(@Arg('data') data: IDInput): Promise<Statistics> {
+    const statistic = await this.statisticsService.updateStatistics({
+      id: data.id,
+      status: true,
+    });
+    await this.memberStatisticsWalletService.createMemberStatisticsWalletByStatistic(statistic);
+    return statistic;
   }
 
   @Authorized([UserRole.Admin])
