@@ -6,20 +6,17 @@ import { MemberWallet } from '@/entity/memberWallet/memberWallet.entity';
 export const memberWalletsForPayoutLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, MemberWallet[]>(
     async (payoutIds: string[]) => {
-      const payoutsWithMemberWallets = await parent.prisma.payout.findMany({
-        select: {
-          id: true,
-          memberWallets: true,
-        },
-        where: { id: { in: payoutIds } },
+      const memberWallets = await parent.prisma.memberWallet.findMany({
+        where: { payoutId: { in: payoutIds }, deletedAt: null },
       });
 
-      const payoutsWithMemberWalletsMap: Record<string, MemberWallet[]> = {};
-      payoutsWithMemberWallets.forEach(({ id, memberWallets }) => {
-        payoutsWithMemberWalletsMap[id] = memberWallets;
+      const memberWalletsMap: Record<string, MemberWallet[]> = {};
+      memberWallets.forEach((memberWallet) => {
+        if (!memberWalletsMap[memberWallet.payoutId]) memberWalletsMap[memberWallet.payoutId] = [];
+        memberWalletsMap[memberWallet.payoutId].push(memberWallet);
       });
 
-      return payoutIds.map((id) => payoutsWithMemberWalletsMap[id]);
+      return payoutIds.map((id) => memberWalletsMap[id]);
     },
     {
       ...parent.dataLoaderOptions,
