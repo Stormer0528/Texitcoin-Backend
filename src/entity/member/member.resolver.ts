@@ -96,10 +96,16 @@ export class MemberResolver {
   @UseMiddleware(userPermission)
   @Mutation(() => Member)
   async updateMember(@Ctx() ctx: Context, @Arg('data') data: UpdateMemberInput): Promise<Member> {
-    return this.service.updateMember({
+    const member = await this.service.updateMember({
       id: ctx.user.id,
-      ...data,
+      ..._.omit(data, 'wallets'),
     });
+    await this.memberWalletService.updateManyMemberWallet({
+      memberId: data.id,
+      wallets: data.wallets,
+    });
+
+    return member;
   }
 
   @Authorized([UserRole.Admin])
