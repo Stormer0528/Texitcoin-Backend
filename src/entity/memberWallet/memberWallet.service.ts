@@ -1,7 +1,11 @@
 import { Service, Inject } from 'typedi';
 
 import { PrismaService } from '@/service/prisma';
-import { CreateMemberWalletInput, MemberWalletQueryArgs } from './memberWallet.type';
+import {
+  CreateMemberWalletInput,
+  MemberWalletQueryArgs,
+  UpdateMemberWalletInput,
+} from './memberWallet.type';
 
 @Service()
 export class MemberWalletService {
@@ -29,9 +33,34 @@ export class MemberWalletService {
     });
   }
 
-  async createMemberWallet(data: CreateMemberWalletInput) {
-    return this.prisma.memberWallet.create({
-      data,
+  async updateManyMemberWallet(data: UpdateMemberWalletInput) {
+    await this.prisma.memberWallet.updateMany({
+      where: {
+        memberId: data.memberId,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+
+    data.wallets.forEach((wallet) => {
+      this.prisma.memberWallet.upsert({
+        where: {
+          memberId_payoutId_address: {
+            memberId: data.memberId,
+            address: wallet.address,
+            payoutId: wallet.payoutId,
+          },
+        },
+        update: {
+          ...wallet,
+          deletedAt: null,
+        },
+        create: {
+          ...wallet,
+          memberId: data.memberId,
+        },
+      });
     });
   }
 

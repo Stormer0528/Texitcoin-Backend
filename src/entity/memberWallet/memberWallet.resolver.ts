@@ -17,15 +17,16 @@ import { GraphQLResolveInfo } from 'graphql';
 import { UserRole } from '@/type';
 import { MemberWallet } from './memberWallet.entity';
 import {
-  CreateMemberWalletInput,
   MemberWalletQueryArgs,
   MemberWalletResponse,
+  UpdateMemberWalletInput,
 } from './memberWallet.type';
 import { MemberWalletService } from './memberWallet.service';
 import { Context } from '@/context';
 import { Member } from '../member/member.entity';
 import { Payout } from '../payout/payout.entity';
 import { MemberStatisticsWallet } from '../memberStatisticsWallet/memberStatisticsWallet.entity';
+import { ManySuccessResponse, SuccessResponse, SuccessResult } from '@/graphql/common.type';
 
 @Service()
 @Resolver(() => MemberWallet)
@@ -61,9 +62,12 @@ export class MemberWalletResolver {
   }
 
   @Authorized([UserRole.Admin])
-  @Mutation(() => MemberWallet)
-  async createMemberWallet(@Arg('data') data: CreateMemberWalletInput): Promise<MemberWallet> {
-    return this.service.createMemberWallet(data);
+  @Mutation(() => SuccessResponse)
+  async updateMemberWallet(@Arg('data') data: UpdateMemberWalletInput): Promise<SuccessResponse> {
+    await this.service.updateManyMemberWallet(data);
+    return {
+      result: SuccessResult.success,
+    };
   }
 
   @FieldResolver({ nullable: true })
