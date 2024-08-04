@@ -97,11 +97,11 @@ export class MemberResolver {
   @Mutation(() => Member)
   async updateMember(@Ctx() ctx: Context, @Arg('data') data: UpdateMemberInput): Promise<Member> {
     const member = await this.service.updateMember({
-      id: ctx.user.id,
+      id: data.id ?? ctx.user.id,
       ..._.omit(data, 'wallets'),
     });
     await this.memberWalletService.updateManyMemberWallet({
-      memberId: data.id,
+      memberId: data.id ?? ctx.user.id,
       wallets: data.wallets,
     });
 
