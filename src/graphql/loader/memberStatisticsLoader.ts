@@ -7,21 +7,18 @@ import { MemberStatisticsWallet } from '@/entity/memberStatisticsWallet/memberSt
 
 export const memberForMemberStatisticsLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, Member>(
-    async (memberStatisticsIds: string[]) => {
-      const memberStaticsWithMembers = await parent.prisma.memberStatistics.findMany({
-        select: {
-          id: true,
-          member: true,
-        },
-        where: { id: { in: memberStatisticsIds } },
+    async (memberIds: string[]) => {
+      const uniqueMemberIds = [...new Set(memberIds)];
+      const members = await parent.prisma.member.findMany({
+        where: { id: { in: uniqueMemberIds } },
       });
 
-      const memberStaticsWithMembersMap: Record<string, Member> = {};
-      memberStaticsWithMembers.forEach(({ id, member }) => {
-        memberStaticsWithMembersMap[id] = member;
+      const memberMap: Record<string, Member> = {};
+      members.forEach((member) => {
+        memberMap[member.id] = member;
       });
 
-      return memberStatisticsIds.map((id) => memberStaticsWithMembersMap[id]);
+      return uniqueMemberIds.map((id) => memberMap[id]);
     },
     {
       ...parent.dataLoaderOptions,
@@ -31,21 +28,18 @@ export const memberForMemberStatisticsLoader = (parent: RootDataLoader) => {
 
 export const statisticsForMemberStatisticsLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, Statistics>(
-    async (memberStatisticsIds: string[]) => {
-      const memberStatisticsWithStatistics = await parent.prisma.memberStatistics.findMany({
-        select: {
-          id: true,
-          statistics: true,
-        },
-        where: { id: { in: memberStatisticsIds } },
+    async (statisticsIds: string[]) => {
+      const uniqueStatisticsIds = [...new Set(statisticsIds)];
+      const statistics = await parent.prisma.statistics.findMany({
+        where: { id: { in: uniqueStatisticsIds } },
       });
 
-      const memberStatisticssWithStatisticsMap: Record<string, Statistics> = {};
-      memberStatisticsWithStatistics.forEach(({ id, statistics }) => {
-        memberStatisticssWithStatisticsMap[id] = statistics;
+      const statisticsMap: Record<string, Statistics> = {};
+      statistics.forEach((statistic) => {
+        statisticsMap[statistic.id] = statistic;
       });
 
-      return memberStatisticsIds.map((id) => memberStatisticssWithStatisticsMap[id]);
+      return uniqueStatisticsIds.map((id) => statisticsMap[id]);
     },
     {
       ...parent.dataLoaderOptions,
@@ -56,20 +50,20 @@ export const statisticsForMemberStatisticsLoader = (parent: RootDataLoader) => {
 export const walletsForMemberStatisticsLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, MemberStatisticsWallet[]>(
     async (memberStatisticsIds: string[]) => {
-      const memberStatisticsWithWallets = await parent.prisma.memberStatistics.findMany({
-        select: {
-          id: true,
-          memberStatisticsWallets: true,
-        },
-        where: { id: { in: memberStatisticsIds } },
+      const memberStatisticsWallets = await parent.prisma.memberStatisticsWallet.findMany({
+        where: { memberStatisticId: { in: memberStatisticsIds } },
       });
 
-      const memberStatisticssWithWallets: Record<string, MemberStatisticsWallet[]> = {};
-      memberStatisticsWithWallets.forEach(({ id, memberStatisticsWallets }) => {
-        memberStatisticssWithWallets[id] = memberStatisticsWallets;
+      const memberStatisticsWalletsMap: Record<string, MemberStatisticsWallet[]> = {};
+      memberStatisticsWallets.forEach((memberStatisticWallet) => {
+        if (!memberStatisticsWalletsMap[memberStatisticWallet.memberStatisticId])
+          memberStatisticsWalletsMap[memberStatisticWallet.memberStatisticId] = [];
+        memberStatisticsWalletsMap[memberStatisticWallet.memberStatisticId].push(
+          memberStatisticWallet
+        );
       });
 
-      return memberStatisticsIds.map((id) => memberStatisticssWithWallets[id]);
+      return memberStatisticsIds.map((id) => memberStatisticsWalletsMap[id]);
     },
     {
       ...parent.dataLoaderOptions,

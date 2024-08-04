@@ -102,7 +102,7 @@ export class MemberStatisticsResolver {
 
   @FieldResolver({ nullable: 'itemsAndList' })
   async member(@Root() memberStatistics: MemberStatistics, @Ctx() ctx: Context): Promise<Member> {
-    return ctx.dataLoader.get('memberForMemberStatisticsLoader').load(memberStatistics.id);
+    return ctx.dataLoader.get('memberForMemberStatisticsLoader').load(memberStatistics.memberId);
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })
@@ -110,7 +110,9 @@ export class MemberStatisticsResolver {
     @Root() memberStatistics: MemberStatistics,
     @Ctx() ctx: Context
   ): Promise<Statistics> {
-    return ctx.dataLoader.get('statisticsForMemberStatisticsLoader').load(memberStatistics.id);
+    return ctx.dataLoader
+      .get('statisticsForMemberStatisticsLoader')
+      .load(memberStatistics.statisticsId);
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })
