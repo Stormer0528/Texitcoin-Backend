@@ -7,21 +7,18 @@ import { StatisticsSale } from '@/entity/statisticsSale/statisticsSale.entity';
 
 export const memberForSaleLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, Member>(
-    async (salesIds: string[]) => {
-      const salesWithMembers = await parent.prisma.sale.findMany({
-        select: {
-          id: true,
-          member: true,
-        },
-        where: { id: { in: salesIds } },
+    async (memberIds: string[]) => {
+      const uniqueMemberIds = [...new Set(memberIds)];
+      const members = await parent.prisma.member.findMany({
+        where: { id: { in: uniqueMemberIds } },
       });
 
-      const salesWithMembersMap: Record<string, Member> = {};
-      salesWithMembers.forEach(({ id, member }) => {
-        salesWithMembersMap[id] = member;
+      const membersMap: Record<string, Member> = {};
+      members.forEach((member) => {
+        membersMap[member.id] = member;
       });
 
-      return salesIds.map((id) => salesWithMembersMap[id]);
+      return uniqueMemberIds.map((id) => membersMap[id]);
     },
     {
       ...parent.dataLoaderOptions,
@@ -31,21 +28,18 @@ export const memberForSaleLoader = (parent: RootDataLoader) => {
 
 export const packageForSaleLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, Package>(
-    async (salesIds: string[]) => {
-      const packagesWithMembers = await parent.prisma.sale.findMany({
-        select: {
-          id: true,
-          package: true,
-        },
-        where: { id: { in: salesIds } },
+    async (packageIds: string[]) => {
+      const uniquePackageIds = [...new Set(packageIds)];
+      const packages = await parent.prisma.package.findMany({
+        where: { id: { in: uniquePackageIds } },
       });
 
-      const packagesWithMembersMap: Record<string, Package> = {};
-      packagesWithMembers.forEach(({ id, package: pkg }) => {
-        packagesWithMembersMap[id] = pkg;
+      const packagesMap: Record<string, Package> = {};
+      packages.forEach((pkg) => {
+        packagesMap[pkg.id] = pkg;
       });
 
-      return salesIds.map((id) => packagesWithMembersMap[id]);
+      return uniquePackageIds.map((id) => packagesMap[id]);
     },
     {
       ...parent.dataLoaderOptions,
@@ -56,20 +50,18 @@ export const packageForSaleLoader = (parent: RootDataLoader) => {
 export const statisticsSalesForSaleLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, StatisticsSale[]>(
     async (saleIds: string[]) => {
-      const salesWithStatisticsSales = await parent.prisma.sale.findMany({
-        select: {
-          id: true,
-          statisticsSales: true,
-        },
-        where: { id: { in: saleIds } },
+      const statisticsSales = await parent.prisma.statisticsSale.findMany({
+        where: { saleId: { in: saleIds } },
       });
 
-      const salesWithStatisticsSalesMap: Record<string, StatisticsSale[]> = {};
-      salesWithStatisticsSales.forEach(({ id, statisticsSales }) => {
-        salesWithStatisticsSalesMap[id] = statisticsSales.map((memberStatistic) => memberStatistic);
+      const statisticsSalesMap: Record<string, StatisticsSale[]> = {};
+      statisticsSales.forEach((statisticsSale) => {
+        if (!statisticsSalesMap[statisticsSale.saleId])
+          statisticsSalesMap[statisticsSale.saleId] = [];
+        statisticsSalesMap[statisticsSale.saleId].push(statisticsSale);
       });
 
-      return saleIds.map((id) => salesWithStatisticsSalesMap[id]);
+      return saleIds.map((id) => statisticsSalesMap[id]);
     },
     {
       ...parent.dataLoaderOptions,
