@@ -6,6 +6,7 @@ import {
   MemberWalletQueryArgs,
   UpdateMemberWalletInput,
 } from './memberWallet.type';
+import Bluebird from 'bluebird';
 
 @Service()
 export class MemberWalletService {
@@ -55,25 +56,29 @@ export class MemberWalletService {
       },
     });
 
-    data.wallets.forEach((wallet) => {
-      this.prisma.memberWallet.upsert({
-        where: {
-          memberId_payoutId_address: {
-            memberId: data.memberId,
-            address: wallet.address,
-            payoutId: wallet.payoutId,
+    await Bluebird.map(
+      data.wallets,
+      async (wallet) => {
+        await this.prisma.memberWallet.upsert({
+          where: {
+            memberId_payoutId_address: {
+              memberId: data.memberId,
+              address: wallet.address,
+              payoutId: wallet.payoutId,
+            },
           },
-        },
-        update: {
-          ...wallet,
-          deletedAt: null,
-        },
-        create: {
-          ...wallet,
-          memberId: data.memberId,
-        },
-      });
-    });
+          update: {
+            ...wallet,
+            deletedAt: null,
+          },
+          create: {
+            ...wallet,
+            memberId: data.memberId,
+          },
+        });
+      },
+      { concurrency: 10 }
+    );
   }
 
   async createManyMemberWallets(data: CreateMemberWalletInput[]) {
