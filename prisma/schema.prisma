@@ -88,7 +88,7 @@ model Statistics {
   totalHashPower Int
   totalMembers   Int?
   status         Boolean @default(true)
-  txcShared      Int     @default(0)
+  txcShared      BigInt  @default(0)
 
   issuedAt DateTime @default(now())
   from     DateTime
@@ -109,9 +109,9 @@ model MemberStatistics {
   id           String   @id @default(uuid())
   memberId     String
   statisticsId String
-  txcShared    Float
+  txcShared    BigInt
   hashPower    Int
-  percent      Float
+  percent      BigInt
   issuedAt     DateTime @default(now())
 
   member     Member     @relation(fields: [memberId], references: [id], onDelete: NoAction, onUpdate: NoAction)
@@ -204,7 +204,7 @@ model MemberWallet {
   memberId String
   payoutId String
   address  String
-  percent  Float  @default(0)
+  percent  BigInt @default(0)
 
   member Member? @relation(fields: [memberId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   payout Payout? @relation(fields: [payoutId], references: [id], onDelete: Cascade, onUpdate: NoAction)
@@ -223,8 +223,8 @@ model MemberStatisticsWallet {
   id                String   @id @default(uuid())
   memberStatisticId String
   memberWalletId    String
-  txc               Float    @default(0.0)
   issuedAt          DateTime @default(now())
+  txc               BigInt   @default(0)
 
   memberStatistic MemberStatistics? @relation(fields: [memberStatisticId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   memberWallet    MemberWallet?     @relation(fields: [memberWalletId], references: [id], onDelete: Cascade, onUpdate: NoAction)

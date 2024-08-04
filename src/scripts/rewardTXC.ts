@@ -79,7 +79,7 @@ const createMemberStatisticsAndStatisticsWallets = async (
   issuedAt: Date
 ) => {
   const totalHashPower: number = statistic.totalHashPower;
-  const totalTxcShared: number = statistic.txcShared;
+  const totalTxcShared: number = Number(statistic.txcShared);
 
   await Bluebird.map(
     memberIds,

@@ -27,7 +27,7 @@ export class Statistics extends BaseEntity {
   status: boolean = false;
 
   @Field()
-  txcShared: number;
+  txcShared: bigint;
 
   @Field()
   issuedAt: Date;

@@ -16,7 +16,7 @@ export class MemberStatisticsWallet extends BaseEntity {
   memberWalletId: string;
 
   @Field()
-  txc: number;
+  txc: bigint;
 
   @Field()
   issuedAt: Date;
