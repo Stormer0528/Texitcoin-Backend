@@ -34,6 +34,9 @@ export class MemberWalletService {
   }
 
   async updateManyMemberWallet(data: UpdateMemberWalletInput) {
+    const sumPercent = data.wallets.reduce((prev, current) => prev + current.percent, 0);
+    if (sumPercent !== 100) if (sumPercent !== 100) throw new Error('Sum of percent must be 100');
+
     await this.prisma.memberWallet.updateMany({
       where: {
         memberId: data.memberId,
@@ -65,6 +68,8 @@ export class MemberWalletService {
   }
 
   async createManyMemberWallets(data: CreateMemberWalletInput[]) {
+    const sumPercent = data.reduce((prev, current) => prev + current.percent, 0);
+    if (sumPercent !== 100) throw new Error('Sum of percent must be 100');
     return this.prisma.memberWallet.createMany({
       data,
     });
