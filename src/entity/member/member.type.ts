@@ -6,7 +6,7 @@ import { PaginatedResponse } from '@/graphql/paginatedResponse';
 import { QueryArgsBase } from '@/graphql/queryArgs';
 
 import { Member } from '@/entity/member/member.entity';
-import { MemberWalletDataInput } from '../memberWallet/memberWallet.type';
+import { CreateMemberWalletInput, MemberWalletDataInput } from '../memberWallet/memberWallet.type';
 
 // Member Query Args
 @ArgsType()
@@ -98,6 +98,9 @@ export class UpdateMemberInput {
 
   @Field({ nullable: true })
   zipCode?: string;
+
+  @Field(() => [MemberWalletDataInput], { nullable: 'itemsAndList' })
+  wallets?: MemberWalletDataInput[];
 }
 
 @InputType()
