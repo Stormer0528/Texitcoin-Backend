@@ -17,13 +17,13 @@ export class MemberStatistics extends BaseEntity {
   statisticsId: string;
 
   @Field()
-  txcShared: number;
+  txcShared: bigint | number;
 
   @Field()
   hashPower: number;
 
   @Field()
-  percent: number;
+  percent: bigint | number;
 
   @Field()
   issuedAt: Date;

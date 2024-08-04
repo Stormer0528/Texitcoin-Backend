@@ -51,7 +51,7 @@ export class MemberOverview {
   lastHashPower: number;
 
   @Field()
-  totalTXCShared: number;
+  totalTXCShared: bigint;
 
   @Field()
   joinDate: Date;

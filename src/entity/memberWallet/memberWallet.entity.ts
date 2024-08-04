@@ -20,7 +20,7 @@ export class MemberWallet extends BaseEntity {
   address: string;
 
   @Field()
-  percent: number;
+  percent: bigint;
 
   @Field(() => Member, { nullable: true })
   member?: Member;
