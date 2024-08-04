@@ -1,5 +1,5 @@
 import type { Prisma } from '@prisma/client';
-import { ObjectType, InputType, Field, ArgsType } from 'type-graphql';
+import { ObjectType, InputType, Field, ArgsType, ID } from 'type-graphql';
 
 import { PaginatedResponse } from '@/graphql/paginatedResponse';
 import { QueryArgsBase } from '@/graphql/queryArgs';
@@ -19,7 +19,7 @@ export class MemberWalletResponse extends PaginatedResponse {
 // Create MemberWallet Input and Response
 @InputType()
 export class CreateMemberWalletInput {
-  @Field()
+  @Field(() => ID)
   memberId: string;
 
   @Field()
@@ -42,4 +42,13 @@ export class MemberWalletDataInput {
 
   @Field()
   percent: number;
+}
+
+@InputType()
+export class UpdateMemberWalletInput {
+  @Field(() => ID)
+  memberId: string;
+
+  @Field(() => [MemberWalletDataInput])
+  wallets: MemberWalletDataInput[];
 }
