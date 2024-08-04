@@ -86,9 +86,9 @@ const createMemberStatisticsAndStatisticsWallets = async (
     memberIds,
     async (memberId: string) => {
       const percent: number = Math.floor(
-        (membersWithHashPower[memberId] / totalHashPower) * PERCENT
+        (membersWithHashPower[memberId] / totalHashPower) * 100 * PERCENT
       );
-      const txcShared: number = Math.floor((totalTxcShared * percent) / PERCENT);
+      const txcShared: number = Math.floor((percent / 100 / PERCENT) * totalTxcShared);
       const hashPower: number = membersWithHashPower[memberId];
       const statisticsId: string = statistic.id;
       const memberStatistic = await prisma.memberStatistics.create({
@@ -240,7 +240,7 @@ const syncMembers = async () => {
         await prisma.memberWallet.createMany({
           data: wallets.map((wallet) => ({
             ...wallet,
-            percent: 100 / wallets.length,
+            percent: Math.floor((100 / wallets.length) * PERCENT),
           })),
         });
 
