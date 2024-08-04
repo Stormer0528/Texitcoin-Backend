@@ -59,14 +59,6 @@ export class MemberStatisticsWalletResolver {
     return response;
   }
 
-  @Authorized([UserRole.Admin])
-  @Mutation(() => MemberStatisticsWallet)
-  async createMemberWallet(
-    @Arg('data') data: CreateMemberStatisticsWalletInput
-  ): Promise<MemberStatisticsWallet> {
-    return this.service.createMemberStatisticsWallet(data);
-  }
-
   @FieldResolver({ nullable: true })
   async memberStatistic(
     @Root() member: MemberStatisticsWallet,

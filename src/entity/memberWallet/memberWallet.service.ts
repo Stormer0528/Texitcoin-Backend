@@ -15,20 +15,29 @@ export class MemberWalletService {
   ) {}
   async getMemberWallets(params: MemberWalletQueryArgs) {
     return await this.prisma.memberWallet.findMany({
-      where: params.where,
+      where: {
+        ...params.where,
+        deletedAt: null,
+      },
       orderBy: params.orderBy,
       ...params.parsePage,
     });
   }
 
   async getMemberWalletsCount(params: MemberWalletQueryArgs): Promise<number> {
-    return this.prisma.memberWallet.count({ where: params.where });
+    return this.prisma.memberWallet.count({
+      where: {
+        ...params.where,
+        deletedAt: null,
+      },
+    });
   }
 
   async getMemberWalletById(id: string) {
     return this.prisma.memberWallet.findUnique({
       where: {
         id,
+        deletedAt: null,
       },
     });
   }
