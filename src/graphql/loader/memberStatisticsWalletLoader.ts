@@ -33,22 +33,18 @@ export const memberStatisticForMemberStatisticsWalletLoader = (parent: RootDataL
 
 export const memberWalletForMemberStatisticsWalletLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, MemberWallet>(
-    async (memberStatisticsWalletIds: string[]) => {
-      const memberStatisticsWalletsWithMemberWallet =
-        await parent.prisma.memberStatisticsWallet.findMany({
-          select: {
-            id: true,
-            memberWallet: true,
-          },
-          where: { id: { in: memberStatisticsWalletIds } },
-        });
-
-      const memberStatisticsWalletsWithMemberWalletMap: Record<string, MemberWallet> = {};
-      memberStatisticsWalletsWithMemberWallet.forEach(({ id, memberWallet }) => {
-        memberStatisticsWalletsWithMemberWallet[id] = memberWallet;
+    async (memberWalletIds: string[]) => {
+      const uniqueMemberWalletIds = [...new Set(memberWalletIds)];
+      const memberWallets = await parent.prisma.memberWallet.findMany({
+        where: { id: { in: uniqueMemberWalletIds }, deletedAt: null },
       });
 
-      return memberStatisticsWalletIds.map((id) => memberStatisticsWalletsWithMemberWalletMap[id]);
+      const memberWalletsMap: Record<string, MemberWallet> = {};
+      memberWallets.forEach((memberWallet) => {
+        memberWalletsMap[memberWallet.id] = memberWallet;
+      });
+
+      return uniqueMemberWalletIds.map((id) => memberWalletsMap[id]);
     },
     {
       ...parent.dataLoaderOptions,
