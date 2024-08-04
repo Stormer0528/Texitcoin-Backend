@@ -9,6 +9,7 @@ import { formatDate } from '@/utils/common';
 import { hashPassword } from '@/utils/auth';
 import { payoutData } from 'prisma/seed/payout';
 import crypto from 'crypto';
+import { PERCENT, TXC } from '@/consts/db';
 
 const prisma = new PrismaClient();
 
@@ -50,7 +51,7 @@ const createStatistic = async (date: Date, sales: SaleSearchResult[]) => {
     membersWithHashPower[sale.memberId] = membersWithHashPower[sale.memberId] + sale.package.token;
   });
   const totalMembers: number = memberIds.length;
-  const txcShared: number = newBlocks * 254;
+  const txcShared: number = newBlocks * 254 * TXC;
   const issuedAt: Date = date;
   const statistic: Statistics = await prisma.statistics.create({
     data: {
@@ -84,9 +85,11 @@ const createMemberStatisticsAndStatisticsWallets = async (
   await Bluebird.map(
     memberIds,
     async (memberId: string) => {
-      const txcShared: number = (totalTxcShared * membersWithHashPower[memberId]) / totalHashPower;
+      const percent: number = Math.floor(
+        (membersWithHashPower[memberId] / totalHashPower) * PERCENT
+      );
+      const txcShared: number = Math.floor((totalTxcShared * percent) / PERCENT);
       const hashPower: number = membersWithHashPower[memberId];
-      const percent: number = membersWithHashPower[memberId] / totalHashPower;
       const statisticsId: string = statistic.id;
       const memberStatistic = await prisma.memberStatistics.create({
         data: {
