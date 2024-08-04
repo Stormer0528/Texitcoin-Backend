@@ -6,21 +6,18 @@ import { Sale } from '@/entity/sale/sale.entity';
 
 export const saleForStatisticsSaleLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, Sale>(
-    async (statisticsSaleIds: string[]) => {
-      const statisticsSaleWithsales = await parent.prisma.statisticsSale.findMany({
-        select: {
-          id: true,
-          sale: true,
-        },
-        where: { id: { in: statisticsSaleIds } },
+    async (saleIds: string[]) => {
+      const uniqueSaleIds = [...new Set(saleIds)];
+      const sales = await parent.prisma.sale.findMany({
+        where: { id: { in: uniqueSaleIds } },
       });
 
-      const memberStaticsWithsalesMap: Record<string, Sale> = {};
-      statisticsSaleWithsales.forEach(({ id, sale }) => {
-        memberStaticsWithsalesMap[id] = sale;
+      const salesMap: Record<string, Sale> = {};
+      sales.forEach((sale) => {
+        salesMap[sale.id] = sale;
       });
 
-      return statisticsSaleIds.map((id) => memberStaticsWithsalesMap[id]);
+      return uniqueSaleIds.map((id) => salesMap[id]);
     },
     {
       ...parent.dataLoaderOptions,
@@ -30,21 +27,18 @@ export const saleForStatisticsSaleLoader = (parent: RootDataLoader) => {
 
 export const statisticsForStatisticsSaleLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, Statistics>(
-    async (statisticsSaleIds: string[]) => {
-      const membersWithStatisticsSale = await parent.prisma.statisticsSale.findMany({
-        select: {
-          id: true,
-          statistics: true,
-        },
-        where: { id: { in: statisticsSaleIds } },
+    async (statisticsIds: string[]) => {
+      const uniqueStatisticsIds = [...new Set(statisticsIds)];
+      const statisticsSales = await parent.prisma.statistics.findMany({
+        where: { id: { in: uniqueStatisticsIds } },
       });
 
-      const statisticsSalesWithStatisticsMap: Record<string, Statistics> = {};
-      membersWithStatisticsSale.forEach(({ id, statistics }) => {
-        statisticsSalesWithStatisticsMap[id] = statistics;
+      const statisticsSalesMap: Record<string, Statistics> = {};
+      statisticsSales.forEach((statistics) => {
+        statisticsSalesMap[statistics.id] = statistics;
       });
 
-      return statisticsSaleIds.map((id) => statisticsSalesWithStatisticsMap[id]);
+      return uniqueStatisticsIds.map((id) => statisticsSalesMap[id]);
     },
     {
       ...parent.dataLoaderOptions,

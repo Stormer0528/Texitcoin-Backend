@@ -90,12 +90,12 @@ export class SaleResolver {
 
   @FieldResolver({ nullable: 'itemsAndList' })
   async member(@Root() sale: Sale, @Ctx() ctx: Context): Promise<Member> {
-    return ctx.dataLoader.get('memberForSaleLoader').load(sale.id);
+    return ctx.dataLoader.get('memberForSaleLoader').load(sale.memberId);
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })
   async package(@Root() sale: Sale, @Ctx() ctx: Context): Promise<Package> {
-    return ctx.dataLoader.get('packageForSaleLoader').load(sale.id);
+    return ctx.dataLoader.get('packageForSaleLoader').load(sale.packageId);
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })

@@ -64,7 +64,9 @@ export class MemberStatisticsWalletResolver {
     @Root() member: MemberStatisticsWallet,
     @Ctx() ctx: Context
   ): Promise<MemberStatistics> {
-    return ctx.dataLoader.get('memberStatisticForMemberStatisticsWalletLoader').load(member.id);
+    return ctx.dataLoader
+      .get('memberStatisticForMemberStatisticsWalletLoader')
+      .load(member.memberStatisticId);
   }
 
   @FieldResolver({ nullable: true })

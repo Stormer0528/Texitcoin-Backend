@@ -71,13 +71,13 @@ export class MemberWalletResolver {
   }
 
   @FieldResolver({ nullable: true })
-  async member(@Root() member: MemberWallet, @Ctx() ctx: Context): Promise<Member> {
-    return ctx.dataLoader.get('memberForMemberWalletLoader').load(member.id);
+  async member(@Root() memberWallet: MemberWallet, @Ctx() ctx: Context): Promise<Member> {
+    return ctx.dataLoader.get('memberForMemberWalletLoader').load(memberWallet.memberId);
   }
 
   @FieldResolver({ nullable: true })
-  async payout(@Root() member: MemberWallet, @Ctx() ctx: Context): Promise<Payout> {
-    return ctx.dataLoader.get('payoutForMemberWalletLoader').load(member.id);
+  async payout(@Root() memberWallet: MemberWallet, @Ctx() ctx: Context): Promise<Payout> {
+    return ctx.dataLoader.get('payoutForMemberWalletLoader').load(memberWallet.payoutId);
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })
