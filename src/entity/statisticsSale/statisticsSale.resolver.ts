@@ -93,7 +93,7 @@ export class StatisticsSaleResolver {
 
   @FieldResolver({ nullable: 'itemsAndList' })
   async sale(@Root() statisticsSale: StatisticsSale, @Ctx() ctx: Context): Promise<Sale> {
-    return ctx.dataLoader.get('saleForStatisticsSaleLoader').load(statisticsSale.id);
+    return ctx.dataLoader.get('saleForStatisticsSaleLoader').load(statisticsSale.saleId);
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })
@@ -101,6 +101,8 @@ export class StatisticsSaleResolver {
     @Root() statisticsSale: StatisticsSale,
     @Ctx() ctx: Context
   ): Promise<Statistics> {
-    return ctx.dataLoader.get('statisticsForStatisticsSaleLoader').load(statisticsSale.id);
+    return ctx.dataLoader
+      .get('statisticsForStatisticsSaleLoader')
+      .load(statisticsSale.statisticsId);
   }
 }
