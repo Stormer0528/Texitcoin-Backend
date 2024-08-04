@@ -6,20 +6,17 @@ import { Sale } from '@/entity/sale/sale.entity';
 export const salesForPackageLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, Sale[]>(
     async (packageIds: string[]) => {
-      const packagesWithSales = await parent.prisma.package.findMany({
-        select: {
-          id: true,
-          sales: true,
-        },
-        where: { id: { in: packageIds } },
+      const sales = await parent.prisma.sale.findMany({
+        where: { packageId: { in: packageIds } },
       });
 
-      const packagesWithSalesMap: Record<string, Sale[]> = {};
-      packagesWithSales.forEach(({ id, sales }) => {
-        packagesWithSalesMap[id] = sales;
+      const salesMap: Record<string, Sale[]> = {};
+      sales.forEach((sale) => {
+        if (!salesMap[sale.packageId]) salesMap[sale.packageId] = [];
+        salesMap[sale.packageId].push(sale);
       });
 
-      return packageIds.map((id) => packagesWithSalesMap[id]);
+      return packageIds.map((id) => salesMap[id]);
     },
     {
       ...parent.dataLoaderOptions,
