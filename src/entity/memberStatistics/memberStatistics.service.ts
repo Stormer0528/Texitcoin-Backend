@@ -25,6 +25,12 @@ export class MemberStatisticsService {
     });
   }
 
+  async getMemberStatisticsByQuery(query: Prisma.MemberStatisticsWhereInput) {
+    return this.prisma.memberStatistics.findMany({
+      where: query,
+    });
+  }
+
   async getMemberStatisticsCount(params: MemberStatisticsQueryArgs): Promise<number> {
     return this.prisma.memberStatistics.count({ where: params.where });
   }

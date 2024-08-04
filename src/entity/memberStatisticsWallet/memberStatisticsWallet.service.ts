@@ -1,18 +1,19 @@
 import { Service, Inject } from 'typedi';
 
 import { PrismaService } from '@/service/prisma';
-import {
-  CreateMemberStatisticsWalletInput,
-  MemberStatisticsWalletQueryArgs,
-} from './memberStatisticsWallet.type';
+import { MemberStatisticsWalletQueryArgs } from './memberStatisticsWallet.type';
 import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
 import { Prisma } from '@prisma/client';
+import { Statistics } from '../statistics/statistics.entity';
+import { MemberStatisticsService } from '../memberStatistics/memberStatistics.service';
+import Bluebird from 'bluebird';
 
 @Service()
 export class MemberStatisticsWalletService {
   constructor(
     @Inject(() => PrismaService)
-    private readonly prisma: PrismaService
+    private readonly prisma: PrismaService,
+    private readonly memberStatisticsService: MemberStatisticsService
   ) {}
   async getMemberStatisticsWallets(params: MemberStatisticsWalletQueryArgs) {
     return await this.prisma.memberStatisticsWallet.findMany({
@@ -34,7 +35,7 @@ export class MemberStatisticsWalletService {
     });
   }
 
-  async createMemberStatisticsWallet(data: MemberStatistics) {
+  async createMemberStatisticsWalletByMemberStatistic(data: MemberStatistics) {
     const memberWallets = await this.prisma.memberWallet.findMany({
       where: {
         memberId: data.memberId,
@@ -53,5 +54,19 @@ export class MemberStatisticsWalletService {
     return this.prisma.memberStatisticsWallet.createMany({
       data: memberStatisticsWalletData,
     });
+  }
+
+  async createMemberStatisticsWalletByStatistic(data: Statistics) {
+    const memberStatistics = await this.memberStatisticsService.getMemberStatisticsByQuery({
+      statisticsId: data.id,
+    });
+
+    await Bluebird.map(
+      memberStatistics,
+      async (memberStatistic) => {
+        await this.createMemberStatisticsWalletByMemberStatistic(memberStatistic);
+      },
+      { concurrency: 10 }
+    );
   }
 }
