@@ -71,7 +71,7 @@ const createStatistic = async (date: Date, sales: SaleSearchResult[]) => {
   };
 };
 
-const createMemberStatistics = async (
+const createMemberStatisticsAndStatisticsWallets = async (
   statistic: Statistics,
   memberIds: string[],
   membersWithHashPower: Record<string, number>,
@@ -80,22 +80,46 @@ const createMemberStatistics = async (
   const totalHashPower: number = statistic.totalHashPower;
   const totalTxcShared: number = statistic.txcShared;
 
-  await prisma.memberStatistics.createMany({
-    data: memberIds.map((memberId: string) => {
+  await Bluebird.map(
+    memberIds,
+    async (memberId: string) => {
       const txcShared: number = (totalTxcShared * membersWithHashPower[memberId]) / totalHashPower;
       const hashPower: number = membersWithHashPower[memberId];
       const percent: number = membersWithHashPower[memberId] / totalHashPower;
       const statisticsId: string = statistic.id;
-      return {
-        txcShared,
-        hashPower,
-        percent,
-        statisticsId,
-        issuedAt,
-        memberId,
-      };
-    }),
-  });
+      const memberStatistic = await prisma.memberStatistics.create({
+        data: {
+          txcShared,
+          hashPower,
+          percent,
+          statisticsId,
+          issuedAt,
+          memberId,
+        },
+      });
+
+      const memberWallets = await prisma.memberWallet.findMany({
+        where: {
+          memberId: memberId,
+          deletedAt: null,
+        },
+      });
+
+      const memberStatisticsWalletData: Prisma.MemberStatisticsWalletUncheckedCreateInput[] =
+        memberWallets.map((wallet) => {
+          return {
+            memberStatisticId: memberStatistic.id,
+            memberWalletId: wallet.id,
+            txc: (memberStatistic.txcShared * wallet.percent) / 100,
+          };
+        });
+
+      await prisma.memberStatisticsWallet.createMany({
+        data: memberStatisticsWalletData,
+      });
+    },
+    { concurrency: 10 }
+  );
 };
 const createStatisticSales = async (
   statistic: Statistics,
@@ -133,7 +157,12 @@ const createStatisticsAndMemberStatistics = async () => {
       },
     });
     const { statistic, memberIds, membersWithHashPower } = await createStatistic(date, sales);
-    await createMemberStatistics(statistic, memberIds, membersWithHashPower, date);
+    await createMemberStatisticsAndStatisticsWallets(
+      statistic,
+      memberIds,
+      membersWithHashPower,
+      date
+    );
     await createStatisticSales(statistic, sales, date);
     console.log(`Finished ${iDate.format('YYYY-MM-DD')}`);
   }
