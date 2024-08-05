@@ -42,7 +42,7 @@ export class MemberStatisticsWalletService {
         deletedAt: null,
       },
     });
-    const memberStatisticsWalletData: Prisma.MemberStatisticsWalletUncheckedCreateInput[] =
+    const memberStatisticsWalletData: Prisma.MemberStatisticsWalletCreateManyInput[] =
       memberWallets.map((wallet) => {
         return {
           memberStatisticId: data.id,
