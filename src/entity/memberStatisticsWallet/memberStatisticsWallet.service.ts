@@ -1,19 +1,19 @@
 import { Service, Inject } from 'typedi';
 
 import { PrismaService } from '@/service/prisma';
-import { MemberStatisticsWalletQueryArgs } from './memberStatisticsWallet.type';
+import { FromToQueryArgs, MemberStatisticsWalletQueryArgs } from './memberStatisticsWallet.type';
 import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
 import { Prisma } from '@prisma/client';
 import { Statistics } from '../statistics/statistics.entity';
-import { MemberStatisticsService } from '../memberStatistics/memberStatistics.service';
 import Bluebird from 'bluebird';
+import { stringify } from 'querystring';
+import { MemberWallet } from '../memberWallet/memberWallet.entity';
 
 @Service()
 export class MemberStatisticsWalletService {
   constructor(
     @Inject(() => PrismaService)
-    private readonly prisma: PrismaService,
-    private readonly memberStatisticsService: MemberStatisticsService
+    private readonly prisma: PrismaService
   ) {}
   async getMemberStatisticsWallets(params: MemberStatisticsWalletQueryArgs) {
     return await this.prisma.memberStatisticsWallet.findMany({
@@ -58,8 +58,10 @@ export class MemberStatisticsWalletService {
   }
 
   async createMemberStatisticsWalletByStatistic(data: Statistics) {
-    const memberStatistics = await this.memberStatisticsService.getMemberStatisticsByQuery({
-      statisticsId: data.id,
+    const memberStatistics = await this.prisma.memberStatistics.findMany({
+      where: {
+        statisticsId: data.id,
+      },
     });
 
     await Bluebird.map(
@@ -69,5 +71,40 @@ export class MemberStatisticsWalletService {
       },
       { concurrency: 10 }
     );
+  }
+
+  async getRewardsByWallets(data: FromToQueryArgs & { memberId: string }) {
+    const memberWallets = await this.prisma.memberWallet.findMany({
+      where: {
+        memberId: data.memberId,
+      },
+      include: {
+        payout: true,
+      },
+    });
+    const memberWalletsMap: Record<string, MemberWallet> = {};
+    memberWallets.forEach((memberWallet) => {
+      memberWalletsMap[memberWallet.id] = memberWallet;
+    });
+
+    const rewardsByMemberWallets = await this.prisma.memberStatisticsWallet.groupBy({
+      by: ['memberWalletId'],
+      where: {
+        issuedAt: {
+          gte: data.from,
+          lte: data.to,
+        },
+        memberWalletId: {
+          in: Object.keys(memberWalletsMap),
+        },
+      },
+      _sum: {
+        txc: true,
+      },
+    });
+    return rewardsByMemberWallets.map((reward) => ({
+      wallet: memberWalletsMap[reward.memberWalletId],
+      txc: reward._sum.txc,
+    }));
   }
 }
