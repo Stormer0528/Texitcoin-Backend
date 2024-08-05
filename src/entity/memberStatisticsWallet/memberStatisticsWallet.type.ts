@@ -56,3 +56,21 @@ export class RewardsByWallets {
   @Field(() => [RewardByWallet])
   rewards: RewardByWallet[];
 }
+
+@ObjectType()
+export class DailyReward {
+  @Field()
+  day: Date;
+
+  @Field()
+  totalTxc: number;
+
+  @Field(() => [RewardByWallet])
+  rewardsByWallet: RewardByWallet[];
+}
+
+@ObjectType()
+export class DailyRewards {
+  @Field(() => [DailyReward])
+  rewards: DailyReward[];
+}

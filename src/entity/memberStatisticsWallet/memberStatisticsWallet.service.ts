@@ -107,4 +107,33 @@ export class MemberStatisticsWalletService {
       txc: reward._sum.txc,
     }));
   }
+
+  async getDailyRewards(data: FromToQueryArgs & { memberId: string }) {
+    return await this.prisma.memberStatistics.findMany({
+      where: {
+        issuedAt: {
+          gte: data.from,
+          lte: data.to,
+        },
+        memberId: data.memberId,
+      },
+      select: {
+        issuedAt: true,
+        txcShared: true,
+        memberStatisticsWallets: {
+          select: {
+            txc: true,
+            memberWallet: {
+              include: {
+                payout: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        issuedAt: 'desc',
+      },
+    });
+  }
 }
