@@ -10,6 +10,7 @@ import {
   FieldResolver,
   Root,
   Ctx,
+  Field,
 } from 'type-graphql';
 import graphqlFields from 'graphql-fields';
 import { GraphQLResolveInfo } from 'graphql';
@@ -19,8 +20,10 @@ import { MemberStatisticsWallet } from './memberStatisticsWallet.entity';
 import { MemberStatisticsWalletService } from './memberStatisticsWallet.service';
 import {
   CreateMemberStatisticsWalletInput,
+  FromToQueryArgs,
   MemberStatisticsWalletQueryArgs,
   MemberStatisticsWalletResponse,
+  RewardsByWallets,
 } from './memberStatisticsWallet.type';
 import { Context } from '@/context';
 import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
@@ -57,6 +60,20 @@ export class MemberStatisticsWalletResolver {
     }
 
     return response;
+  }
+
+  @Authorized()
+  @Query(() => RewardsByWallets)
+  async rewardsByWallets(
+    @Ctx() ctx: Context,
+    @Args() query: FromToQueryArgs
+  ): Promise<RewardsByWallets> {
+    return {
+      rewards: await this.service.getRewardsByWallets({
+        ...query,
+        memberId: query.memberId ?? ctx.user.id,
+      }),
+    };
   }
 
   @FieldResolver({ nullable: true })
