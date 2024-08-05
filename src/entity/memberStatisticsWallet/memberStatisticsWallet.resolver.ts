@@ -20,6 +20,7 @@ import { MemberStatisticsWallet } from './memberStatisticsWallet.entity';
 import { MemberStatisticsWalletService } from './memberStatisticsWallet.service';
 import {
   CreateMemberStatisticsWalletInput,
+  DailyRewards,
   FromToQueryArgs,
   MemberStatisticsWalletQueryArgs,
   MemberStatisticsWalletResponse,
@@ -73,6 +74,25 @@ export class MemberStatisticsWalletResolver {
         ...query,
         memberId: query.memberId ?? ctx.user.id,
       }),
+    };
+  }
+
+  @Authorized()
+  @Query(() => DailyRewards)
+  async dailyRewards(@Ctx() ctx: Context, @Args() query: FromToQueryArgs): Promise<DailyRewards> {
+    const dailyRewards = await this.service.getDailyRewards({
+      ...query,
+      memberId: query.memberId ?? ctx.user.id,
+    });
+    return {
+      rewards: dailyRewards.map((reward) => ({
+        day: reward.issuedAt,
+        totalTxc: reward.txcShared,
+        rewardsByWallet: reward.memberStatisticsWallets.map((memberStatistic) => ({
+          txc: memberStatistic.txc,
+          wallet: memberStatistic.memberWallet,
+        })),
+      })),
     };
   }
 
