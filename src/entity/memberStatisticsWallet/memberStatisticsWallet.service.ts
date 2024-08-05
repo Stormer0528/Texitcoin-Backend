@@ -116,6 +116,9 @@ export class MemberStatisticsWalletService {
           lte: data.to,
         },
         memberId: data.memberId,
+        statistics: {
+          status: true,
+        },
       },
       select: {
         issuedAt: true,
