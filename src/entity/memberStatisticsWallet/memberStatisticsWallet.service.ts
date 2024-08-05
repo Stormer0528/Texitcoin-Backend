@@ -48,6 +48,7 @@ export class MemberStatisticsWalletService {
           memberStatisticId: data.id,
           memberWalletId: wallet.id,
           txc: (data.txcShared * wallet.percent) / 100,
+          issuedAt: data.issuedAt,
         };
       });
 

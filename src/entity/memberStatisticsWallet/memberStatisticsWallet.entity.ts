@@ -18,6 +18,9 @@ export class MemberStatisticsWallet extends BaseEntity {
   @Field()
   txc: number;
 
+  @Field()
+  issuedAt: Date;
+
   @Field(() => MemberStatistics, { nullable: true })
   memberStatistic?: MemberStatistics;
 
