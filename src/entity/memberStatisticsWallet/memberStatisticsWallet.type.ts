@@ -32,7 +32,7 @@ export class CreateMemberStatisticsWalletInput {
 
 @ArgsType()
 export class FromToQueryArgs {
-  @Field(() => ID)
+  @Field(() => ID, { nullable: true })
   memberId?: string;
 
   @Field()
