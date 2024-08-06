@@ -29,6 +29,11 @@ export const uniqueErrors = [
     path: ['memberId', 'payoutId', 'address', 'deletedAt'],
     message: 'Wallet already exists',
   },
+  {
+    modelName: 'Member',
+    path: ['assetId'],
+    message: 'AssetId already exists',
+  },
 ];
 
 export const foreignKeyErrors = [
