@@ -35,7 +35,7 @@ model Member {
   userId           Int     @unique(map: "index_members_on_userId") @db.Integer
   email            String  @db.VarChar
   mobile           String  @db.VarChar
-  assetId          String  @db.VarChar
+  assetId          String  @unique(map: "index_members_on_assetId") @db.VarChar
   primaryAddress   String  @db.VarChar
   secondaryAddress String? @db.VarChar
   city             String? @db.VarChar

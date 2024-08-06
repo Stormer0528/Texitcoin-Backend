@@ -98,8 +98,10 @@ export const getMembers = async () => {
   await connection.end();
   console.log(`Close connection to affiliate database successfully...`);
 
-  return (rows as []).map((row: any) => ({
-    ...row,
-    state: `${row.state}`,
-  }));
+  return (rows as [])
+    .map((row: any) => ({
+      ...row,
+      state: `${row.state}`,
+    }))
+    .filter((row) => row.assetId);
 };
