@@ -114,7 +114,7 @@ const createMemberStatisticsAndStatisticsWallets = async (
           return {
             memberStatisticId: memberStatistic.id,
             memberWalletId: wallet.id,
-            txc: (memberStatistic.txcShared * wallet.percent) / BigInt(PERCENT) / BigInt(100),
+            txc: (wallet.percent / PERCENT / 100) * Number(memberStatistic.txcShared),
             issuedAt: memberStatistic.issuedAt,
           };
         });
@@ -238,10 +238,14 @@ const syncMembers = async () => {
         }
 
         await prisma.memberWallet.createMany({
-          data: wallets.map((wallet) => ({
-            ...wallet,
-            percent: Math.floor((100 / wallets.length) * PERCENT),
-          })),
+          data: wallets.map((wallet, idx) => {
+            const unit = Math.floor((100 / wallets.length) * PERCENT);
+            return {
+              ...wallet,
+              percent:
+                idx === wallets.length - 1 ? 100 * PERCENT - unit * (wallets.length - 1) : unit,
+            };
+          }),
         });
 
         return result;
