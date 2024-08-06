@@ -16,7 +16,7 @@ export const salesForPackageLoader = (parent: RootDataLoader) => {
         salesMap[sale.packageId].push(sale);
       });
 
-      return packageIds.map((id) => salesMap[id]);
+      return packageIds.map((id) => salesMap[id] ?? []);
     },
     {
       ...parent.dataLoaderOptions,

@@ -63,7 +63,7 @@ export const memberStatisticsWalletsForMemberWalletLoader = (parent: RootDataLoa
         );
       });
 
-      return memberWalletIds.map((id) => memberStatisticsWalletsMap[id]);
+      return memberWalletIds.map((id) => memberStatisticsWalletsMap[id] ?? []);
     },
     {
       ...parent.dataLoaderOptions,

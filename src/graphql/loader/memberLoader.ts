@@ -22,7 +22,7 @@ export const salesForMemberLoader = (parent: RootDataLoader) => {
         membersWithSalesMap[sale.memberId].push(sale);
       });
 
-      return memberIds.map((id) => membersWithSalesMap[id]);
+      return memberIds.map((id) => membersWithSalesMap[id] ?? []);
     },
     {
       ...parent.dataLoaderOptions,
@@ -44,7 +44,7 @@ export const memberStatisticsForMemberLoader = (parent: RootDataLoader) => {
         membersWithMemberStatisticsMap[memberStatistics.memberId].push(memberStatistics);
       });
 
-      return memberIds.map((id) => membersWithMemberStatisticsMap[id]);
+      return memberIds.map((id) => membersWithMemberStatisticsMap[id] ?? []);
     },
     {
       ...parent.dataLoaderOptions,
@@ -66,7 +66,7 @@ export const memberWalletsForMemberLoader = (parent: RootDataLoader) => {
         memberWahlletsMap[memberWallet.memberId].push(memberWallet);
       });
 
-      return memberIds.map((id) => memberWahlletsMap[id]);
+      return memberIds.map((id) => memberWahlletsMap[id] ?? []);
     },
     {
       ...parent.dataLoaderOptions,
@@ -110,7 +110,7 @@ export const introduceMembersForMemberLoader = (parent: RootDataLoader) => {
         introduceMembersMap[introducer.sponsorId].push(introducer);
       });
 
-      return memberIds.map((id) => introduceMembersMap[id]);
+      return memberIds.map((id) => introduceMembersMap[id] ?? []);
     },
     {
       ...parent.dataLoaderOptions,
