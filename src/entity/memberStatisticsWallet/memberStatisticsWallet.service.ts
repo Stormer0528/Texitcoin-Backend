@@ -8,6 +8,7 @@ import { Statistics } from '../statistics/statistics.entity';
 import Bluebird from 'bluebird';
 import { stringify } from 'querystring';
 import { MemberWallet } from '../memberWallet/memberWallet.entity';
+import { PERCENT } from '@/consts/db';
 
 @Service()
 export class MemberStatisticsWalletService {
@@ -47,7 +48,7 @@ export class MemberStatisticsWalletService {
         return {
           memberStatisticId: data.id,
           memberWalletId: wallet.id,
-          txc: (data.txcShared * wallet.percent) / 100,
+          txc: (data.txcShared * BigInt(wallet.percent)) / BigInt(PERCENT) / BigInt(100),
           issuedAt: data.issuedAt,
         };
       });

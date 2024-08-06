@@ -114,7 +114,7 @@ const createMemberStatisticsAndStatisticsWallets = async (
           return {
             memberStatisticId: memberStatistic.id,
             memberWalletId: wallet.id,
-            txc: (memberStatistic.txcShared * wallet.percent) / 100,
+            txc: (memberStatistic.txcShared * wallet.percent) / BigInt(PERCENT) / BigInt(100),
             issuedAt: memberStatistic.issuedAt,
           };
         });
