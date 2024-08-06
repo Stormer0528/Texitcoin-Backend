@@ -23,7 +23,7 @@ export class MemberStatistics extends BaseEntity {
   hashPower: number;
 
   @Field()
-  percent: bigint;
+  percent: number;
 
   @Field()
   issuedAt: Date;
