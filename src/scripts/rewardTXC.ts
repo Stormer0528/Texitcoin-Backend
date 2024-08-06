@@ -8,6 +8,7 @@ import { SaleSearchResult } from '@/type';
 import { formatDate } from '@/utils/common';
 import { hashPassword } from '@/utils/auth';
 import { payoutData } from 'prisma/seed/payout';
+import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 
@@ -190,6 +191,15 @@ const toMember = (
   };
 };
 
+const generateRandomString = (length: number): string => {
+  return crypto
+    .randomBytes(length)
+    .toString('base64')
+    .slice(0, length)
+    .replace(/\+/g, '0')
+    .replace(/\//g, '0');
+};
+
 const syncMembers = async () => {
   try {
     console.log('Syncing members...');
@@ -199,8 +209,17 @@ const syncMembers = async () => {
     const members = await Bluebird.map(
       mlmMembers,
       async (member) => {
+        let assetId: string = member.assetId;
+        while (
+          mlmMembers.findIndex((mb) => mb.assetId === assetId && mb.userId !== member.userId) >= 0
+        ) {
+          assetId = generateRandomString(6);
+        }
         const result = await prisma.member.create({
-          data: toMember(member, hashedPassword),
+          data: {
+            ...toMember(member, hashedPassword),
+            assetId,
+          },
         });
 
         const wallets: Prisma.MemberWalletUncheckedCreateInput[] = [];
