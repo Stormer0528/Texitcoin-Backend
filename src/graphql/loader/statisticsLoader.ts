@@ -19,7 +19,7 @@ export const memberStatisticsForStatisticsLoader = (parent: RootDataLoader) => {
         memberStatisticsMap[memberStatistic.statisticsId].push(memberStatistic);
       });
 
-      return statisticsIds.map((id) => memberStatisticsMap[id]);
+      return statisticsIds.map((id) => memberStatisticsMap[id] ?? []);
     },
     {
       ...parent.dataLoaderOptions,
@@ -41,7 +41,7 @@ export const statisticsSalesForStatisticsLoader = (parent: RootDataLoader) => {
         statisticsSalesMap[statisticsSale.statisticsId].push(statisticsSale);
       });
 
-      return statisticsIds.map((id) => statisticsSalesMap[id]);
+      return statisticsIds.map((id) => statisticsSalesMap[id] ?? []);
     },
     {
       ...parent.dataLoaderOptions,

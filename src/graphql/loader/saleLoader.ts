@@ -61,7 +61,7 @@ export const statisticsSalesForSaleLoader = (parent: RootDataLoader) => {
         statisticsSalesMap[statisticsSale.saleId].push(statisticsSale);
       });
 
-      return saleIds.map((id) => statisticsSalesMap[id]);
+      return saleIds.map((id) => statisticsSalesMap[id] ?? []);
     },
     {
       ...parent.dataLoaderOptions,

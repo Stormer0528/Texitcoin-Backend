@@ -16,7 +16,7 @@ export const memberWalletsForPayoutLoader = (parent: RootDataLoader) => {
         memberWalletsMap[memberWallet.payoutId].push(memberWallet);
       });
 
-      return payoutIds.map((id) => memberWalletsMap[id]);
+      return payoutIds.map((id) => memberWalletsMap[id] ?? []);
     },
     {
       ...parent.dataLoaderOptions,
