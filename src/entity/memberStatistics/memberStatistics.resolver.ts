@@ -41,8 +41,10 @@ export class MemberStatisticsResolver {
     private readonly memberService: MemberService
   ) {}
 
+  @Authorized()
   @Query(() => MemberStatisticsResponse)
   async memberStatistics(
+    @Ctx() ctx: Context,
     @Args() query: MemberStatisticsQueryArgs,
     @Info() info: GraphQLResolveInfo
   ): Promise<MemberStatisticsResponse> {
@@ -50,6 +52,13 @@ export class MemberStatisticsResolver {
     const fields = graphqlFields(info);
 
     let promises: { total?: Promise<number>; memberStatistics?: any } = {};
+
+    if (!ctx.isAdmin) {
+      query.filter = {
+        ...query.filter,
+        memberId: ctx.user.id,
+      };
+    }
 
     if ('total' in fields) {
       promises.total = this.service.getMemberStatisticsCount(query);

@@ -14,7 +14,7 @@ export class MemberStatisticsWalletQueryArgs extends QueryArgsBase<Prisma.Member
 @ObjectType()
 export class MemberStatisticsWalletResponse extends PaginatedResponse {
   @Field(() => [MemberStatisticsWallet], { nullable: 'itemsAndList' })
-  MemberStatisticsWallet?: MemberStatisticsWallet[];
+  memberStatisticsWallets?: MemberStatisticsWallet[];
 }
 
 // Create MemberStatisticsWallet Input and Response

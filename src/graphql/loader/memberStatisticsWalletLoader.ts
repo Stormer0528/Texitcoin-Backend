@@ -30,7 +30,7 @@ export const memberWalletForMemberStatisticsWalletLoader = (parent: RootDataLoad
     async (memberWalletIds: string[]) => {
       const uniqueMemberWalletIds = [...new Set(memberWalletIds)];
       const memberWallets = await parent.prisma.memberWallet.findMany({
-        where: { id: { in: uniqueMemberWalletIds }, deletedAt: null },
+        where: { id: { in: uniqueMemberWalletIds } },
       });
 
       const memberWalletsMap: Record<string, MemberWallet> = {};
