@@ -48,7 +48,7 @@ export class RewardByWallet {
   wallet: MemberWallet;
 
   @Field()
-  txc: number;
+  txc: bigint;
 }
 
 @ObjectType()
@@ -63,7 +63,7 @@ export class DailyReward {
   day: Date;
 
   @Field()
-  totalTxc: number;
+  totalTxc: bigint;
 
   @Field(() => [RewardByWallet])
   rewardsByWallet: RewardByWallet[];
