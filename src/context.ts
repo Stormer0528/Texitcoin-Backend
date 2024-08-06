@@ -38,6 +38,6 @@ export const context: ContextFunction<[StandaloneServerContextFunctionArgument],
     isAdmin,
     req,
     prisma,
-    dataLoader: new RootDataLoader(prisma, {}),
+    dataLoader: new RootDataLoader(prisma, {}, user, isAdmin),
   };
 };

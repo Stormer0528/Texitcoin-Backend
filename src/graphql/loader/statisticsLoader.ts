@@ -7,8 +7,9 @@ import { StatisticsSale } from '@/entity/statisticsSale/statisticsSale.entity';
 export const memberStatisticsForStatisticsLoader = (parent: RootDataLoader) => {
   return new DataLoader<string, MemberStatistics[]>(
     async (statisticsIds: string[]) => {
+      const memberId = parent.isAdmin ? {} : { memberId: parent.user.id };
       const memberStatistics = await parent.prisma.memberStatistics.findMany({
-        where: { statisticsId: { in: statisticsIds } },
+        where: { statisticsId: { in: statisticsIds }, ...memberId },
       });
 
       const memberStatisticsMap: Record<string, MemberStatistics[]> = {};

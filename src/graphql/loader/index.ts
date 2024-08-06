@@ -12,6 +12,8 @@ import * as payoutLoader from './payoutLoader';
 import * as statisticsSaleLoader from './statisticsSaleLoader';
 import * as memberStatisticsWalletLoader from './memberStatisticsWalletLoader';
 import * as memberWalletLoader from './memberWalletLoader';
+import { Member } from '@/entity/member/member.entity';
+import { Admin } from '@/entity/admin/admin.entity';
 
 interface LoaderDict {
   [loaderName: string]: DataLoader<any, any>;
@@ -49,14 +51,23 @@ export interface DataLoaderInstance {
  */
 export default class RootDataLoader implements DataLoaderInstance {
   readonly prisma: PrismaService;
+  readonly user: Member | Admin;
+  readonly isAdmin: boolean;
 
   dataLoaderOptions: DataLoader.Options<any, any>;
   // casted to any because access to the loaders will results in a creation if needed
   loaders: LoaderDict = {} as any;
 
-  constructor(prisma: PrismaService, dataLoaderOptions: DataLoader.Options<any, any> = {}) {
+  constructor(
+    prisma: PrismaService,
+    dataLoaderOptions: DataLoader.Options<any, any> = {},
+    user: Member | Admin,
+    isAdmin: boolean
+  ) {
     this.prisma = prisma;
     this.dataLoaderOptions = dataLoaderOptions;
+    this.user = user;
+    this.isAdmin = isAdmin;
   }
 
   get<LoaderName extends Loaders>(loaderName: LoaderName): TypeFromCustom<LoaderName> {
