@@ -35,14 +35,26 @@ import { MemberWallet } from '../memberWallet/memberWallet.entity';
 export class MemberStatisticsWalletResolver {
   constructor(private readonly service: MemberStatisticsWalletService) {}
 
+  @Authorized()
   @Query(() => MemberStatisticsWalletResponse)
   async memberStatisticsWallets(
+    @Ctx() ctx: Context,
     @Args() query: MemberStatisticsWalletQueryArgs,
     @Info() info: GraphQLResolveInfo
   ): Promise<MemberStatisticsWalletResponse> {
     const fields = graphqlFields(info);
 
     let promises: { total?: Promise<number>; memberStatisticsWallets?: any } = {};
+
+    if (!ctx.isAdmin) {
+      query.filter = {
+        ...query.filter,
+        memberWallet: {
+          ...query.filter?.memberWallet,
+          memberId: ctx.user.id,
+        },
+      };
+    }
 
     if ('total' in fields) {
       promises.total = this.service.getMemberStatisticsWalletCount(query);
