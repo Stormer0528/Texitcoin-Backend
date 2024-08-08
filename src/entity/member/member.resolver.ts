@@ -49,7 +49,7 @@ export class MemberResolver {
     private readonly memberWalletService: MemberWalletService
   ) {}
 
-  // @Authorized([UserRole.Admin])
+  @Authorized([UserRole.Admin])
   @Query(() => MembersResponse)
   async members(
     @Args() query: MemberQueryArgs,
