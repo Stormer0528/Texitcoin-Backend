@@ -10,6 +10,7 @@ import {
   FieldResolver,
   Root,
   Ctx,
+  UseMiddleware,
 } from 'type-graphql';
 import graphqlFields from 'graphql-fields';
 import { GraphQLResolveInfo } from 'graphql';
@@ -32,6 +33,7 @@ import { Statistics } from '../statistics/statistics.entity';
 import { MemberService } from '../member/member.service';
 import { IDInput, IDsInput, ManySuccessResponse } from '../../graphql/common.type';
 import { MemberStatisticsWallet } from '../memberStatisticsWallet/memberStatisticsWallet.entity';
+import { userPermission } from '../admin/admin.permission';
 
 @Service()
 @Resolver(() => MemberStatistics)
@@ -132,7 +134,8 @@ export class MemberStatisticsResolver {
     return ctx.dataLoader.get('walletsForMemberStatisticsLoader').load(memberStatistics.id);
   }
 
-  @Authorized([UserRole.Admin])
+  @Authorized()
+  @UseMiddleware(userPermission)
   @Query(() => MemberOverview)
   async memberOverview(@Arg('data') { id }: MemberOverviewInput): Promise<MemberOverview> {
     const { txcShared: totalTXCShared } = await this.service.getTotalTXCShared(id);
