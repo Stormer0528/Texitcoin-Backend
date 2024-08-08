@@ -1,5 +1,5 @@
 import type { Prisma } from '@prisma/client';
-import { ObjectType, InputType, Field, ArgsType } from 'type-graphql';
+import { ObjectType, InputType, Field, ArgsType, ID } from 'type-graphql';
 
 import { PaginatedResponse } from '@/graphql/paginatedResponse';
 import { QueryArgsBase } from '@/graphql/queryArgs';
@@ -28,9 +28,30 @@ export class CreatePackageInput {
   @Field()
   status: boolean;
 
-  @Field()
-  date: Date;
+  @Field({ nullable: true })
+  date?: Date;
 
   @Field()
   token: number;
+}
+
+@InputType()
+export class UpdatePackageInput {
+  @Field(() => ID)
+  id: string;
+
+  @Field({ nullable: true })
+  productName?: string;
+
+  @Field({ nullable: true })
+  amount?: number;
+
+  @Field({ nullable: true })
+  status?: boolean;
+
+  @Field({ nullable: true })
+  date?: Date;
+
+  @Field({ nullable: true })
+  token?: number;
 }
