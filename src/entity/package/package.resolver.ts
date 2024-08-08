@@ -17,9 +17,15 @@ import { GraphQLResolveInfo } from 'graphql';
 import { UserRole } from '@/type';
 import { Package } from './package.entity';
 import { PackageService } from './package.service';
-import { CreatePackageInput, PackageQueryArgs, PackageResponse } from './package.type';
+import {
+  CreatePackageInput,
+  PackageQueryArgs,
+  PackageResponse,
+  UpdatePackageInput,
+} from './package.type';
 import { Context } from '@/context';
 import { Sale } from '../sale/sale.entity';
+import { IDInput } from '@/graphql/common.type';
 
 @Service()
 @Resolver(() => Package)
@@ -58,7 +64,19 @@ export class PackageResolver {
   @Authorized([UserRole.Admin])
   @Mutation(() => Package)
   async createPackage(@Arg('data') data: CreatePackageInput): Promise<Package> {
-    return this.service.createPackage({ ...data });
+    return this.service.createPackage(data);
+  }
+
+  @Authorized([UserRole.Admin])
+  @Mutation(() => Package)
+  async updatePackage(@Arg('data') data: UpdatePackageInput): Promise<Package> {
+    return this.service.updatePackage(data);
+  }
+
+  @Authorized([UserRole.Admin])
+  @Mutation(() => Package)
+  async removePackage(@Arg('data') data: IDInput): Promise<Package> {
+    return this.service.removePackage(data);
   }
 
   @FieldResolver({ nullable: 'itemsAndList' })
