@@ -33,7 +33,13 @@ import { Context } from '@/context';
 import { Sale } from '../sale/sale.entity';
 import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
 import { createAccessToken, hashPassword, verifyPassword } from '@/utils/auth';
-import { EmailInput, IDInput, SuccessResponse, SuccessResult } from '../../graphql/common.type';
+import {
+  EmailInput,
+  IDInput,
+  SuccessResponse,
+  SuccessResult,
+  TokenInput,
+} from '../../graphql/common.type';
 import { userPermission } from '../admin/admin.permission';
 import { MemberWallet } from '../memberWallet/memberWallet.entity';
 import { MemberWalletService } from '../memberWallet/memberWallet.service';
@@ -201,6 +207,30 @@ export class MemberResolver {
         id: member.id,
         isAdmin: false,
       }),
+    };
+  }
+
+  @Mutation(() => SuccessResponse)
+  async resetPasswordRequest(@Arg('data') data: IDInput): Promise<SuccessResponse> {
+    const { token } = await this.service.generateResetTokenById(data);
+    if (token) {
+      return {
+        result: SuccessResult.success,
+        message: `${process.env.MEMBER_URL}/resetpassword?token=${token}`,
+      };
+    } else {
+      return {
+        result: SuccessResult.failed,
+        message: 'creating token failed',
+      };
+    }
+  }
+
+  @Mutation(() => SuccessResponse)
+  async resetPasswordByToken(@Arg('data') data: TokenInput): Promise<SuccessResponse> {
+    await this.service.resetPasswordByToken(data);
+    return {
+      result: SuccessResult.success,
     };
   }
 }
