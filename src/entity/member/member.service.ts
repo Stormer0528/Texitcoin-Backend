@@ -4,6 +4,9 @@ import { PrismaService } from '@/service/prisma';
 
 import { CreateMemberInput, UpdateMemberInput, MemberQueryArgs } from './member.type';
 import { Prisma } from '@prisma/client';
+import { IDInput, TokenInput } from '@/graphql/common.type';
+import { createAccessToken, createResetPasswordToken, hashPassword } from '@/utils/auth';
+import { DEFAULT_PASSWORD } from '@/consts';
 
 @Service()
 export class MemberService {
@@ -88,6 +91,30 @@ export class MemberService {
     return this.prisma.member.delete({
       where: {
         id,
+      },
+    });
+  }
+
+  async generateResetTokenById(data: IDInput) {
+    const token = createResetPasswordToken();
+    return this.prisma.member.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        token,
+      },
+    });
+  }
+
+  async resetPasswordByToken(data: TokenInput) {
+    const hashedPassword = await hashPassword(DEFAULT_PASSWORD);
+    return this.prisma.member.update({
+      where: {
+        token: data.token,
+      },
+      data: {
+        password: hashedPassword,
       },
     });
   }

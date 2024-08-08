@@ -6,9 +6,8 @@ import { getMembers, getSales } from '@/utils/connectMlm';
 import Bluebird from 'bluebird';
 import { SaleSearchResult } from '@/type';
 import { formatDate } from '@/utils/common';
-import { hashPassword } from '@/utils/auth';
+import { generateRandomString, hashPassword } from '@/utils/auth';
 import { payoutData } from 'prisma/seed/payout';
-import crypto from 'crypto';
 import { PERCENT, TXC } from '@/consts/db';
 
 const prisma = new PrismaClient();
@@ -192,15 +191,6 @@ const toMember = (
     state: complexMember.state,
     zipCode: complexMember.zipCode,
   };
-};
-
-const generateRandomString = (length: number): string => {
-  return crypto
-    .randomBytes(length)
-    .toString('base64')
-    .slice(0, length)
-    .replace(/\+/g, '0')
-    .replace(/\//g, '0');
 };
 
 const syncMembers = async () => {

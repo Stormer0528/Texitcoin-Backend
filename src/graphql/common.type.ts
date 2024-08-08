@@ -39,3 +39,9 @@ export class EmailInput {
   @IsEmail()
   email: string;
 }
+
+@InputType()
+export class TokenInput {
+  @Field()
+  token: string;
+}
