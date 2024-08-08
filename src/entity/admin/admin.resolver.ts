@@ -25,8 +25,7 @@ import {
   SuccessResponse,
   SuccessResult,
 } from '@/graphql/common.type';
-
-const DEFAULT_PASSWORD = '123456789';
+import { DEFAULT_PASSWORD } from '@/consts';
 
 @Service()
 @Resolver(() => Admin)
