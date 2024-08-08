@@ -1,3 +1,4 @@
+import { IsEmail } from 'class-validator';
 import { Field, ID, InputType, ObjectType } from 'type-graphql';
 
 @ObjectType()
@@ -30,4 +31,11 @@ export class SuccessResponse {
 
   @Field({ nullable: true })
   message?: string;
+}
+
+@InputType()
+export class EmailInput {
+  @Field()
+  @IsEmail()
+  email: string;
 }

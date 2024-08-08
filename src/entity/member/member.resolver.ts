@@ -33,13 +33,12 @@ import { Context } from '@/context';
 import { Sale } from '../sale/sale.entity';
 import { MemberStatistics } from '../memberStatistics/memberStatistics.entity';
 import { createAccessToken, hashPassword, verifyPassword } from '@/utils/auth';
-import { IDInput, SuccessResponse, SuccessResult } from '../../graphql/common.type';
+import { EmailInput, IDInput, SuccessResponse, SuccessResult } from '../../graphql/common.type';
 import { userPermission } from '../admin/admin.permission';
 import { MemberWallet } from '../memberWallet/memberWallet.entity';
 import { MemberWalletService } from '../memberWallet/memberWallet.service';
 import _ from 'lodash';
-
-const DEFAULT_PASSWORD = '123456789';
+import { DEFAULT_PASSWORD } from '@/consts';
 
 @Service()
 @Resolver(() => Member)
